@@ -26,7 +26,16 @@ public class BioSimEnums {
 		FromNormals1951_1980("period=1951_1980"),
 		FromNormals1961_1990("period=1961_1990"),
 		FromNormals1971_2000("period=1971_2000"),
-		FromNormals1981_2010("period=1981_2010");
+		FromNormals1981_2010("period=1981_2010"),
+		FromNormals1991_2020("period=1991_2020"),
+		FromNormals2001_2030("period=2001_2030"),
+		FromNormals2011_2040("period=2011_2040"),
+		FromNormals2021_2050("period=2021_2050"),
+		FromNormals2031_2060("period=2031_2060"),
+		FromNormals2041_2070("period=2041_2070"),
+		FromNormals2051_2080("period=2051_2080"),
+		FromNormals2061_2090("period=2061_2090"),
+		FromNormals2071_2100("period=2071_2100");
 		
 		String parsedQuery;
 		
