@@ -57,15 +57,15 @@ public class BioSimClientTestsOnNormals {
 		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, variables, getPlots());
 		BioSimDataSet firstPlotDataSet = resultingMap.get(getPlots().get(0));
 		Object[] record = firstPlotDataSet.getObservations().get(0).toArray();
-		Assert.assertEquals("Testing Tx", 12.424657534246576, (Double) record[0], 1E-8);
-		Assert.assertEquals("Testing Tn", 3.647123287671233, (Double) record[1], 1E-8);
-		Assert.assertEquals("Testing P", 1328.5, (Double) record[2], 1E-1);
+		Assert.assertEquals("Testing Tx", 13.793424657534247, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 4.97972602739726, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1342.6, (Double) record[2], 1E-1);
 		
 		BioSimDataSet secondPlotDataSet = resultingMap.get(getPlots().get(1));
 		record = secondPlotDataSet.getObservations().get(0).toArray();
-		Assert.assertEquals("Testing Tx", 13.975616438356166, (Double) record[0], 1E-8);
-		Assert.assertEquals("Testing Tn", 4.53972602739726, (Double) record[1], 1E-8);
-		Assert.assertEquals("Testing P", 1161.0, (Double) record[2], 1E-1);
+		Assert.assertEquals("Testing Tx", 15.470958904109589, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 6.007671232876713, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1166.9, (Double) record[2], 1E-1);
 	}
 	
 }
