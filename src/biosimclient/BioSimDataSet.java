@@ -160,7 +160,7 @@ public class BioSimDataSet {
 		for (int i = 0; i < getNumberOfObservations(); i++) {
 			Object value = getValueAt(i,j);
 			if ((value instanceof Integer)) {
-				setValueAt(i,j, ((Integer) value).toString());
+				setValueAt(i,j, ((Integer) value).doubleValue()); // MF2020-04-30 Bug corrected here it was previously changed for a String
 			}
 		} 
 	}
@@ -232,7 +232,7 @@ public class BioSimDataSet {
 		return outputMap;
 	}
 	
-	final BioSimDataSet getMonthDataSet(List<Month> months, List<Variable> variables) {
+	final BioSimDataSet getMonthDataSet(List<Month> months, List<Variable> variables) throws BioSimClientException {
 		BioSimMonthMap monthMap = new BioSimMonthMap(this);
 		return monthMap.getMeanForTheseMonths(months, variables);
 	}

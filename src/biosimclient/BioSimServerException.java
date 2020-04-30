@@ -21,15 +21,12 @@
 package biosimclient;
 
 /**
- * A class for exceptions specific to the BioSim client
+ * A class for exceptions specific to the BioSim server
  * @author Mathieu Fortin - November 2019
  */
-@SuppressWarnings("serial")
-public class BioSimClientException extends Exception {
-	
-	protected BioSimClientException(String message) {
-		super(message);
-	}
-	
-}
+public class BioSimServerException extends Exception {
 
+		public BioSimServerException(String message) {
+			super(message);
+		}
+}
