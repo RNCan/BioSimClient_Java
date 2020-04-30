@@ -1,6 +1,5 @@
 package biosimclient;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ public class BioSimInternalModelTest {
 
 	
 	@Test
-	public void testingIfReturnDataSetHasAtLeastOneObservation() throws IOException, NoSuchMethodException, SecurityException {
+	public void testingIfReturnDataSetHasAtLeastOneObservation() throws NoSuchMethodException, SecurityException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 1; i++) {
 			FakeLocation loc = new FakeLocation(45 + BioSimClientTest.RANDOM.nextDouble() * 7,

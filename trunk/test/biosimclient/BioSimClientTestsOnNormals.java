@@ -1,12 +1,10 @@
 package biosimclient;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import biosimclient.BioSimEnums.Period;
@@ -18,7 +16,7 @@ public class BioSimClientTestsOnNormals {
 	private static List<BioSimPlot> Plots;
 	
 	
-	private static List<BioSimPlot> getPlots() {
+	static List<BioSimPlot> getPlots() {
 		if (Plots == null) {
 			Plots = new ArrayList<BioSimPlot>();
 			Plots.add(new BioSimPlotImpl(46.87,-71.25,114));
@@ -29,7 +27,7 @@ public class BioSimClientTestsOnNormals {
 	
 	
 	@Test
-	public void getNormalsFor1981_2010() throws IOException {
+	public void getNormalsFor1981_2010() throws BioSimClientException, BioSimServerException {
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);
@@ -50,7 +48,7 @@ public class BioSimClientTestsOnNormals {
 	}
 
 	@Test
-	public void getNormalsFor2051_2080() throws IOException {
+	public void getNormalsFor2051_2080() throws BioSimClientException, BioSimServerException {
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -61,31 +62,40 @@ public final class BioSimClient {
 		}
 	}
 
-	private final static String getStringFromConnection(String api, String query) throws IOException {
+	private final static String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 		String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + api;
 		urlString = addQueryIfAny(urlString, query);
-		URL bioSimURL = new URL(urlString);
-		HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
-		int code = connection.getResponseCode();
-		if (code < 200 || code > 202) { // if true that means it is not connected
-			throw new IOException("Unable to connect to BioSIM server! Please check your connection or contact your network administrator.");
-		}
-
-		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String completeString = "";
-		String lineStr;
-		int line = 0;
-		while ((lineStr = br.readLine()) != null) {
-			if (line == 0) {
-				completeString += lineStr;
-				
-			} else {
-				completeString += "\n" + lineStr;
+		try {
+			URL bioSimURL = new URL(urlString);
+			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
+			int code = connection.getResponseCode();
+			if (code < 200 || code > 202) { // if true that means it is not connected
+				throw new BioSimClientException("Unable to connect to BioSIM server! Please check your connection or contact your network administrator.");
 			}
-			line++;
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String completeString = "";
+			String lineStr;
+			int line = 0;
+			while ((lineStr = br.readLine()) != null) {
+				if (line == 0) {
+					completeString += lineStr;
+
+				} else {
+					completeString += "\n" + lineStr;
+				}
+				line++;
+			}
+			br.close();
+			if (completeString.startsWith("Exception")) {
+				throw new BioSimServerException(completeString);
+			}
+			return completeString;
+		} catch (MalformedURLException e) {
+			throw new BioSimClientException(e.getMessage());
+		} catch (IOException e) {
+			throw new BioSimClientException(e.getMessage());
 		}
-		br.close();
-		return completeString;
 	}
 
 	private static final String SPACE_IN_REQUEST = "%20";
@@ -107,8 +117,10 @@ public final class BioSimClient {
 			for (String model : models) {
 				ModelListReference.add(model);
 			}
-		} catch (IOException e) {
+		} catch (BioSimClientException e) {
 			e.printStackTrace();
+		} catch (BioSimServerException e2) {
+			e2.printStackTrace();
 		}
 	}
 
@@ -118,8 +130,10 @@ public final class BioSimClient {
 			try {
 				System.out.println("Shutdown hook from BioSimClient called!");
 				BioSimClient.removeWgoutObjectsFromServer(GeneratedClimateMap.values());
-			} catch (IOException e) {
+			} catch (BioSimClientException e) {
 				e.printStackTrace();
+			} catch (BioSimServerException e2) {
+				e2.printStackTrace();
 			}
 		}
 	}
@@ -132,7 +146,7 @@ public final class BioSimClient {
 
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForNormals(Period period,
 			List<Variable> variables, List<BioSimPlot> locations,
-			List<Month> averageOverTheseMonths) throws IOException {
+			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 
 		String variablesQuery = "";
@@ -180,13 +194,13 @@ public final class BioSimClient {
 	 *                               calculated. If empty or null the method returns
 	 *                               the monthly averages.
 	 * @return a Map with the locations as keys and maps as values.
-	 * @throws IOException
+	 * @throws BioSimClientException
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getNormals(
 			Period period,
 			List<Variable> variables, 
 			List<BioSimPlot> locations,
-			List<Month> averageOverTheseMonths) throws IOException {
+			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
 		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
@@ -205,7 +219,8 @@ public final class BioSimClient {
 		}
 	}
 
-	protected static void removeWgoutObjectsFromServer(Collection<String> references) throws IOException {
+	protected static void removeWgoutObjectsFromServer(Collection<String> references) 
+			throws BioSimClientException, BioSimServerException {
 		if (references.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
 			List<String> referenceList = new ArrayList<String>();
 			referenceList.addAll(references);
@@ -222,7 +237,8 @@ public final class BioSimClient {
 		}
 	}
 
-	private static void internalRemovalOfWgoutObjectsFromServer(Collection<String> references) throws IOException {
+	private static void internalRemovalOfWgoutObjectsFromServer(Collection<String> references) 
+			throws BioSimClientException, BioSimServerException {
 		if (references != null && !references.isEmpty()) {
 			String query = "";
 			for (String reference : references) {
@@ -254,12 +270,12 @@ public final class BioSimClient {
 	 * @param variables the variables to be retrieved and compiled
 	 * @param locations the locations
 	 * @return a DataSet instance
-	 * @throws IOException
+	 * @throws BioSimClientException
 	 */
 	public static Map<BioSimPlot, BioSimDataSet> getMonthlyNormals(
 			Period period, 
 			List<Variable> variables,
-			List<BioSimPlot> locations) throws IOException {
+			List<BioSimPlot> locations) throws BioSimClientException, BioSimServerException {
 		return getNormals(period, variables, locations, null);
 	}
 
@@ -269,12 +285,12 @@ public final class BioSimClient {
 	 * @param variables the variables to be retrieved and compiled
 	 * @param locations the locations
 	 * @return a DataSet instance
-	 * @throws IOException
+	 * @throws BioSimClientException
 	 */
 	public static Map<BioSimPlot, BioSimDataSet> getAnnualNormals(
 			Period period, 
 			List<Variable> variables,
-			List<BioSimPlot> locations) throws IOException {
+			List<BioSimPlot> locations) throws BioSimClientException, BioSimServerException {
 		return getNormals(period, variables, locations, AllMonths);
 	}
 
@@ -326,12 +342,12 @@ public final class BioSimClient {
 	 * @return a LinkedHashMap with BioSimPlot instances as key
 	 *         and String instances as values. Those strings are actually the code
 	 *         for the TeleIO instance on the server.
-	 * @throws IOException
+	 * @throws BioSimClientException
 	 */
 	protected static LinkedHashMap<BioSimPlot, String> getGeneratedClimate(
 			int fromYr, 
 			int toYr,
-			List<BioSimPlot> locations) throws IOException {
+			List<BioSimPlot> locations) throws BioSimClientException, BioSimServerException {
 		boolean compress = false; // disabling compression by default
 		LinkedHashMap<BioSimPlot, String> outputMap = new LinkedHashMap<BioSimPlot, String>();
 
@@ -395,11 +411,11 @@ public final class BioSimClient {
 	 *                   on the server
 	 * @return a LinkedHashMap with BioSimPlot instances as
 	 *         keys and a Map with years and climate variables values as values.
-	 * @throws IOException
+	 * @throws BioSimClientException
 	 */
 	protected static LinkedHashMap<BioSimPlot, BioSimDataSet> applyModel(
 			String modelName,
-			LinkedHashMap<BioSimPlot, String> teleIORefs) throws IOException {
+			LinkedHashMap<BioSimPlot, String> teleIORefs) throws BioSimClientException, BioSimServerException {
 		if (!ModelListReference.contains(modelName)) {
 			throw new InvalidParameterException("The model " + modelName
 					+ " is not a valid model. Please consult the list of models through the function getModelList()");
@@ -438,7 +454,7 @@ public final class BioSimClient {
 	private static void readLines(String serverReply,
 			String fieldLineStarter,
 			List<BioSimPlot> refListForLocations,
-			LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap) {
+			LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap) throws BioSimClientException, BioSimServerException {
 		String[] lines = serverReply.split("\n");
 		BioSimDataSet dataSet = null;
 		int locationId = 0;
@@ -446,7 +462,7 @@ public final class BioSimClient {
 		boolean properlyInitialized = false;
 		for (String line : lines) {
 			if (line.toLowerCase().startsWith("error")) {
-				throw new BioSimClientException(line);
+				throw new BioSimServerException(line);
 			} else if (line.toLowerCase().startsWith(fieldLineStarter)) { // means it is a new location
 				if (dataSet != null) {	// must be indexed before instantiating a new DataSet
 					dataSet.indexFieldType();
@@ -483,13 +499,13 @@ public final class BioSimClient {
 	 * @param modelName a string representing the model name
 	 * @return a LinkedHashMap of BioSimPlot instances (keys)
 	 *         and climate variables (values)
-	 * @throws IOException
+	 * @throws BioSimClientException
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getClimateVariables(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
 			String modelName)
-			throws IOException {
+			throws BioSimClientException, BioSimServerException {
 		return BioSimClient.getClimateVariables(fromYr, toYr, locations, modelName, false);
 	}
 
@@ -498,7 +514,7 @@ public final class BioSimClient {
 			int toYr, 
 			List<BioSimPlot> locations,
 			String modelName, 
-			boolean isEphemeral) throws IOException {
+			boolean isEphemeral) throws BioSimClientException, BioSimServerException {
 		Map<BioSimPlot, String> alreadyGeneratedClimate = new HashMap<BioSimPlot, String>();
 		List<BioSimPlot> locationsToGenerate = new ArrayList<BioSimPlot>();
 
@@ -555,13 +571,13 @@ public final class BioSimClient {
 	 *                    the server.
 	 * @return a LinkedHashMap of BioSimPlot instances (keys)
 	 *         and climate variables (values)
-	 * @throws IOException
+	 * @throws BioSimClientException
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getClimateVariables(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
 			String modelName,
-			boolean isEphemeral) throws IOException {
+			boolean isEphemeral) throws BioSimClientException, BioSimServerException {
 		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
@@ -581,15 +597,15 @@ public final class BioSimClient {
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-//		List<String> references = new ArrayList<String>();
-//		for (int i = 0; i < 402; i++) {
-//			references.add("" + i);
-//		}			
-//		
-//		BioSimClient.removeWgoutObjectsFromServer(references);
-		List<String> models = BioSimClient.getModelList();
-		for (String model : models)
-			System.out.println(model);
-	}
+//	public static void main(String[] args) throws BioSimClientException {
+////		List<String> references = new ArrayList<String>();
+////		for (int i = 0; i < 402; i++) {
+////			references.add("" + i);
+////		}			
+////		
+////		BioSimClient.removeWgoutObjectsFromServer(references);
+//		List<String> models = BioSimClient.getModelList();
+//		for (String model : models)
+//			System.out.println(model);
+//	}
 }

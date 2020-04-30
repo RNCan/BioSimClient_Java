@@ -20,7 +20,6 @@
  */
 package biosimclient;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -81,7 +80,7 @@ public class BioSimClientTest {
 	 * over again.
 	 */
 	@Test
-	public void testingMemorizer() throws IOException {
+	public void testingMemorizer() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 100; i++) {
 			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
@@ -128,7 +127,7 @@ public class BioSimClientTest {
 	 * than the others.
 	 */
 	@Test
-	public void testingWeatherGenerationOverSeveralContexts() throws IOException {
+	public void testingWeatherGenerationOverSeveralContexts() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 10; i++) {
 			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,

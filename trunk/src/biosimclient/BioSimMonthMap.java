@@ -20,7 +20,6 @@
  */
 package biosimclient;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -60,7 +59,7 @@ class BioSimMonthMap extends LinkedHashMap<Month, Map<Variable, Double>> {
 	}
 	
 	
-	final BioSimDataSet getMeanForTheseMonths(List<Month> months, List<Variable> variables) {
+	final BioSimDataSet getMeanForTheseMonths(List<Month> months, List<Variable> variables) throws BioSimClientException {
 		Map<Variable, Double> outputMap = new LinkedHashMap<Variable, Double>();
 		int nbDays = 0;
 		for (Month month : months) {
@@ -76,11 +75,11 @@ class BioSimMonthMap extends LinkedHashMap<Month, Map<Variable, Double>> {
 						}
 						outputMap.put(var, outputMap.get(var) + value);
 					} else {
-						throw new InvalidParameterException("The variable " + var.name() + " is not in the MonthMap instance!");
+						throw new BioSimClientException("The variable " + var.name() + " is not in the MonthMap instance!");
 					}
 				}
 			} else {
-				throw new InvalidParameterException("The month " + month.name() + " is not in the MonthMap instance!");
+				throw new BioSimClientException("The month " + month.name() + " is not in the MonthMap instance!");
 			}
 			nbDays += month.nbDays;
 		}
