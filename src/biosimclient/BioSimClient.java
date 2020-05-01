@@ -142,10 +142,32 @@ public final class BioSimClient {
 		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
 	}
 
+	public static enum RCP {
+		RCP45("4_5"),
+		RCP85("8_5");
+		
+		private final String urlString;
+		RCP(String urlString) {
+			this.urlString = urlString;
+		}
+		
+		String getURLString() {
+			return urlString;
+		}
+	}
+	
+	public static enum ClimateModel {
+		Hadley,
+		RCM4,
+		GCM4;
+	}
+	
 	static final List<Month> AllMonths = Arrays.asList(Month.values());
 
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForNormals(Period period,
 			List<Variable> variables, List<BioSimPlot> locations,
+			RCP rcp,
+			ClimateModel climModel,
 			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 
@@ -164,6 +186,14 @@ public final class BioSimClient {
 		query += "&compress=0"; // compression is disabled by default
 		query += "&" + period.parsedQuery;
 
+		if (rcp != null) {
+			query += "&rcp=" + rcp.getURLString();
+		}
+		
+		if(climModel != null) {
+			query += "&climMod=" + climModel.name();
+		}
+		
 		String serverReply = BioSimClient.getStringFromConnection(NORMAL_API, query);
 		
 		readLines(serverReply, "month", locations, outputMap);
@@ -200,6 +230,8 @@ public final class BioSimClient {
 			Period period,
 			List<Variable> variables, 
 			List<BioSimPlot> locations,
+			RCP rcp,
+			ClimateModel climModel,
 			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
 		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
@@ -210,12 +242,12 @@ public final class BioSimClient {
 				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
 					subList.add(copyList.remove(0));
 				}
-				resultingMap.putAll(internalCalculationForNormals(period, variables, subList, averageOverTheseMonths));
+				resultingMap.putAll(internalCalculationForNormals(period, variables, subList, rcp, climModel, averageOverTheseMonths));
 				subList.clear();
 			}
 			return resultingMap;
 		} else {
-			return internalCalculationForNormals(period, variables, locations, averageOverTheseMonths);
+			return internalCalculationForNormals(period, variables, locations, rcp, climModel, averageOverTheseMonths);
 		}
 	}
 
@@ -275,8 +307,10 @@ public final class BioSimClient {
 	public static Map<BioSimPlot, BioSimDataSet> getMonthlyNormals(
 			Period period, 
 			List<Variable> variables,
-			List<BioSimPlot> locations) throws BioSimClientException, BioSimServerException {
-		return getNormals(period, variables, locations, null);
+			List<BioSimPlot> locations,
+			RCP rcp,
+			ClimateModel climModel) throws BioSimClientException, BioSimServerException {
+		return getNormals(period, variables, locations, rcp, climModel, null);
 	}
 
 	/**
@@ -290,8 +324,10 @@ public final class BioSimClient {
 	public static Map<BioSimPlot, BioSimDataSet> getAnnualNormals(
 			Period period, 
 			List<Variable> variables,
-			List<BioSimPlot> locations) throws BioSimClientException, BioSimServerException {
-		return getNormals(period, variables, locations, AllMonths);
+			List<BioSimPlot> locations,
+			RCP rcp,
+			ClimateModel climModel) throws BioSimClientException, BioSimServerException {
+		return getNormals(period, variables, locations, rcp, climModel, AllMonths);
 	}
 
 	private static String constructCoordinatesQuery(List<BioSimPlot> locations) {

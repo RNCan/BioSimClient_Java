@@ -7,6 +7,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import biosimclient.BioSimClient.ClimateModel;
+import biosimclient.BioSimClient.RCP;
 import biosimclient.BioSimEnums.Period;
 import biosimclient.BioSimEnums.Variable;
 
@@ -33,7 +35,7 @@ public class BioSimClientTestsOnNormals {
 		variables.add(Variable.TN);
 		variables.add(Variable.P);
 		
-		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals1981_2010, variables, getPlots());
+		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals1981_2010, variables, getPlots(), null, null);
 		BioSimDataSet firstPlotDataSet = resultingMap.get(getPlots().get(0));
 		Object[] record = firstPlotDataSet.getObservations().get(0).toArray();
 		Assert.assertEquals("Testing Tx", 9.331780821917809, (Double) record[0], 1E-8);
@@ -48,13 +50,13 @@ public class BioSimClientTestsOnNormals {
 	}
 
 	@Test
-	public void getNormalsFor2051_2080() throws BioSimClientException, BioSimServerException {
+	public void getNormalsFor2051_2080_Hadley_RCP45() throws BioSimClientException, BioSimServerException {
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);
 		variables.add(Variable.P);
 		
-		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, variables, getPlots());
+		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, variables, getPlots(), null, ClimateModel.Hadley);
 		BioSimDataSet firstPlotDataSet = resultingMap.get(getPlots().get(0));
 		Object[] record = firstPlotDataSet.getObservations().get(0).toArray();
 		Assert.assertEquals("Testing Tx", 13.793424657534247, (Double) record[0], 1E-8);
@@ -67,5 +69,110 @@ public class BioSimClientTestsOnNormals {
 		Assert.assertEquals("Testing Tn", 6.007671232876713, (Double) record[1], 1E-8);
 		Assert.assertEquals("Testing P", 1166.9, (Double) record[2], 1E-1);
 	}
-	
+
+	@Test
+	public void getNormalsFor2051_2080_Hadley_RCP85() throws BioSimClientException, BioSimServerException {
+		List<Variable> variables = new ArrayList<Variable>();
+		variables.add(Variable.TX);
+		variables.add(Variable.TN);
+		variables.add(Variable.P);
+		
+		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, variables, getPlots(), RCP.RCP85, ClimateModel.Hadley);
+		BioSimDataSet firstPlotDataSet = resultingMap.get(getPlots().get(0));
+		Object[] record = firstPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 15.288219178082194, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 6.555342465753424, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1340.7, (Double) record[2], 1E-1);
+		
+		BioSimDataSet secondPlotDataSet = resultingMap.get(getPlots().get(1));
+		record = secondPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 16.840273972602738, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 7.374246575342466, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1135.1, (Double) record[2], 1E-1);
+	}
+
+	@Test
+	public void getNormalsFor2051_2080_RCM4_RCP45() throws BioSimClientException, BioSimServerException {
+		List<Variable> variables = new ArrayList<Variable>();
+		variables.add(Variable.TX);
+		variables.add(Variable.TN);
+		variables.add(Variable.P);
+		
+		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, variables, getPlots(), null, null);
+		BioSimDataSet firstPlotDataSet = resultingMap.get(getPlots().get(0));
+		Object[] record = firstPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 12.596712328767124, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 3.6131506849315067, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1467.3, (Double) record[2], 1E-1);
+		
+		BioSimDataSet secondPlotDataSet = resultingMap.get(getPlots().get(1));
+		record = secondPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 14.761917808219177, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 5.4043835616438365, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1115.0, (Double) record[2], 1E-1);
+	}
+
+	@Test
+	public void getNormalsFor2051_2080_RCM4_RCP85() throws BioSimClientException, BioSimServerException {
+		List<Variable> variables = new ArrayList<Variable>();
+		variables.add(Variable.TX);
+		variables.add(Variable.TN);
+		variables.add(Variable.P);
+		
+		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, variables, getPlots(), RCP.RCP85, null);
+		BioSimDataSet firstPlotDataSet = resultingMap.get(getPlots().get(0));
+		Object[] record = firstPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 13.67780821917808, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 4.977808219178082, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1566.5, (Double) record[2], 1E-1);
+		
+		BioSimDataSet secondPlotDataSet = resultingMap.get(getPlots().get(1));
+		record = secondPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 15.849315068493151, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 6.734520547945206, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1215.0, (Double) record[2], 1E-1);
+	}
+
+	@Test
+	public void getNormalsFor2051_2080_GCM4_RCP45() throws BioSimClientException, BioSimServerException {
+		List<Variable> variables = new ArrayList<Variable>();
+		variables.add(Variable.TX);
+		variables.add(Variable.TN);
+		variables.add(Variable.P);
+		
+		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, variables, getPlots(), RCP.RCP45, ClimateModel.GCM4);
+		BioSimDataSet firstPlotDataSet = resultingMap.get(getPlots().get(0));
+		Object[] record = firstPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 12.595068493150684, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 3.4284931506849325, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1534.9, (Double) record[2], 1E-1);
+		
+		BioSimDataSet secondPlotDataSet = resultingMap.get(getPlots().get(1));
+		record = secondPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 14.583287671232876, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 5.2715068493150685, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1224.4, (Double) record[2], 1E-1);
+	}
+
+	@Test
+	public void getNormalsFor2051_2080_GCM4_RCP85() throws BioSimClientException, BioSimServerException {
+		List<Variable> variables = new ArrayList<Variable>();
+		variables.add(Variable.TX);
+		variables.add(Variable.TN);
+		variables.add(Variable.P);
+		
+		Map<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, variables, getPlots(), RCP.RCP85, ClimateModel.GCM4);
+		BioSimDataSet firstPlotDataSet = resultingMap.get(getPlots().get(0));
+		Object[] record = firstPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 14.431232876712327, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 5.252602739726027, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1486.8, (Double) record[2], 1E-1);
+		
+		BioSimDataSet secondPlotDataSet = resultingMap.get(getPlots().get(1));
+		record = secondPlotDataSet.getObservations().get(0).toArray();
+		Assert.assertEquals("Testing Tx", 16.36986301369863, (Double) record[0], 1E-8);
+		Assert.assertEquals("Testing Tn", 6.871780821917809, (Double) record[1], 1E-8);
+		Assert.assertEquals("Testing P", 1178.7, (Double) record[2], 1E-1);
+	}
+
 }
