@@ -217,14 +217,16 @@ public final class BioSimClient {
 	
 	/**
 	 * Retrieves the normals and compiles the mean or sum over some months.
-	 * 
-	 * @param variables              the variables to be retrieved and compiled
-	 * @param locations              the locations
+	 * @param period 				a period enum variable
+	 * @param variables             the variables to be retrieved and compiled
+	 * @param locations             the locations
+	 * @param rcp					an RCP enum variable (if null the server takes the RCP 4.5 by default 
+	 * @param climModel				a ClimateModel enum variable (if null the server takes the RCM4 climate model
 	 * @param averageOverTheseMonths the months over which the mean or sum is to be
 	 *                               calculated. If empty or null the method returns
 	 *                               the monthly averages.
-	 * @return a Map with the locations as keys and maps as values.
-	 * @throws BioSimClientException
+	 * @return a Map with the locations as keys and datasets as values.
+	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getNormals(
 			Period period,
@@ -298,11 +300,13 @@ public final class BioSimClient {
 
 	/**
 	 * Retrieves the monthly normals.
-	 * 
-	 * @param variables the variables to be retrieved and compiled
-	 * @param locations the locations
-	 * @return a DataSet instance
-	 * @throws BioSimClientException
+	 * @param period 				a period enum variable
+	 * @param variables             the variables to be retrieved and compiled
+	 * @param locations             the locations
+	 * @param rcp					an RCP enum variable (if null the server takes the RCP 4.5 by default 
+	 * @param climModel				a ClimateModel enum variable (if null the server takes the RCM4 climate model
+	 * @return a Map with the locations as keys and datasets as values.
+	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
 	 */
 	public static Map<BioSimPlot, BioSimDataSet> getMonthlyNormals(
 			Period period, 
@@ -315,11 +319,13 @@ public final class BioSimClient {
 
 	/**
 	 * Retrieves the yearly normals.
-	 * 
-	 * @param variables the variables to be retrieved and compiled
-	 * @param locations the locations
-	 * @return a DataSet instance
-	 * @throws BioSimClientException
+	 * @param period 				a period enum variable
+	 * @param variables             the variables to be retrieved and compiled
+	 * @param locations             the locations
+	 * @param rcp					an RCP enum variable (if null the server takes the RCP 4.5 by default 
+	 * @param climModel				a ClimateModel enum variable (if null the server takes the RCM4 climate model
+	 * @return a Map with the locations as keys and datasets as values.
+	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
 	 */
 	public static Map<BioSimPlot, BioSimDataSet> getAnnualNormals(
 			Period period, 
@@ -383,7 +389,9 @@ public final class BioSimClient {
 	protected static LinkedHashMap<BioSimPlot, String> getGeneratedClimate(
 			int fromYr, 
 			int toYr,
-			List<BioSimPlot> locations) throws BioSimClientException, BioSimServerException {
+			List<BioSimPlot> locations,
+			RCP rcp,
+			ClimateModel climModel) throws BioSimClientException, BioSimServerException {
 		boolean compress = false; // disabling compression by default
 		LinkedHashMap<BioSimPlot, String> outputMap = new LinkedHashMap<BioSimPlot, String>();
 
@@ -409,6 +417,13 @@ public final class BioSimClient {
 		}
 		query += "&from=" + fromYr;
 		query += "&to=" + toYr;
+		if (rcp != null) {
+			query += "&rcp=" + rcp.getURLString();
+		}
+		
+		if(climModel != null) {
+			query += "&climMod=" + climModel.name();
+		}
 
 		String serverReply = getStringFromConnection(GENERATOR_API, query);
 
@@ -540,15 +555,19 @@ public final class BioSimClient {
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getClimateVariables(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
+			RCP rcp,
+			ClimateModel climMod,
 			String modelName)
 			throws BioSimClientException, BioSimServerException {
-		return BioSimClient.getClimateVariables(fromYr, toYr, locations, modelName, false);
+		return BioSimClient.getClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, false);
 	}
 
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForClimateVariables(
 			int fromYr, 
 			int toYr, 
 			List<BioSimPlot> locations,
+			RCP rcp,
+			ClimateModel climMod,
 			String modelName, 
 			boolean isEphemeral) throws BioSimClientException, BioSimServerException {
 		Map<BioSimPlot, String> alreadyGeneratedClimate = new HashMap<BioSimPlot, String>();
@@ -558,7 +577,7 @@ public final class BioSimClient {
 			locationsToGenerate.addAll(locations);
 		} else { // here we retrieve what is already available
 			for (BioSimPlot location : locations) {
-				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location);
+				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod);
 				if (GeneratedClimateMap.containsKey(querySignature)) {
 					alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
 				} else {
@@ -569,10 +588,10 @@ public final class BioSimClient {
 
 		Map<BioSimPlot, String> generatedClimate = new HashMap<BioSimPlot, String>();
 		if (!locationsToGenerate.isEmpty()) { // here we generate the climate if needed
-			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate));
+			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate, rcp, climMod));
 			if (!isEphemeral) { // then we stored the reference in the static map for future use
 				for (BioSimPlot location : generatedClimate.keySet()) {
-					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, location),
+					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod),
 							generatedClimate.get(location));
 				}
 			}
@@ -612,6 +631,8 @@ public final class BioSimClient {
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getClimateVariables(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
+			RCP rcp,
+			ClimateModel climMod,
 			String modelName,
 			boolean isEphemeral) throws BioSimClientException, BioSimServerException {
 		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
@@ -623,13 +644,12 @@ public final class BioSimClient {
 				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
 					subList.add(copyList.remove(0));
 				}
-				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, modelName,
-						isEphemeral));
+				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelName, isEphemeral));
 				subList.clear();
 			}
 			return resultingMap;
 		} else {
-			return internalCalculationForClimateVariables(fromYr, toYr, locations, modelName, isEphemeral);
+			return internalCalculationForClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, isEphemeral);
 		}
 	}
 

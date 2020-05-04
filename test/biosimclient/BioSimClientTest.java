@@ -93,13 +93,13 @@ public class BioSimClientTest {
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getClimateVariables(2018, 2019, locations, "DegreeDay_Annual");
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getClimateVariables(2018, 2019, locations, null, null, "DegreeDay_Annual");
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getClimateVariables(2018, 2019, locations, "DegreeDay_Annual");
+			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getClimateVariables(2018, 2019, locations, null, null, "DegreeDay_Annual");
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));
@@ -140,13 +140,13 @@ public class BioSimClientTest {
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getClimateVariables(2000, 2019, locations, "DegreeDay_Annual");
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getClimateVariables(2000, 2019, locations, null, null, "DegreeDay_Annual");
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getClimateVariables(2000, 2019, locations, "DegreeDay_Annual");
+			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getClimateVariables(2000, 2019, locations, null, null, "DegreeDay_Annual");
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));	// testing that the computational time is five times faster when the memorization is used.
@@ -182,7 +182,7 @@ public class BioSimClientTest {
 				locations.add(loc);
 			}
 			
-			BioSimClient.getClimateVariables(2018, 2019, locations, "DegreeDay_Annual", true);	// is ephemeral: wgout instances are not stored on the server
+			BioSimClient.getClimateVariables(2018, 2019, locations, null, null, "DegreeDay_Annual", true);	// is ephemeral: wgout instances are not stored on the server
 			
 			int nbObjectsAfter = BioSimClient.getNbWgoutObjectsOnServer();
 			Assert.assertEquals("Testing if the number of objects before and after is consistent", nbObjectsBefore, nbObjectsAfter);
@@ -200,7 +200,7 @@ public class BioSimClientTest {
 			locations.add(loc);
 		}
 		
-		BioSimClient.getClimateVariables(2018, 2019, locations, "DegreeDay_Annual");
+		BioSimClient.getClimateVariables(2018, 2019, locations, null, null, "DegreeDay_Annual");
 		
 		System.out.println("Nb objects immediately before eventual shutdown hook = " + BioSimClient.getNbWgoutObjectsOnServer());
 		System.out.println("Calling eventual shutdown hook...");
