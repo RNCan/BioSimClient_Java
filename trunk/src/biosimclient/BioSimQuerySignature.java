@@ -20,25 +20,38 @@
  */
 package biosimclient;
 
+import biosimclient.BioSimClient.ClimateModel;
+import biosimclient.BioSimClient.RCP;
 
 /**
- * Internal class for storing generated climate.
+ * Internal class for storing generated climate. Two queries are assumed to be the
+ * same when all their internal fields are the same. The latitude, longitude and 
+ * elevation are assumed to be within a one-meter difference.  
  * @author Mathieu Fortin - December 2019
  */
 class BioSimQuerySignature {
 	
 	final int initialYear;
 	final int finalYear;
-//	final List<Variable> variables;
+	final RCP rcp;
+	final ClimateModel climMod;
 	final double latitudeDeg;
 	final double longitudeDeg;
 	final double elevationM;
 	
-	BioSimQuerySignature(int initialYear, int finalYear, BioSimPlot location) {
+	BioSimQuerySignature(int initialYear, int finalYear, BioSimPlot location, RCP rcp, ClimateModel climMod) {
 		this.initialYear = initialYear;
 		this.finalYear = finalYear;
-//		this.variables = new ArrayList<Variable>();
-//		this.variables.addAll(variables);
+		if (rcp == null) {
+			this.rcp = RCP.RCP45; // default value
+ 		} else {
+ 			this.rcp = rcp;
+ 		}
+		if (climMod == null) {
+			this.climMod = ClimateModel.RCM4; // default value
+		} else {
+			this.climMod = climMod;
+		}
 		this.latitudeDeg = location.getLatitudeDeg();
 		this.longitudeDeg = location.getLongitudeDeg();
 		this.elevationM = location.getElevationM();
@@ -50,15 +63,17 @@ class BioSimQuerySignature {
 			BioSimQuerySignature thatQuery = (BioSimQuerySignature) obj;
 			if (thatQuery.initialYear == initialYear) {
 				if (thatQuery.finalYear == finalYear) {
-//					if (thatQuery.variables.equals(variables)) {
-						if (thatQuery.latitudeDeg == latitudeDeg) {
-							if (thatQuery.longitudeDeg == longitudeDeg) {
-								if (thatQuery.elevationM == elevationM) {
-									return true;
+					if (thatQuery.rcp == rcp) {
+						if (thatQuery.climMod == climMod) {
+							if (Math.abs(thatQuery.latitudeDeg - latitudeDeg) < 1E-5) {		// about 1 m at equator
+								if (Math.abs(thatQuery.longitudeDeg - longitudeDeg) < 1E-5) { // about 1 m at equator
+									if (Math.abs(thatQuery.elevationM - elevationM) < 1d) { // one meter 
+										return true;
+									}
 								}
 							}
 						}
-//					}
+					}
 				}
 			}
 		}
@@ -67,7 +82,6 @@ class BioSimQuerySignature {
 	
 	@Override
 	public int hashCode() {
-//		return initialYear * 10000000 + finalYear + variables.hashCode();
 		return initialYear * 10000000 + finalYear;
 	}
 
