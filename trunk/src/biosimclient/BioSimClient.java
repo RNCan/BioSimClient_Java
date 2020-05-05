@@ -501,7 +501,7 @@ public final class BioSimClient {
 
 		String serverReply = getStringFromConnection(MODEL_API, query);
 		
-		readLines(serverReply, "year", refListForLocations, outputMap);
+		readLines(serverReply, "rep", refListForLocations, outputMap);
 		
 		return outputMap;
 	}
