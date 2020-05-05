@@ -217,15 +217,15 @@ public final class BioSimClient {
 	
 	/**
 	 * Retrieves the normals and compiles the mean or sum over some months.
-	 * @param period 				a period enum variable
-	 * @param variables             the variables to be retrieved and compiled
-	 * @param locations             the locations
-	 * @param rcp					an RCP enum variable (if null the server takes the RCP 4.5 by default 
-	 * @param climModel				a ClimateModel enum variable (if null the server takes the RCM4 climate model
+	 * @param period a Period enum variable
+	 * @param variables a List of Variable enum to be retrieved and compiled
+	 * @param locations a List of BioSimPlot instances
+	 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
+	 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
 	 * @param averageOverTheseMonths the months over which the mean or sum is to be
 	 *                               calculated. If empty or null the method returns
 	 *                               the monthly averages.
-	 * @return a Map with the locations as keys and datasets as values.
+	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
 	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getNormals(
@@ -300,12 +300,12 @@ public final class BioSimClient {
 
 	/**
 	 * Retrieves the monthly normals.
-	 * @param period 				a period enum variable
-	 * @param variables             the variables to be retrieved and compiled
-	 * @param locations             the locations
-	 * @param rcp					an RCP enum variable (if null the server takes the RCP 4.5 by default 
-	 * @param climModel				a ClimateModel enum variable (if null the server takes the RCM4 climate model
-	 * @return a Map with the locations as keys and datasets as values.
+	 * @param period a Period enum variable
+	 * @param variables a List of Variable enum to be retrieved and compiled
+	 * @param locations a List of BioSimPlot instances
+	 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
+	 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
+	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
 	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
 	 */
 	public static Map<BioSimPlot, BioSimDataSet> getMonthlyNormals(
@@ -319,12 +319,12 @@ public final class BioSimClient {
 
 	/**
 	 * Retrieves the yearly normals.
-	 * @param period 				a period enum variable
-	 * @param variables             the variables to be retrieved and compiled
-	 * @param locations             the locations
-	 * @param rcp					an RCP enum variable (if null the server takes the RCP 4.5 by default 
-	 * @param climModel				a ClimateModel enum variable (if null the server takes the RCM4 climate model
-	 * @return a Map with the locations as keys and datasets as values.
+	 * @param period a Period enum variable
+	 * @param variables a List of Variable enum to be retrieved and compiled
+	 * @param locations a List of BioSimPlot instances
+	 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
+	 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
+	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
 	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
 	 */
 	public static Map<BioSimPlot, BioSimDataSet> getAnnualNormals(
@@ -391,7 +391,8 @@ public final class BioSimClient {
 			int toYr,
 			List<BioSimPlot> locations,
 			RCP rcp,
-			ClimateModel climModel) throws BioSimClientException, BioSimServerException {
+			ClimateModel climModel,
+			int rep) throws BioSimClientException, BioSimServerException {
 		boolean compress = false; // disabling compression by default
 		LinkedHashMap<BioSimPlot, String> outputMap = new LinkedHashMap<BioSimPlot, String>();
 
@@ -425,6 +426,10 @@ public final class BioSimClient {
 			query += "&climMod=" + climModel.name();
 		}
 
+		if (rep > 1) {
+			query += "&rep=" + rep;
+		}
+		
 		String serverReply = getStringFromConnection(GENERATOR_API, query);
 
 		String[] ids = serverReply.split(" ");
@@ -541,16 +546,51 @@ public final class BioSimClient {
 	
 	
 	/**
-	 * Returns the climate variables for a particular period with the generated
-	 * climate stored on the server.
+	 * Returns the climate variables for a particular period. The method involves
+	 * two request to the server. The first aims at generating the climate, whereas
+	 * the second applies a model on the generated climate in order to obtain the 
+	 * desired variables. The "modelname" parameter sets the model to be applied on
+	 * the generated climate. It should be one of the strings returned by the 
+	 * getModelList static method. Generating the climate is time consuming. The 
+	 * generated climate is stored on the server and it can be re used with some 
+	 * other models. 
 	 * 
-	 * @param fromYr    starting date (yr) of the period (inclusive)
-	 * @param toYr      ending date (yr) of the period (inclusive)
+	 * @param fromYr starting date (yr) of the period (inclusive)
+	 * @param toYr ending date (yr) of the period (inclusive)
 	 * @param locations the locations of the plots (BioSimPlot instances)
 	 * @param modelName a string representing the model name
-	 * @return a LinkedHashMap of BioSimPlot instances (keys)
-	 *         and climate variables (values)
-	 * @throws BioSimClientException
+	 * @param rep the number of replicates if needed. Should be equal to or greater than 1. 
+	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
+	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
+	 */
+	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getClimateVariables(int fromYr, 
+			int toYr,
+			List<BioSimPlot> locations, 
+			RCP rcp,
+			ClimateModel climMod,
+			String modelName,
+			int rep)
+			throws BioSimClientException, BioSimServerException {
+		return BioSimClient.getClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, rep, false);
+	}
+
+	
+	/**
+	 * Returns the climate variables for a particular period. The method involves
+	 * two request to the server. The first aims at generating the climate, whereas
+	 * the second applies a model on the generated climate in order to obtain the 
+	 * desired variables. The "modelname" parameter sets the model to be applied on
+	 * the generated climate. It should be one of the strings returned by the 
+	 * getModelList static method. Generating the climate is time consuming. The 
+	 * generated climate is stored on the server and it can be re used with some 
+	 * other models. The number of replicates is set to 1 here.
+	 * 
+	 * @param fromYr starting date (yr) of the period (inclusive)
+	 * @param toYr ending date (yr) of the period (inclusive)
+	 * @param locations the locations of the plots (BioSimPlot instances)
+	 * @param modelName a string representing the model name
+	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
+	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getClimateVariables(int fromYr, 
 			int toYr,
@@ -559,9 +599,11 @@ public final class BioSimClient {
 			ClimateModel climMod,
 			String modelName)
 			throws BioSimClientException, BioSimServerException {
-		return BioSimClient.getClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, false);
+		return BioSimClient.getClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, 1, false);
 	}
 
+	
+	
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForClimateVariables(
 			int fromYr, 
 			int toYr, 
@@ -569,6 +611,7 @@ public final class BioSimClient {
 			RCP rcp,
 			ClimateModel climMod,
 			String modelName, 
+			int rep,
 			boolean isEphemeral) throws BioSimClientException, BioSimServerException {
 		Map<BioSimPlot, String> alreadyGeneratedClimate = new HashMap<BioSimPlot, String>();
 		List<BioSimPlot> locationsToGenerate = new ArrayList<BioSimPlot>();
@@ -577,7 +620,7 @@ public final class BioSimClient {
 			locationsToGenerate.addAll(locations);
 		} else { // here we retrieve what is already available
 			for (BioSimPlot location : locations) {
-				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod);
+				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep);
 				if (GeneratedClimateMap.containsKey(querySignature)) {
 					alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
 				} else {
@@ -588,10 +631,10 @@ public final class BioSimClient {
 
 		Map<BioSimPlot, String> generatedClimate = new HashMap<BioSimPlot, String>();
 		if (!locationsToGenerate.isEmpty()) { // here we generate the climate if needed
-			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate, rcp, climMod));
+			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate, rcp, climMod, rep));
 			if (!isEphemeral) { // then we stored the reference in the static map for future use
 				for (BioSimPlot location : generatedClimate.keySet()) {
-					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod),
+					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep),
 							generatedClimate.get(location));
 				}
 			}
@@ -611,22 +654,25 @@ public final class BioSimClient {
 	}
 
 	/**
-	 * Returns the climate variables for a particular period. If the isEphemeral
-	 * parameter is set to true, then the generated climate is stored on the server.
-	 * Subsequent calls to this function based on the same locations, period and
-	 * variables will retrieve the stored generated climate on the server. To
-	 * disable this feature, the isEphemeral parameter should be set to false.
+	 * Returns the climate variables for a particular period. The method involves
+	 * two request to the server. The first aims at generating the climate, whereas
+	 * the second applies a model on the generated climate in order to obtain the 
+	 * desired variables. The "modelname" parameter sets the model to be applied on
+	 * the generated climate. It should be one of the strings returned by the 
+	 * getModelList static method. Generating the climate is time consuming. So there
+	 * is a procedure to avoid generating the climate twice for the same location. The
+	 * "isEphemeral" parameter actually overrides this procedure if it is set to true.
+	 * Otherwise, the generated climate is stored on the server and it can be re used 
+	 * with some other models.
 	 * 
-	 * @param fromYr      starting date (yr) of the period (inclusive)
-	 * @param toYr        ending date (yr) of the period (inclusive)
-	 * @param locations   the locations of the plots
-	 *                    (BioSimPlot instances)
-	 * @param modelName   a string representing the model name
-	 * @param isEphemeral a boolean to enable the storage of the Wgout instances on
-	 *                    the server.
-	 * @return a LinkedHashMap of BioSimPlot instances (keys)
-	 *         and climate variables (values)
-	 * @throws BioSimClientException
+	 * @param fromYr starting date (yr) of the period (inclusive)
+	 * @param toYr ending date (yr) of the period (inclusive)
+	 * @param locations the locations of the plots (BioSimPlot instances)
+	 * @param modelName a string representing the model name
+	 * @param rep the number of replicates if needed. Should be equal to or greater than 1. 
+	 * @param isEphemeral a boolean that overrides the storage procedure on the server
+	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
+	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getClimateVariables(int fromYr, 
 			int toYr,
@@ -634,7 +680,11 @@ public final class BioSimClient {
 			RCP rcp,
 			ClimateModel climMod,
 			String modelName,
+			int rep,
 			boolean isEphemeral) throws BioSimClientException, BioSimServerException {
+		if (rep < 1) {
+			throw new InvalidParameterException("The rep parameter should be equal to or greater than 1!");
+		}
 		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
@@ -644,13 +694,43 @@ public final class BioSimClient {
 				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
 					subList.add(copyList.remove(0));
 				}
-				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelName, isEphemeral));
+				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelName, rep, isEphemeral));
 				subList.clear();
 			}
 			return resultingMap;
 		} else {
-			return internalCalculationForClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, isEphemeral);
+			return internalCalculationForClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, rep, isEphemeral);
 		}
+	}
+
+	/**
+	 * Returns the climate variables for a particular period. The method involves
+	 * two request to the server. The first aims at generating the climate, whereas
+	 * the second applies a model on the generated climate in order to obtain the 
+	 * desired variables. The "modelname" parameter sets the model to be applied on
+	 * the generated climate. It should be one of the strings returned by the 
+	 * getModelList static method. Generating the climate is time consuming. So there
+	 * is a procedure to avoid generating the climate twice for the same location. The
+	 * "isEphemeral" parameter actually overrides this procedure if it is set to true.
+	 * Otherwise, the generated climate is stored on the server and it can be re used 
+	 * with some other models. The number of replicates is set to 1 here.
+	 * 
+	 * @param fromYr starting date (yr) of the period (inclusive)
+	 * @param toYr ending date (yr) of the period (inclusive)
+	 * @param locations the locations of the plots (BioSimPlot instances)
+	 * @param modelName a string representing the model name
+	 * @param isEphemeral a boolean that overrides the storage procedure on the server
+	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
+	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
+	 */
+	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getClimateVariables(int fromYr, 
+			int toYr,
+			List<BioSimPlot> locations, 
+			RCP rcp,
+			ClimateModel climMod,
+			String modelName,
+			boolean isEphemeral) throws BioSimClientException, BioSimServerException {
+		return getClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, 1, isEphemeral);
 	}
 
 //	public static void main(String[] args) throws BioSimClientException {
