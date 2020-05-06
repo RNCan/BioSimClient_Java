@@ -6,8 +6,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import biosimclient.BioSimClient.ClimateModel;
-import biosimclient.BioSimClient.RCP;
+import biosimclient.BioSimEnums.ClimateModel;
+import biosimclient.BioSimEnums.RCP;
 
 
 public class BioSimClientPastAndFutureDailyClimateTest {
