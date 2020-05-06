@@ -4,10 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import biosimclient.BioSimClient.RCP;
+import biosimclient.BioSimEnums.RCP;
 
 public class BioSimClientTestsWithReplicates {
 

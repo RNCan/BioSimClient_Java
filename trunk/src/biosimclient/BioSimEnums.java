@@ -21,6 +21,26 @@
 package biosimclient;
 
 public class BioSimEnums {
+	
+	public static enum RCP {
+		RCP45("4_5"),
+		RCP85("8_5");
+		
+		private final String urlString;
+		RCP(String urlString) {
+			this.urlString = urlString;
+		}
+		
+		String getURLString() {
+			return urlString;
+		}
+	}
+	
+	public static enum ClimateModel {
+		Hadley,
+		RCM4,
+		GCM4;
+	}
 
 	public static enum Period {
 		FromNormals1951_1980("period=1951_1980"),

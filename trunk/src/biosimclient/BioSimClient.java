@@ -36,8 +36,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Month;
 import biosimclient.BioSimEnums.Period;
+import biosimclient.BioSimEnums.RCP;
 import biosimclient.BioSimEnums.Variable;
 
 /**
@@ -142,25 +144,6 @@ public final class BioSimClient {
 		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
 	}
 
-	public static enum RCP {
-		RCP45("4_5"),
-		RCP85("8_5");
-		
-		private final String urlString;
-		RCP(String urlString) {
-			this.urlString = urlString;
-		}
-		
-		String getURLString() {
-			return urlString;
-		}
-	}
-	
-	public static enum ClimateModel {
-		Hadley,
-		RCM4,
-		GCM4;
-	}
 	
 	static final List<Month> AllMonths = Arrays.asList(Month.values());
 

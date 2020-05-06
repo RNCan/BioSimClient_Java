@@ -20,8 +20,8 @@
  */
 package biosimclient;
 
-import biosimclient.BioSimClient.ClimateModel;
-import biosimclient.BioSimClient.RCP;
+import biosimclient.BioSimEnums.ClimateModel;
+import biosimclient.BioSimEnums.RCP;
 
 /**
  * Internal class for storing generated climate. Two queries are assumed to be the
