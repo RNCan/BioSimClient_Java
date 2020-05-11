@@ -111,20 +111,7 @@ public final class BioSimClient {
 
 	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
 
-	private static final List<String> ModelListReference = new ArrayList<String>();
-	static {
-		try {
-			String modelList = BioSimClient.getStringFromConnection(BioSimClient.MODEL_LIST_API, null);
-			String[] models = modelList.split("\n");
-			for (String model : models) {
-				ModelListReference.add(model);
-			}
-		} catch (BioSimClientException e) {
-			e.printStackTrace();
-		} catch (BioSimServerException e2) {
-			e2.printStackTrace();
-		}
-	}
+	private static List<String> ReferenceModelList;
 
 	static class InternalShutDownHook extends Thread {
 		@Override
@@ -432,16 +419,33 @@ public final class BioSimClient {
 	}
 
 	/**
-	 * Returns the names of the available models.
+	 * Returns the names of the available models. This is a clone of the
+	 * true list to avoid any intended changes in the model list.
 	 * 
 	 * @return a List of String instances
 	 */
-	public static List<String> getModelList() {
+	public static List<String> getModelList() throws BioSimClientException, BioSimServerException {
 		List<String> copy = new ArrayList<String>();
-		copy.addAll(ModelListReference);
+		copy.addAll(getReferenceModelList());
 		return copy;
 	}
 
+	
+	private static List<String> getReferenceModelList() throws BioSimClientException, BioSimServerException {
+		if (ReferenceModelList == null) {
+			List<String> myList = new ArrayList<String>();
+			String modelList = BioSimClient.getStringFromConnection(BioSimClient.MODEL_LIST_API, null);
+			String[] models = modelList.split("\n");
+			for (String model : models) {
+				myList.add(model);
+			}
+			ReferenceModelList = new ArrayList<String>();
+			ReferenceModelList.addAll(myList);
+		}
+		return ReferenceModelList;
+	}
+ 	
+	
 	/**
 	 * Applies a particular model on some generated climate variables.
 	 * 
@@ -455,7 +459,7 @@ public final class BioSimClient {
 	protected static LinkedHashMap<BioSimPlot, BioSimDataSet> applyModel(
 			String modelName,
 			LinkedHashMap<BioSimPlot, String> teleIORefs) throws BioSimClientException, BioSimServerException {
-		if (!ModelListReference.contains(modelName)) {
+		if (!getReferenceModelList().contains(modelName)) {
 			throw new InvalidParameterException("The model " + modelName
 					+ " is not a valid model. Please consult the list of models through the function getModelList()");
 		}

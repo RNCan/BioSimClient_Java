@@ -14,7 +14,7 @@ public class BioSimInternalModelTest {
 
 	
 	@Test
-	public void testingIfReturnDataSetHasAtLeastOneObservation() throws NoSuchMethodException, SecurityException {
+	public void testingIfReturnDataSetHasAtLeastOneObservation() throws NoSuchMethodException, SecurityException, BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 1; i++) {
 			FakeLocation loc = new FakeLocation(45 + BioSimClientTest.RANDOM.nextDouble() * 7,
