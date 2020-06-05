@@ -39,8 +39,10 @@ public class BioSimParameterMap extends HashMap<String,Object> {
 			return null;
 		} else {
 			String str = "Parameters=";
+			String sep = "*"; 
 			for (String key : keySet()) {
-				str += "+" + key.trim() + ":" + get(key).toString().trim();
+				str += sep + key.trim() + ":" + get(key).toString().trim();
+//				sep = "+";
 			}
 			return str;
 		}
