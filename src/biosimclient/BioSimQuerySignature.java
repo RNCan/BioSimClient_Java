@@ -1,7 +1,8 @@
 /*
  * This file is part of the biosimclient library
  *
- * Copyright (C) 2019-20 Mathieu Fortin - Canadian Wood Fibre Centre
+ * Author Mathieu Fortin - Canadian Forest Service
+ * Copyright (C) 2020 Her Majesty the Queen in right of Canada
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

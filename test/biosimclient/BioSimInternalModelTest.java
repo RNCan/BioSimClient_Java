@@ -1,3 +1,24 @@
+/*
+ * This file is part of the biosimclient library
+ *
+ * Author Mathieu Fortin - Canadian Forest Service
+ * Copyright (C) 2020 Her Majesty the Queen in right of Canada
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package biosimclient;
 
 import java.util.ArrayList;
@@ -41,7 +62,7 @@ public class BioSimInternalModelTest {
 //					if (model.equals("Spruce_Budworm_Dispersal")) {
 //						int u = 0;
 //					}
-					Map<BioSimPlot, BioSimDataSet> output = BioSimClient.getClimateVariables(2015, 2019, locations, null, null, model);					
+					Map<BioSimPlot, BioSimDataSet> output = BioSimClient.getModelOutput(2015, 2019, locations, null, null, model, null);					
 					for (BioSimDataSet ds : output.values()) {
 						Assert.assertTrue("Testing if DataSet instance has at least one observation", ds.getNumberOfObservations() > 0);
 						System.out.println(" - Ok ");
