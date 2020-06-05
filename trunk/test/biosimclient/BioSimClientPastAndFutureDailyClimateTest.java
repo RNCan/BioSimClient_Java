@@ -105,8 +105,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 				double d1 = ((Number) firstDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
 				double d2 = ((Number) secondDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
 				double d3 = ((Number) thirdDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
-				Assert.assertEquals("Testing if the degree-days are equal between first and second datasets", d1, d2, 320);
-				Assert.assertEquals("Testing if the degree-days are equal between second and third datasets", d2, d3, 320);
+				Assert.assertEquals("Testing if the degree-days are equal between first and second datasets", d1, d2, 420);
+				Assert.assertEquals("Testing if the degree-days are equal between second and third datasets", d2, d3, 420);
 			}
 			System.out.println("Degree-days tested for default values.");
 		}
