@@ -418,7 +418,7 @@ public final class BioSimClient {
 			query += "&rep=" + rep;
 		}
 		
-		System.out.println("Sending request!");
+//		System.out.println("Sending request!");
 		String serverReply = getStringFromConnection(GENERATOR_API, query);
 
 		String[] ids = serverReply.split(" ");
