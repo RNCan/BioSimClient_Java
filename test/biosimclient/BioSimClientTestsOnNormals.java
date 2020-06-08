@@ -51,6 +51,7 @@ public class BioSimClientTestsOnNormals {
 	
 	@Test
 	public void getNormalsFor1981_2010() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);
@@ -72,6 +73,7 @@ public class BioSimClientTestsOnNormals {
 
 	@Test
 	public void getNormalsFor2051_2080_Hadley_RCP45() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);
@@ -93,6 +95,7 @@ public class BioSimClientTestsOnNormals {
 
 	@Test
 	public void getNormalsFor2051_2080_Hadley_RCP85() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);
@@ -114,6 +117,7 @@ public class BioSimClientTestsOnNormals {
 
 	@Test
 	public void getNormalsFor2051_2080_RCM4_RCP45() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);
@@ -135,6 +139,7 @@ public class BioSimClientTestsOnNormals {
 
 	@Test
 	public void getNormalsFor2051_2080_RCM4_RCP85() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);
@@ -156,6 +161,7 @@ public class BioSimClientTestsOnNormals {
 
 	@Test
 	public void getNormalsFor2051_2080_GCM4_RCP45() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);
@@ -177,6 +183,7 @@ public class BioSimClientTestsOnNormals {
 
 	@Test
 	public void getNormalsFor2051_2080_GCM4_RCP85() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(Variable.TX);
 		variables.add(Variable.TN);

@@ -82,6 +82,7 @@ public class BioSimClientTest {
 	 */
 	@Test
 	public void testingMemorizer() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 100; i++) {
 			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
@@ -129,6 +130,7 @@ public class BioSimClientTest {
 	 */
 	@Test
 	public void testingWeatherGenerationOverSeveralContexts() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 10; i++) {
 			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
@@ -172,6 +174,7 @@ public class BioSimClientTest {
 	
 	@Test
 	public void testingMemoryManagementOnServerAfterEphemeralOptionSetToTrue() throws Exception {
+		BioSimClient.setMultithreadingEnabled(false);
 		for (int nbRuns = 0; nbRuns < 5; nbRuns++) {
 			int nbObjectsBefore = BioSimClient.getNbWgoutObjectsOnServer();
 			System.out.println("Nb objects before this function call = " + nbObjectsBefore);
@@ -192,6 +195,7 @@ public class BioSimClientTest {
 
 	@Test
 	public void testingMemoryManagementOnServerThroughEventualShutdownHook() throws Exception {
+		BioSimClient.setMultithreadingEnabled(false);
 		System.out.println("Nb objects before starting test on shutdown hook = " + nbObjectsBefore);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 10; i++) {
