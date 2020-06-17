@@ -123,6 +123,29 @@ public class BioSimClientTest {
 		}
 	}
 
+	/*
+	 * Tests if the wgout id is kept in memory for further use instead of generating the wgouts over and
+	 * over again.
+	 */
+	@Test
+	public void testingExceedingRequestSize() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setMultithreadingEnabled(false);
+		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
+		for (int i = 0; i < 10001; i++) {
+			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
+					-74 + RANDOM.nextDouble() * 8,
+					300 + RANDOM.nextDouble() * 400);
+			locations.add(loc);
+		}
+
+		try {
+			BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", null);
+			Assert.fail("Should have thrown an exception");
+		} catch (BioSimClientException e) {
+			Assert.assertTrue("Testing if the proper exception has been thrown", e.getMessage().startsWith("The maximum number of locations"));
+		}
+	}
+
 	
 	/*
 	 * Tests if the weather generation over several contexts. It uses the memorization. First run should be longer

@@ -109,9 +109,12 @@ public final class BioSimClient {
 	private static final String MODEL_LIST_API = "BioSimModelList";
 	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
 	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
+	private static final String BIOSIMMAXMEMORY_API = "BioSimMaxMemory";
 
 	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
 
+	private static Integer BioSimMaxMemory;
+	
 	private static List<String> ReferenceModelList;
 
 	static class InternalShutDownHook extends Thread {
@@ -183,6 +186,17 @@ public final class BioSimClient {
 		}
 	}
 
+	private static int getBioSimMaxMemory() {
+		if (BioSimMaxMemory == null) {
+			try {
+				BioSimMaxMemory = (int) (BioSimClient.getMaxNbWgoutObjectsOnServer() * .1);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return -1;
+			}
+		}
+		return BioSimMaxMemory;
+	}
 
 	/**
 	 * Enables the multithreading when calling the getModelOutput method. By 
@@ -279,6 +293,15 @@ public final class BioSimClient {
 
 	protected static int getNbWgoutObjectsOnServer() throws Exception {
 		String serverReply = getStringFromConnection(BIOSIMMEMORYLOAD_API, null);
+		try {
+			return Integer.parseInt(serverReply);
+		} catch (NumberFormatException e) {
+			throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
+		}
+	}
+
+	private static int getMaxNbWgoutObjectsOnServer() throws Exception {
+		String serverReply = getStringFromConnection(BIOSIMMAXMEMORY_API, null);
 		try {
 			return Integer.parseInt(serverReply);
 		} catch (NumberFormatException e) {
@@ -728,6 +751,14 @@ public final class BioSimClient {
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		if (rep < 1) {
 			throw new InvalidParameterException("The rep parameter should be equal to or greater than 1!");
+		} else {
+			int max = BioSimClient.getBioSimMaxMemory();
+			if (max == -1) {
+				max = MAXIMUM_NB_OBS_AT_A_TIME;
+			}
+			if (locations.size() > max) {
+				throw new BioSimClientException("The maximum number of locations for a single request is " + max);
+			}
 		}
 		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
