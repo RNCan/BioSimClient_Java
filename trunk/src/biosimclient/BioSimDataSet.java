@@ -206,6 +206,19 @@ public class BioSimDataSet {
 		}
 	}
 
+	/**
+	 * This method returns a list of the values in a particular field.
+	 * @param i the field id
+	 * @return a List of object instance
+	 */
+	public List<Object> getFieldValues(int i) {
+		List<Object> objs = new ArrayList<Object>();
+ 		for (Observation obs : observations) {
+ 			objs.add(obs.values.get(i));
+ 		}
+ 		return objs;
+	}
+	
 	
 	/**
 	 * Converts the DataSet instance into a Map. There should not be any deplicate entry. 

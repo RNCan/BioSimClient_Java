@@ -36,7 +36,9 @@ public class Observation implements Comparable {
 		values = new ArrayList<Object>();
 		values.addAll(Arrays.asList(obj));
 	}
-		
+
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(Object o) {
