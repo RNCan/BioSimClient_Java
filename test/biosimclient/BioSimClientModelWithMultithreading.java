@@ -52,7 +52,7 @@ public class BioSimClientModelWithMultithreading {
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2001, locations, null, null, "DegreeDay_Annual", true, parms);
+		LinkedHashMap<BioSimPlot, BioSimDataSet>  teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2001, locations, null, null, "DegreeDay_Annual", true, parms);
 		double elapsedTime = (System.currentTimeMillis() - initial) * .001;
 		System.out.println("Elapsed time single threading = " + elapsedTime);
 		
