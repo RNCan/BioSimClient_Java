@@ -54,9 +54,50 @@ public final class BioSimClient {
 	
 	private static final String FieldSeparator = ",";
 
-
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
+	
+	private static final String SPACE_IN_REQUEST = "%20";
 
+	static final List<Month> AllMonths = Arrays.asList(Month.values());
+
+	private static final String NORMAL_API = "BioSimNormals";
+	private static final String GENERATOR_API = "BioSimWG";
+	private static final String MODEL_API = "BioSimModel";
+	private static final String MODEL_LIST_API = "BioSimModelList";
+	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
+	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
+	private static final String BIOSIMMAXMEMORY_API = "BioSimMaxMemory";
+
+	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
+
+	private static Integer BioSimMaxMemory;
+	
+	private static List<String> ReferenceModelList;
+
+
+	static class InternalShutDownHook extends Thread {
+		@Override
+		public void run() {
+			try {
+				System.out.println("Shutdown hook from BioSimClient called!");
+				BioSimClient.removeWgoutObjectsFromServer(GeneratedClimateMap.values());
+			} catch (BioSimClientException e) {
+				e.printStackTrace();
+			} catch (BioSimServerException e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+	
+	static {
+		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
+	}
+
+
+	private static boolean MultithreadingEnabled = true; // Default value
+
+	
+	
 	private final static String addQueryIfAny(String urlString, String query) {
 		if (query != null && !query.isEmpty()) {
 			return urlString.trim() + "?" + query;
@@ -101,43 +142,8 @@ public final class BioSimClient {
 		}
 	}
 
-	private static final String SPACE_IN_REQUEST = "%20";
 
-	private static final String NORMAL_API = "BioSimNormals";
-	private static final String GENERATOR_API = "BioSimWG";
-	private static final String MODEL_API = "BioSimModel";
-	private static final String MODEL_LIST_API = "BioSimModelList";
-	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
-	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
-	private static final String BIOSIMMAXMEMORY_API = "BioSimMaxMemory";
 
-	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
-
-	private static Integer BioSimMaxMemory;
-	
-	private static List<String> ReferenceModelList;
-
-	static class InternalShutDownHook extends Thread {
-		@Override
-		public void run() {
-			try {
-				System.out.println("Shutdown hook from BioSimClient called!");
-				BioSimClient.removeWgoutObjectsFromServer(GeneratedClimateMap.values());
-			} catch (BioSimClientException e) {
-				e.printStackTrace();
-			} catch (BioSimServerException e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
-	
-	static {
-		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
-	}
-
-	static final List<Month> AllMonths = Arrays.asList(Month.values());
-
-	private static boolean MultithreadingEnabled = true; // Default value
 	
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForNormals(Period period,
 			List<Variable> variables, List<BioSimPlot> locations,
