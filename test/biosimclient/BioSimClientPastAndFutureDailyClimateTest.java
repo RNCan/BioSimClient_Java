@@ -38,7 +38,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingWithDailyOverlappingPastAndFuture() throws BioSimClientException, BioSimServerException {
-		BioSimClient.setMultithreadingEnabled(false);
+//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
 		int initialDateYr = 2000;
 		
@@ -80,7 +80,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingFutureDegreeDaysWithDefaultValuesOfRCPsandClimateModels() throws BioSimClientException, BioSimServerException {
-		BioSimClient.setMultithreadingEnabled(false);
+//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
@@ -122,7 +122,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingFutureDegreeDaysWithRCP85andClimateModels() throws BioSimClientException, BioSimServerException {
-		BioSimClient.setMultithreadingEnabled(false);
+//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;

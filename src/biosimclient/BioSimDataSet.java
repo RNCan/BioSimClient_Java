@@ -21,6 +21,7 @@
  */
 package biosimclient;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -38,7 +39,7 @@ import biosimclient.BioSimEnums.Variable;
  * @author Mathieu Fortin - March 2020
  *
  */
-public class BioSimDataSet {
+public class BioSimDataSet implements Serializable {
 
 	protected List<String> fieldNames;
 	protected List<Class<?>> fieldTypes;

@@ -53,8 +53,9 @@ public final class BioSimClient {
 	private static final int MAXIMUM_NB_OBS_AT_A_TIME = 200;
 	
 	private static final String FieldSeparator = ",";
-
+	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
+	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 5000);
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
@@ -93,10 +94,9 @@ public final class BioSimClient {
 		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
 	}
 
+	static boolean isLocal = false;
 
-	private static boolean MultithreadingEnabled = true; // Default value
-
-	
+//	private static boolean MultithreadingEnabled = true; // Default value
 	
 	private final static String addQueryIfAny(String urlString, String query) {
 		if (query != null && !query.isEmpty()) {
@@ -107,7 +107,13 @@ public final class BioSimClient {
 	}
 
 	private final static String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
-		String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + api;
+		InetSocketAddress address;
+		if (isLocal) {
+			address = BioSimClient.LocalAddress;
+		} else {
+			address = BioSimClient.REpiceaAddress;
+		}
+		String urlString = "http://" + address.getHostName() + ":" + address.getPort() + "/" + api;
 		urlString = addQueryIfAny(urlString, query);
 		try {
 			URL bioSimURL = new URL(urlString);
@@ -204,23 +210,23 @@ public final class BioSimClient {
 		return BioSimMaxMemory;
 	}
 
-	/**
-	 * Enables the multithreading when calling the getModelOutput method. By 
-	 * default the multithreading is enabled.
-	 * @param bool a boolean 
-	 */
-	public static void setMultithreadingEnabled(boolean bool) {
-		BioSimClient.MultithreadingEnabled = bool;
-	}
+//	/**
+//	 * Enables the multithreading when calling the getModelOutput method. By 
+//	 * default the multithreading is enabled.
+//	 * @param bool a boolean 
+//	 */
+//	public static void setMultithreadingEnabled(boolean bool) {
+//		BioSimClient.MultithreadingEnabled = bool;
+//	}
 
-	/**
-	 * True if the multithreading is enabled (by default) or
-	 * false otherwise.
-	 * @return a boolean
-	 */
-	public static boolean isMultithreadingEnabled() {
-		return BioSimClient.MultithreadingEnabled;
-	}
+//	/**
+//	 * True if the multithreading is enabled (by default) or
+//	 * false otherwise.
+//	 * @return a boolean
+//	 */
+//	public static boolean isMultithreadingEnabled() {
+//		return BioSimClient.MultithreadingEnabled;
+//	}
 	
 	
 	/**
@@ -673,35 +679,35 @@ public final class BioSimClient {
 
 		Map<BioSimPlot, String> generatedClimate = new HashMap<BioSimPlot, String>();
 		if (!locationsToGenerate.isEmpty()) { // here we generate the climate if needed
-			int locationsToGenerateSize = locationsToGenerate.size();
-			int potentialNumberOfWorkers = 5; 				// TODO find an appropriate number of workers here
-			if (BioSimClient.MultithreadingEnabled && locationsToGenerateSize >= potentialNumberOfWorkers * 3) {	// otherwise singlethreading
-				BioSimWorker[] workers = new BioSimWorker[potentialNumberOfWorkers]; 
-				int nbByThreads = (int) Math.round((double) locationsToGenerateSize / potentialNumberOfWorkers); 
-				for (int i = 0; i < workers.length; i++) {
-					int from = i * nbByThreads;
-					int to = (i+1) * nbByThreads - 1;
-					if (i == workers.length - 1) {
-						to = locationsToGenerateSize - 1;
-					}
-					workers[i] = new BioSimWorker(fromYr, toYr, locationsToGenerate, rcp, climMod, rep, from, to);
-				}
-				for (int i = 0; i < workers.length; i++) {
-					try {
-						workers[i].join();
-						if (workers[i].e == null) {
-							generatedClimate.putAll(workers[i].output);
-						} else {
-							throw workers[i].e;		// FIXME there is a possibility that a thread keeps running here
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						throw new BioSimClientException(e.getMessage());
-					} 
-				}
-			} else {
+//			int locationsToGenerateSize = locationsToGenerate.size();
+//			int potentialNumberOfWorkers = 5; 				// TODO find an appropriate number of workers here
+//			if (BioSimClient.MultithreadingEnabled && locationsToGenerateSize >= potentialNumberOfWorkers * 3) {	// otherwise singlethreading
+//				BioSimWorker[] workers = new BioSimWorker[potentialNumberOfWorkers]; 
+//				int nbByThreads = (int) Math.round((double) locationsToGenerateSize / potentialNumberOfWorkers); 
+//				for (int i = 0; i < workers.length; i++) {
+//					int from = i * nbByThreads;
+//					int to = (i+1) * nbByThreads - 1;
+//					if (i == workers.length - 1) {
+//						to = locationsToGenerateSize - 1;
+//					}
+//					workers[i] = new BioSimWorker(fromYr, toYr, locationsToGenerate, rcp, climMod, rep, from, to);
+//				}
+//				for (int i = 0; i < workers.length; i++) {
+//					try {
+//						workers[i].join();
+//						if (workers[i].e == null) {
+//							generatedClimate.putAll(workers[i].output);
+//						} else {
+//							throw workers[i].e;		// FIXME there is a possibility that a thread keeps running here
+//						}
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//						throw new BioSimClientException(e.getMessage());
+//					} 
+//				}
+//			} else {
 				generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate, rcp, climMod, rep));
-			}
+//			}
 			
 			if (!isEphemeral) { // then we stored the reference in the static map for future use
 				for (BioSimPlot location : generatedClimate.keySet()) {

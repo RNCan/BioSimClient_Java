@@ -21,12 +21,13 @@
  */
 package biosimclient;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("rawtypes")
-public class Observation implements Comparable {
+public class Observation implements Comparable, Serializable {
 
 	static List<Integer> comparableFields = new ArrayList<Integer>();
 	
