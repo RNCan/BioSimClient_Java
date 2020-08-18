@@ -53,7 +53,7 @@ public class BioSimClientTestsWithReplicates {
 
 	
 	private static void testingFutureDegreeDaysWithRCP85andClimateModels(int initialDateYr, int finalDateYr, int nbReplicates) throws BioSimClientException, BioSimServerException {
-		BioSimClient.setMultithreadingEnabled(false);
+//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
 		
 		int expectedObservationsPerPlot = ((finalDateYr - initialDateYr) + 1) * nbReplicates;
