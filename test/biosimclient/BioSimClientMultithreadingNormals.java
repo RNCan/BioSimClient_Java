@@ -32,29 +32,28 @@ import java.util.List;
 import java.util.Map;
 
 import biosimclient.BioSimClientTest.FakeLocation;
+import biosimclient.BioSimEnums.ClimateModel;
+import biosimclient.BioSimEnums.Period;
+import biosimclient.BioSimEnums.RCP;
+import biosimclient.BioSimEnums.Variable;
 
 
-public class BioSimClientModelWithMultithreading {
+public class BioSimClientMultithreadingNormals {
 
 	final int id;
 	final String filename;
 	
-	BioSimClientModelWithMultithreading(int id) {
+	BioSimClientMultithreadingNormals(int id) {
 		this.id = id;
 		String tmpDirectory = System.getProperty("java.io.tmpdir");
-		this.filename = tmpDirectory + File.separator + "refMap" + id + ".xml";
+		this.filename = tmpDirectory + File.separator + "refNormalsMap" + id + ".xml";
 		File file = new File(filename);
 		if (file.exists()) {
 			file.delete();
 		}
 	}
 	
-	/*
-	 * A reference test for multithreading on the server side
-	 * With 4 processes, 100 locations from 2000 to 2010 on the server side this takes 27.5 sec.
-	 */
-	public void testingWithDegreeDaysAbove5C() throws Exception {
-//		BioSimClient.setMultithreadingEnabled(false);
+	public void testingWithNormals() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 50; i++) {
 			FakeLocation loc = new FakeLocation(45 + i * .1,
@@ -63,19 +62,19 @@ public class BioSimClientModelWithMultithreading {
 			locations.add(loc);
 		}
  
-		int initialDateYr = 2000;
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
-		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.getModelOutput(initialDateYr, 
-				2005, 
+		List<Variable> variables = new ArrayList<Variable>();
+		variables.add(Variable.TX);
+		variables.add(Variable.TN);
+		variables.add(Variable.P);
+		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.getAnnualNormals(Period.FromNormals1981_2010,
+				variables, 
 				locations, 
-				null, 
-				null, 
-				"DegreeDay_Annual", 
-				true, 
-				parms);
-		double elapsedTime = (System.currentTimeMillis() - initial) * .001;
+				RCP.RCP45,
+				ClimateModel.RCM4);
+				double elapsedTime = (System.currentTimeMillis() - initial) * .001;
 		System.out.println("Elapsed time = " + elapsedTime);
 		
 		File file = new File(filename);
@@ -132,9 +131,9 @@ public class BioSimClientModelWithMultithreading {
 		int id = Integer.parseInt(args[0]);
 		boolean isLocal = Boolean.parseBoolean(args[1]);
 		BioSimClient.isLocal = isLocal;
-		BioSimClientModelWithMultithreading bioSim = new BioSimClientModelWithMultithreading(id);
+		BioSimClientMultithreadingNormals bioSim = new BioSimClientMultithreadingNormals(id);
 		for (int i = 0; i < 20; i++) {
-			bioSim.testingWithDegreeDaysAbove5C();
+			bioSim.testingWithNormals();
 		}
 		System.out.println("All the runs are consistent!");
 	}
