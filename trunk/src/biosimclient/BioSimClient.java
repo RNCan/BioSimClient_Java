@@ -404,6 +404,8 @@ public final class BioSimClient {
 	 * @param fromYr    beginning of the interval (inclusive)
 	 * @param toYr      end of the interval (inclusive)
 	 * @param locations a List of BioSimPlot instances
+	 * @param rcp an RCP enum variable (by default RCP 4.5)
+	 * @param climModel a ClimateModel enum variable (by default RCM 4)
 	 * @return a LinkedHashMap with BioSimPlot instances as key
 	 *         and String instances as values. Those strings are actually the code
 	 *         for the TeleIO instance on the server.
@@ -603,6 +605,8 @@ public final class BioSimClient {
 	 * @param toYr ending date (yr) of the period (inclusive)
 	 * @param locations the locations of the plots (BioSimPlot instances)
 	 * @param modelName a string representing the model name
+	 * @param rcp an RCP enum variable (by default RCP 4.5)
+	 * @param climModel a ClimateModel enum variable (by default RCM 4)
 	 * @param rep the number of replicates if needed. Should be equal to or greater than 1. 
 	 * @param additionalParms a BioSimParameterMap instance that contains the eventual additional parameters for the model
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
@@ -633,6 +637,8 @@ public final class BioSimClient {
 	 * @param fromYr starting date (yr) of the period (inclusive)
 	 * @param toYr ending date (yr) of the period (inclusive)
 	 * @param locations the locations of the plots (BioSimPlot instances)
+	 * @param rcp an RCP enum variable (by default RCP 4.5)
+	 * @param climModel a ClimateModel enum variable (by default RCM 4)
 	 * @param modelName a string representing the model name
 	 * @param additionalParms a BioSimParameterMap instance that contains the eventual additional parameters for the model
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
@@ -679,35 +685,7 @@ public final class BioSimClient {
 
 		Map<BioSimPlot, String> generatedClimate = new HashMap<BioSimPlot, String>();
 		if (!locationsToGenerate.isEmpty()) { // here we generate the climate if needed
-//			int locationsToGenerateSize = locationsToGenerate.size();
-//			int potentialNumberOfWorkers = 5; 				// TODO find an appropriate number of workers here
-//			if (BioSimClient.MultithreadingEnabled && locationsToGenerateSize >= potentialNumberOfWorkers * 3) {	// otherwise singlethreading
-//				BioSimWorker[] workers = new BioSimWorker[potentialNumberOfWorkers]; 
-//				int nbByThreads = (int) Math.round((double) locationsToGenerateSize / potentialNumberOfWorkers); 
-//				for (int i = 0; i < workers.length; i++) {
-//					int from = i * nbByThreads;
-//					int to = (i+1) * nbByThreads - 1;
-//					if (i == workers.length - 1) {
-//						to = locationsToGenerateSize - 1;
-//					}
-//					workers[i] = new BioSimWorker(fromYr, toYr, locationsToGenerate, rcp, climMod, rep, from, to);
-//				}
-//				for (int i = 0; i < workers.length; i++) {
-//					try {
-//						workers[i].join();
-//						if (workers[i].e == null) {
-//							generatedClimate.putAll(workers[i].output);
-//						} else {
-//							throw workers[i].e;		// FIXME there is a possibility that a thread keeps running here
-//						}
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//						throw new BioSimClientException(e.getMessage());
-//					} 
-//				}
-//			} else {
-				generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate, rcp, climMod, rep));
-//			}
+			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate, rcp, climMod, rep));
 			
 			if (!isEphemeral) { // then we stored the reference in the static map for future use
 				for (BioSimPlot location : generatedClimate.keySet()) {
@@ -745,6 +723,8 @@ public final class BioSimClient {
 	 * @param fromYr starting date (yr) of the period (inclusive)
 	 * @param toYr ending date (yr) of the period (inclusive)
 	 * @param locations the locations of the plots (BioSimPlot instances)
+	 * @param rcp an RCP enum variable (by default RCP 4.5)
+	 * @param climModel a ClimateModel enum variable (by default RCM 4)
 	 * @param modelName a string representing the model name
 	 * @param rep the number of replicates if needed. Should be equal to or greater than 1. 
 	 * @param isEphemeral a boolean that overrides the storage procedure on the server
@@ -805,6 +785,8 @@ public final class BioSimClient {
 	 * @param fromYr starting date (yr) of the period (inclusive)
 	 * @param toYr ending date (yr) of the period (inclusive)
 	 * @param locations the locations of the plots (BioSimPlot instances)
+	 * @param rcp an RCP enum variable (by default RCP 4.5)
+	 * @param climModel a ClimateModel enum variable (by default RCM 4)
 	 * @param modelName a string representing the model name
 	 * @param isEphemeral a boolean that overrides the storage procedure on the server
 	 * @param additionalParms a BioSimParameterMap instance that contains the eventual additional parameters for the model
