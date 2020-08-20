@@ -91,6 +91,7 @@ public class BioSimClientMultithreadingClimateGeneration {
 				FileInputStream fis = new FileInputStream(filename);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				Map refMap = (Map) ois.readObject();
+				ois.close();
 				Iterator<BioSimDataSet> iterObs = outputMap.values().iterator();
 				Iterator<BioSimDataSet> iterRef = refMap.values().iterator();
 				while(iterObs.hasNext()) {
