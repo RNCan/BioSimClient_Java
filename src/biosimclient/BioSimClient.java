@@ -50,7 +50,8 @@ import biosimclient.BioSimEnums.Variable;
  */
 public final class BioSimClient {
 
-	private static final int MAXIMUM_NB_OBS_AT_A_TIME = 200;
+	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH = 10;
+	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = -1; // not set yet
 	
 	private static final String FieldSeparator = ",";
 	
@@ -71,7 +72,7 @@ public final class BioSimClient {
 
 	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
 
-	private static Integer BioSimMaxMemory;
+//	private static Integer BioSimMaxMemory;
 	
 	private static List<String> ReferenceModelList;
 
@@ -198,16 +199,15 @@ public final class BioSimClient {
 		}
 	}
 
-	private static int getBioSimMaxMemory() {
-		if (BioSimMaxMemory == null) {
+	private static synchronized int getMaxNumberLocationsInSingleRequest() {
+		if (MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST == -1) { // true when called for the first time
 			try {
-				BioSimMaxMemory = (int) (BioSimClient.getMaxNbWgoutObjectsOnServer() * .1);
+				MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = (int) (BioSimClient.getMaxNbWgoutObjectsOnServer() * .05);
 			} catch (Exception e) {
-				e.printStackTrace();
-				return -1;
+				MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000;
 			}
 		}
-		return BioSimMaxMemory;
+		return MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST;
 	}
 
 //	/**
@@ -249,13 +249,16 @@ public final class BioSimClient {
 			RCP rcp,
 			ClimateModel climModel,
 			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
-		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
+		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
+			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
+		}
+		if (locations.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
 			copyList.addAll(locations);
 			List<BioSimPlot> subList = new ArrayList<BioSimPlot>();
 			while (!copyList.isEmpty()) {
-				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
+				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH) {
 					subList.add(copyList.remove(0));
 				}
 				resultingMap.putAll(internalCalculationForNormals(period, variables, subList, rcp, climModel, averageOverTheseMonths));
@@ -269,12 +272,12 @@ public final class BioSimClient {
 
 	protected static void removeWgoutObjectsFromServer(Collection<String> references) 
 			throws BioSimClientException, BioSimServerException {
-		if (references.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
+		if (references.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH) {
 			List<String> referenceList = new ArrayList<String>();
 			referenceList.addAll(references);
 			List<String> subList = new ArrayList<String>();
 			while (!referenceList.isEmpty()) {
-				while (!referenceList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
+				while (!referenceList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH) {
 					subList.add(referenceList.remove(0));
 				}
 				internalRemovalOfWgoutObjectsFromServer(subList);
@@ -312,6 +315,10 @@ public final class BioSimClient {
 		}
 	}
 
+	/**
+	 * The maximum number of wgouts instances that can be stored in the internal map of the server.
+	 * @return
+	 */
 	private static int getMaxNbWgoutObjectsOnServer() throws Exception {
 		String serverReply = getStringFromConnection(BIOSIMMAXMEMORY_API, null);
 		try {
@@ -743,22 +750,17 @@ public final class BioSimClient {
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		if (rep < 1) {
 			throw new InvalidParameterException("The rep parameter should be equal to or greater than 1!");
-		} else {
-			int max = BioSimClient.getBioSimMaxMemory();
-			if (max == -1) {
-				max = MAXIMUM_NB_OBS_AT_A_TIME;
-			}
-			if (locations.size() > max) {
-				throw new BioSimClientException("The maximum number of locations for a single request is " + max);
-			}
+		} 
+		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
+			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
-		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
+		if (locations.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
 			copyList.addAll(locations);
 			List<BioSimPlot> subList = new ArrayList<BioSimPlot>();
 			while (!copyList.isEmpty()) {
-				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
+				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH) {
 					subList.add(copyList.remove(0));
 				}
 				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelName, rep, isEphemeral, additionalParms));

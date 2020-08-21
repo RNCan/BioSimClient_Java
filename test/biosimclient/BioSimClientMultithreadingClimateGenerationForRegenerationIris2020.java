@@ -21,13 +21,7 @@
  */
 package biosimclient;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -41,10 +35,11 @@ public class BioSimClientMultithreadingClimateGenerationForRegenerationIris2020 
 	
 	/*
 	 * With 3 processes, 50 locations from 2040 to 2050 with 100 replicates: 165 sec.
-	 * With 5 processes in WG and 5 in models, 50 locations from 2040 to 2050 with 100 replicates: 125 sec..
+	 * With 5 processes in WG and 5 in models, 50 locations from 2040 to 2050 with 100 replicates: 125 sec.
+	 * With 5 processes in WG and 5 in models, 50 locations from 2040 to 2050 with 100 replicates - max of 10 locations per batch : 65 sec.
+	 * With 3 processes in WG and 3 in models, 50 locations from 2040 to 2050 with 100 replicates - max of 10 locations per batch : 113 sec.
 	 */
 	public void testing(int initialDateYr, int finalDateYr) throws Exception {
-//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 50; i++) {
 			FakeLocation loc = new FakeLocation(45 + i * .1,
@@ -74,6 +69,7 @@ public class BioSimClientMultithreadingClimateGenerationForRegenerationIris2020 
 		int initialDateYr = 2040;
 		int finalDateYr = 2050;
 		BioSimClientMultithreadingClimateGenerationForRegenerationIris2020 bioSim = new BioSimClientMultithreadingClimateGenerationForRegenerationIris2020();
+		bioSim.testing(initialDateYr, finalDateYr);
 		bioSim.testing(initialDateYr, finalDateYr);
 	}
 	
