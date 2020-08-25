@@ -50,7 +50,9 @@ import biosimclient.BioSimEnums.Variable;
  */
 public final class BioSimClient {
 
-	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH = 10;
+	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = 10;
+	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = 50;
+	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS = 200;
 	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = -1; // not set yet
 	
 	private static final String FieldSeparator = ",";
@@ -252,13 +254,13 @@ public final class BioSimClient {
 		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
-		if (locations.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH) {
+		if (locations.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
 			copyList.addAll(locations);
 			List<BioSimPlot> subList = new ArrayList<BioSimPlot>();
 			while (!copyList.isEmpty()) {
-				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH) {
+				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS) {
 					subList.add(copyList.remove(0));
 				}
 				resultingMap.putAll(internalCalculationForNormals(period, variables, subList, rcp, climModel, averageOverTheseMonths));
@@ -272,12 +274,12 @@ public final class BioSimClient {
 
 	protected static void removeWgoutObjectsFromServer(Collection<String> references) 
 			throws BioSimClientException, BioSimServerException {
-		if (references.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH) {
+		if (references.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS) {
 			List<String> referenceList = new ArrayList<String>();
 			referenceList.addAll(references);
 			List<String> subList = new ArrayList<String>();
 			while (!referenceList.isEmpty()) {
-				while (!referenceList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH) {
+				while (!referenceList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS) {
 					subList.add(referenceList.remove(0));
 				}
 				internalRemovalOfWgoutObjectsFromServer(subList);
@@ -754,13 +756,13 @@ public final class BioSimClient {
 		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
-		if (locations.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH) {
+		if (locations.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
 			copyList.addAll(locations);
 			List<BioSimPlot> subList = new ArrayList<BioSimPlot>();
 			while (!copyList.isEmpty()) {
-				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH) {
+				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION) {
 					subList.add(copyList.remove(0));
 				}
 				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelName, rep, isEphemeral, additionalParms));
