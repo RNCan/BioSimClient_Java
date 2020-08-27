@@ -83,8 +83,10 @@ public final class BioSimClient {
 		@Override
 		public void run() {
 			try {
-				System.out.println("Shutdown hook from BioSimClient called!");
-				BioSimClient.removeWgoutObjectsFromServer(GeneratedClimateMap.values());
+				if (!GeneratedClimateMap.isEmpty()) {
+					System.out.println("Shutdown hook from BioSimClient called!");
+					BioSimClient.clearCache();
+				}
 			} catch (BioSimClientException e) {
 				e.printStackTrace();
 			} catch (BioSimServerException e2) {
@@ -212,24 +214,16 @@ public final class BioSimClient {
 		return MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST;
 	}
 
-//	/**
-//	 * Enables the multithreading when calling the getModelOutput method. By 
-//	 * default the multithreading is enabled.
-//	 * @param bool a boolean 
-//	 */
-//	public static void setMultithreadingEnabled(boolean bool) {
-//		BioSimClient.MultithreadingEnabled = bool;
-//	}
-
-//	/**
-//	 * True if the multithreading is enabled (by default) or
-//	 * false otherwise.
-//	 * @return a boolean
-//	 */
-//	public static boolean isMultithreadingEnabled() {
-//		return BioSimClient.MultithreadingEnabled;
-//	}
-	
+	/**
+	 * This method clears the reference to the teleIO objects that are stored in the internal map.
+	 * @throws BioSimClientException
+	 * @throws BioSimServerException
+	 */
+	public static void clearCache() throws BioSimClientException, BioSimServerException {
+		if (!GeneratedClimateMap.isEmpty()) {
+			BioSimClient.removeWgoutObjectsFromServer(GeneratedClimateMap.values());
+		}
+	}
 	
 	/**
 	 * Retrieves the normals and compiles the mean or sum over some months.

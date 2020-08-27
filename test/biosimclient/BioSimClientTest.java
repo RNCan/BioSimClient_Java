@@ -232,7 +232,7 @@ public class BioSimClientTest {
 		
 		System.out.println("Nb objects immediately before eventual shutdown hook = " + BioSimClient.getNbWgoutObjectsOnServer());
 		System.out.println("Calling eventual shutdown hook...");
-		BioSimClient.removeWgoutObjectsFromServer(BioSimClient.GeneratedClimateMap.values());
+		BioSimClient.clearCache();
 		int nbObjectsAfter = BioSimClient.getNbWgoutObjectsOnServer();
 		System.out.println("Nb objects after testing eventual shutdown hook = " + nbObjectsAfter);
 		Assert.assertEquals("Testing if the number of objects before and after is consistent", nbObjectsBefore, nbObjectsAfter);
