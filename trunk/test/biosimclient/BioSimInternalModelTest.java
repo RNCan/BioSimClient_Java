@@ -36,7 +36,6 @@ public class BioSimInternalModelTest {
 	
 	@Test
 	public void testingIfReturnDataSetHasAtLeastOneObservation() throws NoSuchMethodException, SecurityException, BioSimClientException, BioSimServerException {
-//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 1; i++) {
 			FakeLocation loc = new FakeLocation(45 + BioSimClientTest.RANDOM.nextDouble() * 7,
@@ -58,6 +57,7 @@ public class BioSimInternalModelTest {
 //					&& !model.equals("Climdex_Monthly") // the base period is not inside the simulation period
 //					&& !model.equals("Spruce_Budworm_Dispersal") // encoding cause an exception from Python to C++ 
 //					) { 
+//			model = "MPB_Cold_Tolerance_Annual";
 				System.out.print("Testing model: " + model);
 				try {
 //					if (model.equals("Spruce_Budworm_Dispersal")) {
