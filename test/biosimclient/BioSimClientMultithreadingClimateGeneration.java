@@ -53,12 +53,14 @@ public class BioSimClientMultithreadingClimateGeneration {
 	
 	/*
 	 * A reference test for multithreading on the server side
-	 * With 4 processes, 100 locations from 2000 to 2010 on the server side this takes 27.5 sec.
+	 * With 5 processes, 50 locations from 2000 to 2010 on the server side this takes 13.4 sec.
+	 * With 4 processes, 100 locations from 2000 to 2010 on the server side this takes 41.2 sec.
+	 * With 5 processes, 100 locations from 2000 to 2010 on the server side this takes 30.7 sec.
+	 * With 4 processes, 100 locations from 2000 to 2005 on the server side this takes 23.4 sec.
 	 */
 	public void testingWithDegreeDaysAbove5C(int initialDateYr, int finalDateYr) throws Exception {
-//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 100; i++) {
 			FakeLocation loc = new FakeLocation(45 + i * .1,
 					-74 + i * .1,
 					300 + 5 * i);

@@ -25,20 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import biosimclient.BioSimClientTest.FakeLocation;
 
 
 public class BioSimClientShutdownHookTest {
 
 	
-	BioSimClientShutdownHookTest() {}
-	
-	/*
-	 * A reference test for multithreading on the server side
-	 * With 4 processes, 100 locations from 2000 to 2010 on the server side this takes 27.5 sec.
-	 */
-	public void testingWithDegreeDaysAbove5C(int initialDateYr, int finalDateYr) throws Exception {
-//		BioSimClient.setMultithreadingEnabled(false);
+	private static void testingWithDegreeDaysAbove5C(int initialDateYr, int finalDateYr) throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 5; i++) {
 			FakeLocation loc = new FakeLocation(45 + i * .1,
@@ -50,6 +46,7 @@ public class BioSimClientShutdownHookTest {
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
+		@SuppressWarnings("unused")
 		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.getModelOutput(initialDateYr, 
 				finalDateYr, 
 				locations, 
@@ -63,15 +60,13 @@ public class BioSimClientShutdownHookTest {
 	}
 
 
-	public static void main(String[] args) throws Exception {
-		BioSimClientShutdownHookTest bioSim = new BioSimClientShutdownHookTest();
-		try {
-			bioSim.testingWithDegreeDaysAbove5C(2000, 2005);
-		} catch(Exception e) {}
-//		BioSimClient.clearCache();
+	@Test
+	public void textClearCacheAndShutdownHook() throws Exception {
+		BioSimClientShutdownHookTest.testingWithDegreeDaysAbove5C(2000, 2005);
+		BioSimClient.clearCache();
 		Map copy = BioSimClient.GeneratedClimateMap;
-		int u = 0;
-		System.exit(0);
+		System.out.println("Size of GeneratedClimateMap after clearing = " + copy.size());
+		Assert.assertEquals("Testing if the cache has been cleared", copy.size(), 0);
 	}
 	
 	

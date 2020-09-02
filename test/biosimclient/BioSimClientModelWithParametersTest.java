@@ -36,7 +36,6 @@ public class BioSimClientModelWithParametersTest {
 	 */
 	@Test
 	public void testingWithDegreeDaysAbove5C() throws BioSimClientException, BioSimServerException {
-//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
 		int initialDateYr = 2000;

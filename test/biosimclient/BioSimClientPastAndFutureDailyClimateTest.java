@@ -38,7 +38,6 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingWithDailyOverlappingPastAndFuture() throws BioSimClientException, BioSimServerException {
-//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
 		int initialDateYr = 2000;
 		
@@ -61,15 +60,15 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 				double d1 = (Double) firstDataSet.getValueAt(i, ddFieldIndex);
 				double d2 = (Double) secondDataSet.getValueAt(i, ddFieldIndex);;
 				int dateYr = (Integer) firstDataSet.getValueAt(i, dateFieldIndex);
-				if (dateYr >= initialDateYr && dateYr < 2019) {		// From observation
-					Assert.assertEquals("Testing if the degree-days are the same before 2019", 
+				if (dateYr >= initialDateYr && dateYr < 2020) {		// From observation
+					Assert.assertEquals("Testing if the degree-days are the same before 2020", 
 							d1,	d2, 1E-8);
 				} else {											// generated from normals
-					Assert.assertTrue("Testing that the degree-days are different for 2019 and after",
+					Assert.assertTrue("Testing that the degree-days are different for 2020 and after",
 							Math.abs(d1 - d2) > 1E-8);
 				}
 			}
-			System.out.println("Degree-days before 2019 are the same and those after vary.");
+			System.out.println("Degree-days before 2020 are the same and those after vary.");
 		}
 		
 	}
@@ -80,7 +79,6 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingFutureDegreeDaysWithDefaultValuesOfRCPsandClimateModels() throws BioSimClientException, BioSimServerException {
-//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
@@ -122,7 +120,6 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingFutureDegreeDaysWithRCP85andClimateModels() throws BioSimClientException, BioSimServerException {
-//		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
