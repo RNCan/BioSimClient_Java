@@ -35,7 +35,6 @@ import biosimclient.BioSimClientTest.FakeLocation;
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Period;
 import biosimclient.BioSimEnums.RCP;
-import biosimclient.BioSimEnums.Variable;
 
 
 public class BioSimClientMultithreadingNormals {
@@ -65,12 +64,7 @@ public class BioSimClientMultithreadingNormals {
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
-		List<Variable> variables = new ArrayList<Variable>();
-		variables.add(Variable.TX);
-		variables.add(Variable.TN);
-		variables.add(Variable.P);
 		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.getAnnualNormals(Period.FromNormals1981_2010,
-				variables, 
 				locations, 
 				RCP.RCP45,
 				ClimateModel.RCM4);
@@ -122,6 +116,8 @@ public class BioSimClientMultithreadingNormals {
 					}
 				}
 			}
+			ois.close();
+			fis.close();
 			System.out.println("Successfully compared!");
 		}
 	}
