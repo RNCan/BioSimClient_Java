@@ -111,7 +111,7 @@ public final class BioSimClient {
 		}
 	}
 
-	private final static String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
+	private final static synchronized String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 		InetSocketAddress address;
 		if (isLocal) {
 			address = BioSimClient.LocalAddress;
@@ -163,7 +163,7 @@ public final class BioSimClient {
 			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 
-		String variablesQuery = getVariablesQuery();
+		String variablesQuery = getVariablesQuery(Variable.getVariablesForNormals());
 
 		String query = constructCoordinatesQuery(locations);
 
@@ -189,7 +189,7 @@ public final class BioSimClient {
 				if (fieldsToBeRemoved == null) {
 					fieldsToBeRemoved = new ArrayList<Integer>();
 					for (int i = bioSimDataSet.getFieldNames().size() - 1; i > 0; i--) {	// reverse order
-						if (!Variable.getFieldNames().contains(bioSimDataSet.getFieldNames().get(i))) {
+						if (!Variable.getFieldNamesForNormals().contains(bioSimDataSet.getFieldNames().get(i))) {
 							fieldsToBeRemoved.add(i);
 						}
 					}
@@ -210,7 +210,7 @@ public final class BioSimClient {
 		}
 	}
 
-	private static synchronized int getMaxNumberLocationsInSingleRequest() {
+	private static int getMaxNumberLocationsInSingleRequest() {
 		if (MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST == -1) { // true when called for the first time
 			try {
 				MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = (int) (BioSimClient.getMaxNbWgoutObjectsOnServer() * .05);
@@ -271,7 +271,7 @@ public final class BioSimClient {
 		}
 	}
 
-	protected static void removeWgoutObjectsFromServer(Collection<String> references) 
+	static void removeWgoutObjectsFromServer(Collection<String> references) 
 			throws BioSimClientException, BioSimServerException {
 		if (references.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS) {
 			List<String> referenceList = new ArrayList<String>();
@@ -307,7 +307,7 @@ public final class BioSimClient {
 		}
 	}
 
-	protected static int getNbWgoutObjectsOnServer() throws Exception {
+	static int getNbWgoutObjectsOnServer() throws Exception {
 		String serverReply = getStringFromConnection(BIOSIMMEMORYLOAD_API, null);
 		try {
 			return Integer.parseInt(serverReply);
@@ -402,10 +402,9 @@ public final class BioSimClient {
 		}
 	}
 	
-	@Deprecated
-	private static String getVariablesQuery() {		// TODO FP remove this when the server side is updated
+	private static String getVariablesQuery(List<Variable> variables) {		
 		String variablesQuery = "";
-		List<Variable> variables = Arrays.asList(Variable.values());
+//		List<Variable> variables = Arrays.asList(Variable.values());
 		for (Variable v : variables) {
 			variablesQuery += v.name();
 			if (variables.indexOf(v) < variables.size() - 1) {
@@ -428,7 +427,7 @@ public final class BioSimClient {
 	 *         for the TeleIO instance on the server.
 	 * @throws BioSimClientException
 	 */
-	protected static LinkedHashMap<BioSimPlot, String> getGeneratedClimate(
+	static LinkedHashMap<BioSimPlot, String> getGeneratedClimate(
 			int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations,
@@ -438,7 +437,7 @@ public final class BioSimClient {
 		boolean compress = false; // disabling compression by default
 		LinkedHashMap<BioSimPlot, String> outputMap = new LinkedHashMap<BioSimPlot, String>();
 
-		String variablesQuery = getVariablesQuery();
+		String variablesQuery = getVariablesQuery(Arrays.asList(Variable.values()));
 		
 		String query = constructCoordinatesQuery(locations);
 		query += "&var=" + variablesQuery;
@@ -517,7 +516,7 @@ public final class BioSimClient {
 	 * @return a LinkedHashMap with BioSimPlot instances as keys and a Map with years and climate variables values as values.
 	 * @throws BioSimClientException
 	 */
-	protected static LinkedHashMap<BioSimPlot, BioSimDataSet> applyModel(
+	static LinkedHashMap<BioSimPlot, BioSimDataSet> applyModel(
 			String modelName,
 			LinkedHashMap<BioSimPlot, String> teleIORefs,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {

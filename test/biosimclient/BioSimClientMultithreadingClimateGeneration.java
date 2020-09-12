@@ -56,7 +56,7 @@ public class BioSimClientMultithreadingClimateGeneration {
 	 * With 5 processes, 50 locations from 2000 to 2010 on the server side this takes 13.4 sec.
 	 * With 4 processes, 100 locations from 2000 to 2010 on the server side this takes 41.2 sec.
 	 * With 5 processes, 100 locations from 2000 to 2010 on the server side this takes 30.7 sec.
-	 * With 4 processes, 100 locations from 2000 to 2005 on the server side this takes 23.4 sec.
+	 * With 4 processes, 100 locations from 2000 to 2005 on the server side this takes 23.4 sec. Now, 54 sec...
 	 */
 	public void testingWithDegreeDaysAbove5C(int initialDateYr, int finalDateYr) throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
