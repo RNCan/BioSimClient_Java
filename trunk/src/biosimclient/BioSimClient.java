@@ -683,7 +683,7 @@ public final class BioSimClient {
 			locationsToGenerate.addAll(locations);
 		} else { // here we retrieve what is already available
 			for (BioSimPlot location : locations) {
-				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep);
+				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep, ForceClimateGenerationEnabled);
 				if (GeneratedClimateMap.containsKey(querySignature)) {
 					alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
 				} else {
@@ -698,7 +698,8 @@ public final class BioSimClient {
 			
 			if (!isEphemeral) { // then we stored the reference in the static map for future use
 				for (BioSimPlot location : generatedClimate.keySet()) {
-					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep),
+					// TODO FP we could avoid creating again a signature here by storing the signature in a map
+					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep, ForceClimateGenerationEnabled),		
 							generatedClimate.get(location));
 				}
 			}
@@ -811,7 +812,7 @@ public final class BioSimClient {
 	/**
 	 * By default the climate generation retrieves the observations for the
 	 * dates prior to the current date. If this option is set to true, then 
-	 * the climate is generated from the normals even for the dates prior to
+	 * the climate is generated from the normals even for dates prior to
 	 * the current date.
 	 * 
 	 * @param bool a boolean
