@@ -457,6 +457,7 @@ public final class BioSimClient {
 		}
 		
 		if (ForceClimateGenerationEnabled) {
+			System.out.println("Warning: past climate is going to be generated instead of being compiled from observations!");
 			query += "&source=FromNormals";
 		}
 		
