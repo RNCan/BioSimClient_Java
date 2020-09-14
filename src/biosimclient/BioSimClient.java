@@ -101,9 +101,9 @@ public final class BioSimClient {
 
 	static boolean isLocal = false;
 
-//	private static boolean MultithreadingEnabled = true; // Default value
+	static boolean ForceClimateGenerationEnabled = false;  // default value
 	
-	private final static String addQueryIfAny(String urlString, String query) {
+	private static String addQueryIfAny(String urlString, String query) {
 		if (query != null && !query.isEmpty()) {
 			return urlString.trim() + "?" + query;
 		} else {
@@ -111,7 +111,7 @@ public final class BioSimClient {
 		}
 	}
 
-	private final static synchronized String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
+	private static synchronized String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 		InetSocketAddress address;
 		if (isLocal) {
 			address = BioSimClient.LocalAddress;
@@ -455,7 +455,11 @@ public final class BioSimClient {
 		if(climModel != null) {
 			query += "&climMod=" + climModel.name();
 		}
-
+		
+		if (ForceClimateGenerationEnabled) {
+			query += "&source=FromNormals";
+		}
+		
 		if (rep > 1) {
 			query += "&rep=" + rep;
 		}
@@ -802,6 +806,18 @@ public final class BioSimClient {
 			boolean isEphemeral,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		return getModelOutput(fromYr, toYr, locations, rcp, climMod, modelName, 1, isEphemeral, additionalParms);
+	}
+
+	/**
+	 * By default the climate generation retrieves the observations for the
+	 * dates prior to the current date. If this option is set to true, then 
+	 * the climate is generated from the normals even for the dates prior to
+	 * the current date.
+	 * 
+	 * @param bool a boolean
+	 */
+	public static void setForceClimateGenerationEnabled(boolean bool) {
+		BioSimClient.ForceClimateGenerationEnabled = bool;
 	}
 
 //	public static void main(String[] args) throws BioSimClientException {

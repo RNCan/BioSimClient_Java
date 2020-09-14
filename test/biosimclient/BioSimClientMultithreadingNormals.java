@@ -52,6 +52,7 @@ public class BioSimClientMultithreadingNormals {
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	public void testingWithNormals() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 50; i++) {
@@ -116,8 +117,8 @@ public class BioSimClientMultithreadingNormals {
 					}
 				}
 			}
-			ois.close();
 			fis.close();
+			ois.close();
 			System.out.println("Successfully compared!");
 		}
 	}
