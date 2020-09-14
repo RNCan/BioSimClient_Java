@@ -21,6 +21,7 @@
  */
 package biosimclient;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -56,14 +57,21 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 
 			int dateFieldIndex = firstDataSet.getFieldNames().indexOf("Year");
 			int ddFieldIndex = firstDataSet.getFieldNames().indexOf("DD");
+			int dataTypeIndex = firstDataSet.getFieldNames().indexOf("DataType");
 			for (int i = 0; i < firstDataSet.getNumberOfObservations(); i++) {
 				double d1 = (Double) firstDataSet.getValueAt(i, ddFieldIndex);
-				double d2 = (Double) secondDataSet.getValueAt(i, ddFieldIndex);;
+				double d2 = (Double) secondDataSet.getValueAt(i, ddFieldIndex);
+				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
+				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
 				int dateYr = (Integer) firstDataSet.getValueAt(i, dateFieldIndex);
 				if (dateYr >= initialDateYr && dateYr < 2020) {		// From observation
+					Assert.assertTrue("Testing if was taken from observation", dataType1.contains("Real_Data"));
+					Assert.assertTrue("Testing if was taken from observation", dataType2.contains("Real_Data"));
 					Assert.assertEquals("Testing if the degree-days are the same before 2020", 
 							d1,	d2, 1E-8);
 				} else {											// generated from normals
+					Assert.assertTrue("Testing if was simulated", dataType1.contains("Simulated"));
+					Assert.assertTrue("Testing if was simulated", dataType2.contains("Simulated"));
 					Assert.assertTrue("Testing that the degree-days are different for 2020 and after",
 							Math.abs(d1 - d2) > 1E-8);
 				}
@@ -101,13 +109,20 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 					thirdDataSet.getNumberOfObservations());
 			System.out.println("Same number of observations in each dataset");
 			int ddFieldIndex = firstDataSet.getFieldNames().indexOf("DD");
+			int dataTypeIndex = firstDataSet.getFieldNames().indexOf("DataType");
 			for (int i = 0; i < firstDataSet.getNumberOfObservations(); i++) {
 				double d1 = ((Number) firstDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
 				double d2 = ((Number) secondDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
 				double d3 = ((Number) thirdDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
+				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
+				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
+				String dataType3 = (String) thirdDataSet.getValueAt(i, dataTypeIndex);
 				Assert.assertEquals("Testing if the degree-days are equal between first and second datasets", d1, d2, 420);
 				Assert.assertEquals("Testing if the degree-days are equal between second and third datasets", d2, d3, 420);
-			}
+				Assert.assertTrue("Testing if was simulated", dataType1.contains("Simulated"));
+				Assert.assertTrue("Testing if was simulated", dataType2.contains("Simulated"));
+				Assert.assertTrue("Testing if was simulated", dataType3.contains("Simulated"));
+		}
 			System.out.println("Degree-days tested for default values.");
 		}
 		
@@ -137,17 +152,62 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 					secondDataSet.getNumberOfObservations());
 			System.out.println("Same number of observations in each dataset");
 			int ddFieldIndex = firstDataSet.getFieldNames().indexOf("DD");
+			int dataTypeIndex = firstDataSet.getFieldNames().indexOf("DataType");
 			for (int i = 0; i < firstDataSet.getNumberOfObservations(); i++) {
 				double d1 = ((Number) firstDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
 				double d2 = ((Number) secondDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
+				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
+				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
 				Assert.assertEquals("Testing if the degree-days are equal between first and second datasets", d1, d2, 400);
+				Assert.assertTrue("Testing if was simulated", dataType1.contains("Simulated"));
+				Assert.assertTrue("Testing if was simulated", dataType2.contains("Simulated"));
 			}
 			System.out.println("Degree-days tested for default values.");
 		}
 		
 	}
 
-	
+
+	/*
+	 * Tests if the weather generation over past and future time intervals.
+	 */
+	@Test
+	public void testingWithForceClimateGenerationEnabled() throws BioSimClientException, BioSimServerException {
+		BioSimClient.setForceClimateGenerationEnabled(true);
+		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
+		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+
+		int initialDateYr = 2000;
+		
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", true, null);
+		
+		for (BioSimPlot plot : teleIORefs.keySet()) {
+			BioSimDataSet firstDataSet = teleIORefs.get(plot);
+			BioSimDataSet secondDataSet = teleIORefs2.get(plot);
+			Assert.assertTrue("Is there at least one observation", firstDataSet.getNumberOfObservations() > 0);
+			System.out.println("There is at least one observation");
+			Assert.assertEquals("Testing the number of observations", 
+					firstDataSet.getNumberOfObservations(), 
+					secondDataSet.getNumberOfObservations());
+			System.out.println("Same number of observations in each dataset");
+
+			int ddFieldIndex = firstDataSet.getFieldNames().indexOf("DD");
+			int dataTypeIndex = firstDataSet.getFieldNames().indexOf("DataType");
+			for (int i = 0; i < firstDataSet.getNumberOfObservations(); i++) {
+				double d1 = (Double) firstDataSet.getValueAt(i, ddFieldIndex);
+				double d2 = (Double) secondDataSet.getValueAt(i, ddFieldIndex);;
+				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
+				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
+				Assert.assertTrue("Testing that the degree-days are different for 2020 and after", Math.abs(d1 - d2) > 1E-8);
+				Assert.assertTrue("Testing if was simulated", dataType1.contains("Simulated"));
+				Assert.assertTrue("Testing if was simulated", dataType2.contains("Simulated"));
+			}
+			System.out.println("Degree-days all vary because climate generation is enabled.");
+		}
+		BioSimClient.setForceClimateGenerationEnabled(false);		// set it back to default value 
+		
+	}
 	
 	
 }

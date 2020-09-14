@@ -23,7 +23,6 @@ package biosimclient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import biosimclient.BioSimClientTest.FakeLocation;
 
@@ -51,7 +50,7 @@ public class BioSimClientMultithreadingClimateGenerationForRegenerationIris2020 
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
-		Map<BioSimPlot, BioSimDataSet> outputMapDegreeDays = BioSimClient.getModelOutput(initialDateYr, 
+		BioSimClient.getModelOutput(initialDateYr, 
 				finalDateYr, 
 				locations, 
 				null, 
