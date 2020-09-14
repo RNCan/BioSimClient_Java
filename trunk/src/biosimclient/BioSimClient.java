@@ -821,6 +821,15 @@ public final class BioSimClient {
 		BioSimClient.ForceClimateGenerationEnabled = bool;
 	}
 
+	/**
+	 * This option forces the client to generate weather for past dates instead
+	 * of using the observations. By default, it is disabled
+	 * @return a boolean
+	 */
+	public static boolean isForceClimateGenerationEnabled() {
+		return BioSimClient.ForceClimateGenerationEnabled;
+	}
+
 //	public static void main(String[] args) throws BioSimClientException {
 ////		List<String> references = new ArrayList<String>();
 ////		for (int i = 0; i < 402; i++) {
