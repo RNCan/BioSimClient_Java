@@ -864,7 +864,11 @@ public final class BioSimClient {
 	 * @return an integer
 	 */
 	public static int getNbNearestNeighbours() {
-		return NbNearestNeighbours;
+		if (NbNearestNeighbours == null) {
+			return 4; // default value
+		} else {
+			return NbNearestNeighbours;
+		}
 	}
 	
 	
