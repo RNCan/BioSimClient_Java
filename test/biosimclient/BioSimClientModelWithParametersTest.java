@@ -41,7 +41,7 @@ public class BioSimClientModelWithParametersTest {
 		int initialDateYr = 2000;
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2001, locations, null, null, "DegreeDay_Annual", true, parms);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2001, locations, null, null, "DegreeDay_Annual", parms);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);

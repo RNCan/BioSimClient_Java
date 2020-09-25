@@ -76,7 +76,6 @@ public class BioSimClientMultithreadingClimateGeneration {
 				null, 
 				null, 
 				"DegreeDay_Annual", 
-				true, 
 				parms);
 		double elapsedTime = (System.currentTimeMillis() - initial) * .001;
 		System.out.println("Elapsed time = " + elapsedTime);

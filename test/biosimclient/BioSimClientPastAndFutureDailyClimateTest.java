@@ -42,8 +42,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
 		int initialDateYr = 2000;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", true, null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);
@@ -91,9 +91,9 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, null, null, "DegreeDay_Annual", true, null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP45, null, "DegreeDay_Annual", true, null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4 = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, null, ClimateModel.RCM4, "DegreeDay_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, null, null, "DegreeDay_Annual", null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP45, null, "DegreeDay_Annual", null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4 = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, null, ClimateModel.RCM4, "DegreeDay_Annual", null);
 		
 		for (BioSimPlot plot : oRCP45def_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP45def_RCM4def.get(plot);
@@ -139,8 +139,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, null, "DegreeDay_Annual", true, null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4 = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, ClimateModel.RCM4, "DegreeDay_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, null, "DegreeDay_Annual", null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4 = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, ClimateModel.RCM4, "DegreeDay_Annual", null);
 		
 		for (BioSimPlot plot : oRCP85_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP85_RCM4def.get(plot);
@@ -179,8 +179,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 
 		int initialDateYr = 2000;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", true, null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);

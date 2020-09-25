@@ -40,7 +40,7 @@ public class BioSimClientModelExtendedTest {
 		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
 		int initialDateYr = 2000;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", null);
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("DegreeDay");
@@ -82,7 +82,7 @@ public class BioSimClientModelExtendedTest {
 		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
 		int initialDateYr = 2000;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "Climatic_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "Climatic_Annual", null);
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("TotalRadiation");
@@ -107,7 +107,7 @@ public class BioSimClientModelExtendedTest {
 		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
 		int initialDateYr = 2000;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "Climatic_Monthly", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "Climatic_Monthly", null);
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("TotalRadiation");
