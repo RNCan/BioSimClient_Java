@@ -53,6 +53,7 @@ public class BioSimClientShutdownHookTest {
 				null, 
 				null, 
 				"DegreeDay_Annual", 
+				1,
 				false, 
 				parms);
 		double elapsedTime = (System.currentTimeMillis() - initial) * .001;

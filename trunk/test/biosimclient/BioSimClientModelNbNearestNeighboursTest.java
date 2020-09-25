@@ -42,11 +42,11 @@ public class BioSimClientModelNbNearestNeighboursTest {
 		locations.add(plot);
 		int initialDateYr = 2000;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", null);
 		
 		BioSimClient.setNbNearestNeighbours(4);
 
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", null);
 		
 		BioSimDataSet firstDataSet = teleIORefs.get(plot);
 		Assert.assertTrue("First dataset has one observation", firstDataSet.getNumberOfObservations() == 1);
@@ -75,11 +75,11 @@ public class BioSimClientModelNbNearestNeighboursTest {
 		locations.add(plot);
 		int initialDateYr = 2000;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", null);
 		
 		BioSimClient.setNbNearestNeighbours(20);
 
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", true, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", null);
 		
 		BioSimDataSet firstDataSet = teleIORefs.get(plot);
 		Assert.assertTrue("First dataset has one observation", firstDataSet.getNumberOfObservations() == 1);
