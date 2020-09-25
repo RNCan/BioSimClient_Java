@@ -50,8 +50,8 @@ import biosimclient.BioSimEnums.Variable;
  */
 public final class BioSimClient {
 
-	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = 10;
-	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = 50;
+	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = -1;
+	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = -1;
 	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS = 200;
 	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = -1; // not set yet
 	
@@ -72,6 +72,7 @@ public final class BioSimClient {
 	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
 	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
 	private static final String BIOSIMMAXMEMORY_API = "BioSimMaxMemory";
+	private static final String BIOSIMMAXCOORDINATES = "BioSimMaxCoordinatesPerRequest";
 
 	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
 
@@ -251,13 +252,13 @@ public final class BioSimClient {
 		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
-		if (locations.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS) {
+		if (locations.size() > BioSimClient.getMaximumNbLocationsPerBatchNormals()) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
 			copyList.addAll(locations);
 			List<BioSimPlot> subList = new ArrayList<BioSimPlot>();
 			while (!copyList.isEmpty()) {
-				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS) {
+				while (!copyList.isEmpty() && subList.size() < BioSimClient.getMaximumNbLocationsPerBatchNormals()) {
 					subList.add(copyList.remove(0));
 				}
 				resultingMap.putAll(internalCalculationForNormals(period, subList, rcp, climModel, averageOverTheseMonths));
@@ -825,13 +826,13 @@ public final class BioSimClient {
 		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
-		if (locations.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION) {
+		if (locations.size() > BioSimClient.getMaximumNbLocationsPerBatchWeatherGeneration()) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
 			copyList.addAll(locations);
 			List<BioSimPlot> subList = new ArrayList<BioSimPlot>();
 			while (!copyList.isEmpty()) {
-				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION) {
+				while (!copyList.isEmpty() && subList.size() < BioSimClient.getMaximumNbLocationsPerBatchWeatherGeneration()) {
 					subList.add(copyList.remove(0));
 				}
 				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelName, rep, isEphemeral, additionalParms));
@@ -844,6 +845,29 @@ public final class BioSimClient {
 	}
 	
 	
+	private static int getMaximumNbLocationsPerBatchWeatherGeneration() throws BioSimClientException, BioSimServerException {
+		setMaxCapacities();
+		return MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION;
+	}
+
+	private static void setMaxCapacities() throws BioSimClientException, BioSimServerException {
+		if (MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION == -1 || MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS == -1) {
+			String serverReply = getStringFromConnection(BIOSIMMAXCOORDINATES, null);
+			try {
+				String[] maxCapacities = serverReply.split(";");
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[0]);
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[1]);
+			} catch (NumberFormatException e) {
+				throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
+			}
+		}
+	}
+	
+	private static int getMaximumNbLocationsPerBatchNormals() throws BioSimClientException, BioSimServerException {
+		setMaxCapacities();
+		return MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS;
+	}
+
 	/**
 	 * Reset the configuration to its initial values.
 	 */
@@ -897,17 +921,4 @@ public final class BioSimClient {
 		}
 	}
 	
-	
-
-//	public static void main(String[] args) throws BioSimClientException {
-////		List<String> references = new ArrayList<String>();
-////		for (int i = 0; i < 402; i++) {
-////			references.add("" + i);
-////		}			
-////		
-////		BioSimClient.removeWgoutObjectsFromServer(references);
-//		List<String> models = BioSimClient.getModelList();
-//		for (String model : models)
-//			System.out.println(model);
-//	}
 }
