@@ -50,8 +50,8 @@ import biosimclient.BioSimEnums.Variable;
  */
 public final class BioSimClient {
 
-	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = -1;
-	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = -1;
+	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = -1; // not set yet
+	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = -1; // not set yet
 	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS = 200;
 	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = -1; // not set yet
 	
