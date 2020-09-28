@@ -73,6 +73,8 @@ public final class BioSimClient {
 	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
 	private static final String BIOSIMMAXMEMORY_API = "BioSimMaxMemory";
 	private static final String BIOSIMMAXCOORDINATES = "BioSimMaxCoordinatesPerRequest";
+	private static final String BIOSIMMODELHELP = "BioSimModelHelp";
+	private static final String BIOSIMMODELDEFAULTPARAMETERS = "BioSimModelDefaultParameters";
 
 	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
 
@@ -562,8 +564,30 @@ public final class BioSimClient {
 		copy.addAll(getReferenceModelList());
 		return copy;
 	}
+	
+	public static String getModelHelp(String modelName) throws BioSimClientException, BioSimServerException {
+		if (modelName == null) {
+			throw new InvalidParameterException("THe modelName parameter cannot be set to null!");
+		}
+		String serverReply = getStringFromConnection(BIOSIMMODELHELP, "model=" + modelName);
+		return serverReply;
+	}
 
 	
+	public static BioSimParameterMap getModelDefaultParameters(String modelName) throws BioSimClientException, BioSimServerException {
+		if (modelName == null) {
+			throw new InvalidParameterException("THe modelName parameter cannot be set to null!");
+		}
+		String serverReply = getStringFromConnection(BIOSIMMODELDEFAULTPARAMETERS, "model=" + modelName);
+		String[] parms = serverReply.split(FieldSeparator);
+		BioSimParameterMap parmMap = new BioSimParameterMap();
+		for (String parm : parms) {
+			String[] keyValue = parm.split(":");
+			parmMap.put(keyValue[0], keyValue[1]);
+		}
+		return parmMap;
+	}
+
 	private static List<String> getReferenceModelList() throws BioSimClientException, BioSimServerException {
 		if (ReferenceModelList == null) {
 			List<String> myList = new ArrayList<String>();
@@ -854,7 +878,7 @@ public final class BioSimClient {
 		if (MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION == -1 || MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS == -1) {
 			String serverReply = getStringFromConnection(BIOSIMMAXCOORDINATES, null);
 			try {
-				String[] maxCapacities = serverReply.split(";");
+				String[] maxCapacities = serverReply.split(FieldSeparator);
 				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[0]);
 				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[1]);
 			} catch (NumberFormatException e) {
@@ -919,6 +943,12 @@ public final class BioSimClient {
 		} else {
 			return NbNearestNeighbours;
 		}
+	}
+	
+	public static void main(String[] args) throws BioSimClientException, BioSimServerException {
+		List<String> modelList = BioSimClient.getModelList();
+		System.out.print(BioSimClient.getModelDefaultParameters(modelList.get(0)));
+		
 	}
 	
 }
