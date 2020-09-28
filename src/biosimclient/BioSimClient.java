@@ -55,7 +55,7 @@ public final class BioSimClient {
 	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS = 200;
 	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = -1; // not set yet
 	
-	private static final String FieldSeparator = ",";
+	static final String FieldSeparator = ",";
 	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
 	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 5000);
@@ -583,7 +583,11 @@ public final class BioSimClient {
 		BioSimParameterMap parmMap = new BioSimParameterMap();
 		for (String parm : parms) {
 			String[] keyValue = parm.split(":");
-			parmMap.put(keyValue[0], keyValue[1]);
+			if (keyValue.length > 1) {
+				parmMap.put(keyValue[0], keyValue[1]);
+			} else {
+				parmMap.put(keyValue[0], null);
+			}
 		}
 		return parmMap;
 	}
@@ -946,9 +950,9 @@ public final class BioSimClient {
 	}
 	
 	public static void main(String[] args) throws BioSimClientException, BioSimServerException {
-		List<String> modelList = BioSimClient.getModelList();
-		System.out.print(BioSimClient.getModelDefaultParameters(modelList.get(0)));
-		
+//		List<String> modelList = BioSimClient.getModelList();
+//		System.out.print(BioSimClient.getModelDefaultParameters(modelList.get(0)));
+		System.out.print(BioSimClient.getModelDefaultParameters("Spruce_Budworm_Biology"));
 	}
 	
 }
