@@ -435,13 +435,6 @@ public final class BioSimClient {
 			int rep,
 			String modelName,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
-//		if (!getReferenceModelList().contains(modelName)) {
-//			throw new InvalidParameterException("The model " + modelName
-//					+ " is not a valid model. Please consult the list of models through the function getModelList()");
-//		}
-
-//		LinkedHashMap<BioSimPlot, String> outputMap = new LinkedHashMap<BioSimPlot, String>();
-		
 		String query = constructCoordinatesQuery(locations);
 		query += "&from=" + fromYr;
 		query += "&to=" + toYr;
