@@ -876,8 +876,8 @@ public final class BioSimClient {
 			String serverReply = getStringFromConnection(BIOSIMMAXCOORDINATES, null);
 			try {
 				String[] maxCapacities = serverReply.split(FieldSeparator);
-				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[0]);
-				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[1]);
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[0]);
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[1]);
 			} catch (NumberFormatException e) {
 				throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
 			}
