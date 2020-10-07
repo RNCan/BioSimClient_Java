@@ -66,7 +66,7 @@ public final class BioSimClient {
 
 	private static final String NORMAL_API = "BioSimNormals";
 	private static final String GENERATOR_API = "BioSimWG";
-	private static final String EPHEMERAL_API = "BioSimWGEphemeralMode";
+	private static final String EPHEMERAL_API = "BioSimModelEphemeral";
 	private static final String MODEL_API = "BioSimModel";
 	private static final String MODEL_LIST_API = "BioSimModelList";
 	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
