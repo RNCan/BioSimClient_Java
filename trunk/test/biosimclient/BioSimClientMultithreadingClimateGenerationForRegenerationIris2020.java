@@ -24,8 +24,6 @@ package biosimclient;
 import java.util.ArrayList;
 import java.util.List;
 
-import biosimclient.BioSimClientTest.FakeLocation;
-
 
 public class BioSimClientMultithreadingClimateGenerationForRegenerationIris2020 {
 
@@ -41,7 +39,7 @@ public class BioSimClientMultithreadingClimateGenerationForRegenerationIris2020 
 	public void testing(int initialDateYr, int finalDateYr) throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 50; i++) {
-			FakeLocation loc = new FakeLocation(45 + i * .1,
+			BioSimFakeLocation loc = new BioSimFakeLocation(45 + i * .1,
 					-74 + i * .1,
 					300 + 5 * i);
 			locations.add(loc);

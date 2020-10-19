@@ -28,8 +28,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import biosimclient.BioSimClientTest.FakeLocation;
-
 
 public class BioSimClientShutdownHookTest {
 
@@ -37,7 +35,7 @@ public class BioSimClientShutdownHookTest {
 	private static void testingWithDegreeDaysAbove5C(int initialDateYr, int finalDateYr) throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 5; i++) {
-			FakeLocation loc = new FakeLocation(45 + i * .1,
+			BioSimFakeLocation loc = new BioSimFakeLocation(45 + i * .1,
 					-74 + i * .1,
 					300 + 5 * i);
 			locations.add(loc);

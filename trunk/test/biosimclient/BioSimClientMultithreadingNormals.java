@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import biosimclient.BioSimClientTest.FakeLocation;
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Period;
 import biosimclient.BioSimEnums.RCP;
@@ -56,7 +55,7 @@ public class BioSimClientMultithreadingNormals {
 	public void testingWithNormals() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 50; i++) {
-			FakeLocation loc = new FakeLocation(45 + i * .1,
+			BioSimFakeLocation loc = new BioSimFakeLocation(45 + i * .1,
 					-74 + i * .1,
 					300 + 5 * i);
 			locations.add(loc);
