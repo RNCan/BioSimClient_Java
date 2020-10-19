@@ -28,8 +28,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import biosimclient.BioSimClientTest.FakeLocation;
-
 
 public class BioSimInternalModelTest {
 
@@ -38,7 +36,7 @@ public class BioSimInternalModelTest {
 	public void testingIfReturnDataSetHasAtLeastOneObservation() throws NoSuchMethodException, SecurityException, BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 1; i++) {
-			FakeLocation loc = new FakeLocation(45 + BioSimClientTest.RANDOM.nextDouble() * 7,
+			BioSimFakeLocation loc = new BioSimFakeLocation(45 + BioSimClientTest.RANDOM.nextDouble() * 7,
 					-74 + BioSimClientTest.RANDOM.nextDouble() * 8,
 					300 + BioSimClientTest.RANDOM.nextDouble() * 400);
 			locations.add(loc);

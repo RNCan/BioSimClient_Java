@@ -46,34 +46,6 @@ public class BioSimClientTest {
 	}
 	
 	
-	static class FakeLocation implements BioSimPlot {
-
-		private final double elevationM;
-		private final double latitude;
-		private final double longitude;
-
-		FakeLocation(double latitudeDeg, double longitudeDeg, double elevationM) {
-			this.latitude = latitudeDeg;
-			this.longitude = longitudeDeg;
-			this.elevationM = elevationM;
-		}
-
-
-
-		@Override
-		public double getElevationM() {return elevationM;}
-
-		@Override
-		public double getLatitudeDeg() {return latitude;}
-
-		@Override
-		public double getLongitudeDeg() {return longitude;}
-
-
-		@Override
-		public String toString() {return latitude + "_" + longitude + "_" + elevationM;}
-
-	}
 	
 	
 	/*
@@ -85,7 +57,7 @@ public class BioSimClientTest {
 //		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 100; i++) {
-			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
+			BioSimFakeLocation loc = new BioSimFakeLocation(45 + RANDOM.nextDouble() * 7,
 					-74 + RANDOM.nextDouble() * 8,
 					300 + RANDOM.nextDouble() * 400);
 			locations.add(loc);
@@ -132,7 +104,7 @@ public class BioSimClientTest {
 //		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 10001; i++) {
-			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
+			BioSimFakeLocation loc = new BioSimFakeLocation(45 + RANDOM.nextDouble() * 7,
 					-74 + RANDOM.nextDouble() * 8,
 					300 + RANDOM.nextDouble() * 400);
 			locations.add(loc);
@@ -156,7 +128,7 @@ public class BioSimClientTest {
 //		BioSimClient.setMultithreadingEnabled(false);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 10; i++) {
-			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
+			BioSimFakeLocation loc = new BioSimFakeLocation(45 + RANDOM.nextDouble() * 7,
 					-74 + RANDOM.nextDouble() * 8,
 					300 + RANDOM.nextDouble() * 400);
 			locations.add(loc);
@@ -203,7 +175,7 @@ public class BioSimClientTest {
 			System.out.println("Nb objects before this function call = " + nbObjectsBefore);
 			List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 			for (int i = 0; i < 5; i++) {
-				FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
+				BioSimFakeLocation loc = new BioSimFakeLocation(45 + RANDOM.nextDouble() * 7,
 						-74 + RANDOM.nextDouble() * 8,
 						300 + RANDOM.nextDouble() * 400);
 				locations.add(loc);
@@ -222,7 +194,7 @@ public class BioSimClientTest {
 		System.out.println("Nb objects before starting test on shutdown hook = " + nbObjectsBefore);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		for (int i = 0; i < 10; i++) {
-			FakeLocation loc = new FakeLocation(45 + RANDOM.nextDouble() * 7,
+			BioSimFakeLocation loc = new BioSimFakeLocation(45 + RANDOM.nextDouble() * 7,
 					-74 + RANDOM.nextDouble() * 8,
 					300 + RANDOM.nextDouble() * 400);
 			locations.add(loc);

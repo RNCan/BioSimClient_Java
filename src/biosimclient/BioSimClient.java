@@ -23,11 +23,13 @@ package biosimclient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,8 +79,6 @@ public final class BioSimClient {
 	private static final String BIOSIMMODELDEFAULTPARAMETERS = "BioSimModelDefaultParameters";
 
 	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
-
-//	private static Integer BioSimMaxMemory;
 	
 	private static List<String> ReferenceModelList;
 
@@ -117,6 +117,8 @@ public final class BioSimClient {
 		}
 	}
 
+	
+	
 	private static synchronized String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 		InetSocketAddress address;
 		if (isLocal) {
@@ -130,11 +132,56 @@ public final class BioSimClient {
 			URL bioSimURL = new URL(urlString);
 			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
 			int code = connection.getResponseCode();
-			if (code < 200 || code > 202) { // if true that means it is not connected
-				throw new BioSimClientException("Unable to connect to BioSIM server! Please check your connection or contact your network administrator.");
+			
+			if (code >= 400 && code < 500) { // client error
+				String msg = getCompleteString(connection, true);
+				throw new BioSimClientException("Code " + code + ": " + msg);
 			}
+			if (code >= 500 && code < 600) { // server error
+				String msg = getCompleteString(connection, true);
+				throw new BioSimServerException("Code " + code + ": " + msg);
+			}
+			// TODO handle other codes here
+			return getCompleteString(connection, false);
+//			BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//			String completeString = "";
+//			String lineStr;
+//			int line = 0;
+//			while ((lineStr = br.readLine()) != null) {
+//				if (line == 0) {
+//					completeString += lineStr;
+//
+//				} else {
+//					completeString += "\n" + lineStr;
+//				}
+//				line++;
+//			}
+//			br.close();
+//			if (completeString.startsWith("Exception")) {
+//				throw new BioSimServerException(completeString);
+//			}
+//			return completeString;
+		} catch (MalformedURLException e) {
+			throw new BioSimClientException("Malformed URL: " + e.getMessage());
+		} catch (IOException e) {
+			if (e instanceof UnknownHostException) {
+				throw new BioSimClientException("Unknown host: " + e.getMessage());
+			} else {
+				throw new BioSimClientException("Unable to connect to the server!");
+			}
+		} 
+	}
 
-			BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+	private static String getCompleteString(HttpURLConnection connection, boolean isError) {
+		try {
+			InputStream is;
+			if (isError) { 
+				is = connection.getErrorStream();
+			} else {
+				is = connection.getInputStream();
+			}
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			String completeString = "";
 			String lineStr;
 			int line = 0;
@@ -148,19 +195,14 @@ public final class BioSimClient {
 				line++;
 			}
 			br.close();
-			if (completeString.startsWith("Exception")) {
-				throw new BioSimServerException(completeString);
-			}
+//			if (completeString.startsWith("Exception")) {
+//				throw new BioSimServerException(completeString);
+//			}
 			return completeString;
-		} catch (MalformedURLException e) {
-			throw new BioSimClientException(e.getMessage());
 		} catch (IOException e) {
-			throw new BioSimClientException(e.getMessage());
+			return "";
 		}
 	}
-
-
-
 	
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForNormals(Period period,
 			List<BioSimPlot> locations,
