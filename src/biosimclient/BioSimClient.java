@@ -39,6 +39,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Month;
 import biosimclient.BioSimEnums.Period;
@@ -143,32 +145,14 @@ public final class BioSimClient {
 			}
 			// TODO handle other codes here
 			return getCompleteString(connection, false);
-//			BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//			String completeString = "";
-//			String lineStr;
-//			int line = 0;
-//			while ((lineStr = br.readLine()) != null) {
-//				if (line == 0) {
-//					completeString += lineStr;
-//
-//				} else {
-//					completeString += "\n" + lineStr;
-//				}
-//				line++;
-//			}
-//			br.close();
-//			if (completeString.startsWith("Exception")) {
-//				throw new BioSimServerException(completeString);
-//			}
-//			return completeString;
 		} catch (MalformedURLException e) {
 			throw new BioSimClientException("Malformed URL: " + e.getMessage());
+		} catch (UnknownHostException e) {
+			throw new BioSimClientException("Unknown host: " + e.getMessage());
+		} catch (SSLHandshakeException e) {
+			throw new BioSimClientException("Unable to confirm certificate for secure connection!");
 		} catch (IOException e) {
-			if (e instanceof UnknownHostException) {
-				throw new BioSimClientException("Unknown host: " + e.getMessage());
-			} else {
-				throw new BioSimClientException("Unable to connect to the server!");
-			}
+			throw new BioSimClientException("Unable to connect to the server!");
 		} 
 	}
 
@@ -195,9 +179,6 @@ public final class BioSimClient {
 				line++;
 			}
 			br.close();
-//			if (completeString.startsWith("Exception")) {
-//				throw new BioSimServerException(completeString);
-//			}
 			return completeString;
 		} catch (IOException e) {
 			return "";
