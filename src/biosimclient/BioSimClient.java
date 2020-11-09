@@ -63,6 +63,7 @@ public final class BioSimClient {
 	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
 	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 5000);
+	private static final InetSocketAddress DebugAddress = new InetSocketAddress("192.168.0.194", 5001);
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
@@ -83,7 +84,6 @@ public final class BioSimClient {
 	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
 	
 	private static List<String> ReferenceModelList;
-
 
 	static class InternalShutDownHook extends Thread {
 		@Override
@@ -106,6 +106,7 @@ public final class BioSimClient {
 	}
 
 	static boolean isLocal = false;
+	static boolean isDebug = false;
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
 	
@@ -123,7 +124,9 @@ public final class BioSimClient {
 	
 	private static synchronized String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 		InetSocketAddress address;
-		if (isLocal) {
+		if (isDebug) {
+			address = BioSimClient.DebugAddress;
+		} else if (isLocal) {
 			address = BioSimClient.LocalAddress;
 		} else {
 			address = BioSimClient.REpiceaAddress;

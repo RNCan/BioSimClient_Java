@@ -65,7 +65,6 @@ public class BioSimClientTestsWithReplicates {
 		}
 	}
 
-	
 	@Test
 	public void test2015to2025_2repForcedClimateGeneration() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
@@ -97,8 +96,6 @@ public class BioSimClientTestsWithReplicates {
 		BioSimClient.resetClientConfiguration();
 	}
 
-
-	
 	@Test
 	public void test2012to2016_1repForcedClimateGeneration() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
@@ -110,5 +107,16 @@ public class BioSimClientTestsWithReplicates {
 		BioSimClient.resetClientConfiguration();
 	}
 
-	
+
+	@Test
+	public void test1981to2010_2repForcedClimateGeneration() throws BioSimClientException, BioSimServerException {
+		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
+		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		BioSimClient.setForceClimateGenerationEnabled(true);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "ClimaticQc_Annual", 2, null);
+		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
+		Assert.assertEquals("Testing the number of observations", 30 * 2, dataset.getNumberOfObservations());
+		BioSimClient.resetClientConfiguration();
+	}
+
 }
