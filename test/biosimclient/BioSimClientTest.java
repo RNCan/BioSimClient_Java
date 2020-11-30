@@ -67,13 +67,13 @@ public class BioSimClientTest {
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, false, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, 1, false, null);
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, false, null);
+			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, 1, false, null);
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));
@@ -111,7 +111,7 @@ public class BioSimClientTest {
 		}
 
 		try {
-			BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, false, null);
+			BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, 1, false, null);
 			Assert.fail("Should have thrown an exception");
 		} catch (BioSimClientException e) {
 			Assert.assertTrue("Testing if the proper exception has been thrown", e.getMessage().startsWith("The maximum number of locations"));
@@ -138,13 +138,31 @@ public class BioSimClientTest {
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(2000, 2019, locations, null, null, "DegreeDay_Annual", 1, false, null);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(2000, 
+				2019, 
+				locations, 
+				null, 
+				null, 
+				"DegreeDay_Annual", 
+				1, 
+				1, 
+				false, 
+				null);
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(2000, 2019, locations, null, null, "DegreeDay_Annual", 1, false, null);
+			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(2000, 
+					2019, 
+					locations, 
+					null, 
+					null, 
+					"DegreeDay_Annual", 
+					1,
+					1, 
+					false, 
+					null);
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));	// testing that the computational time is five times faster when the memorization is used.
@@ -200,7 +218,16 @@ public class BioSimClientTest {
 			locations.add(loc);
 		}
 		
-		BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, false, null);
+		BioSimClient.getModelOutput(2018, 
+				2019, 
+				locations, 
+				null, 
+				null, 
+				"DegreeDay_Annual", 
+				1, 
+				1,
+				false, 
+				null);
 		
 		System.out.println("Nb objects immediately before eventual shutdown hook = " + BioSimClient.getNbWgoutObjectsOnServer());
 		System.out.println("Calling eventual shutdown hook...");

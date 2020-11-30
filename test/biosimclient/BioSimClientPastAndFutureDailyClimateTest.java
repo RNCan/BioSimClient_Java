@@ -63,6 +63,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 				double d2 = (Double) secondDataSet.getValueAt(i, ddFieldIndex);
 				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
 				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
+				@SuppressWarnings("unused")
 				int dateYr = (Integer) firstDataSet.getValueAt(i, dateFieldIndex);
 				if (dataType1.equals("Real_Data")) {
 					Assert.assertTrue("Testing if was taken from observation", dataType2.equals("Real_Data"));
