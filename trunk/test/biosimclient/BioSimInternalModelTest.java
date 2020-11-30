@@ -61,7 +61,16 @@ public class BioSimInternalModelTest {
 //					if (model.equals("Spruce_Budworm_Dispersal")) {
 //						int u = 0;
 //					}
-					Map<BioSimPlot, BioSimDataSet> output = BioSimClient.getModelOutput(2015, 2019, locations, null, null, model, 1, false, null);					
+					Map<BioSimPlot, BioSimDataSet> output = BioSimClient.getModelOutput(2015, 
+							2019, 
+							locations, 
+							null, 
+							null, 
+							model, 
+							1, 
+							1, 
+							false, 
+							null);					
 					for (BioSimDataSet ds : output.values()) {
 						Assert.assertTrue("Testing if DataSet instance has at least one observation", ds.getNumberOfObservations() > 0);
 						System.out.println(" - Ok ");

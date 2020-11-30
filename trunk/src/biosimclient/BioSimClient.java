@@ -780,7 +780,7 @@ public final class BioSimClient {
 	 * @param modelName a string representing the model name
 	 * @param rcp an RCP enum variable (by default RCP 4.5)
 	 * @param climMod a ClimateModel enum variable (by default RCM 4)
-	 * @param rep the number of replicates if needed. Should be equal to or greater than 1. 
+	 * @param rep the number of replicates in climate generation if needed. Should be equal to or greater than 1. 
 	 * @param additionalParms a BioSimParameterMap instance that contains the eventual additional parameters for the model
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
 	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
@@ -793,7 +793,7 @@ public final class BioSimClient {
 			String modelName,
 			int rep,
 			BioSimParameterMap additionalParms)	throws BioSimClientException, BioSimServerException {
-		return BioSimClient.getModelOutput(fromYr, toYr, locations, rcp, climMod, modelName, rep, true, additionalParms); // ephemeral mode enabled
+		return BioSimClient.getModelOutput(fromYr, toYr, locations, rcp, climMod, modelName, rep, 1, true, additionalParms); // ephemeral mode enabled
 	}
 
 	
@@ -826,7 +826,7 @@ public final class BioSimClient {
 			String modelName,
 			BioSimParameterMap additionalParms)
 			throws BioSimClientException, BioSimServerException {
-		return BioSimClient.getModelOutput(fromYr, toYr, locations, rcp, climMod, modelName, 1, true, additionalParms);
+		return BioSimClient.getModelOutput(fromYr, toYr, locations, rcp, climMod, modelName, 1, 1, true, additionalParms);
 	}
 
 	
@@ -852,7 +852,8 @@ public final class BioSimClient {
 	 * @param rcp an RCP enum variable (by default RCP 4.5)
 	 * @param climMod a ClimateModel enum variable (by default RCM 4)
 	 * @param modelName a string representing the model name
-	 * @param rep the number of replicates if needed. Should be equal to or greater than 1. 
+	 * @param rep the number of replicates in climate generation if needed. Should be equal to or greater than 1. 
+	 * @param repModel the number of replicates in the model if needed. Should be equal to or greater than 1. 
 	 * @param isEphemeral a boolean that overrides the storage procedure on the server
 	 * @param additionalParms a BioSimParameterMap instance that contains the eventual additional parameters for the model
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
@@ -865,6 +866,7 @@ public final class BioSimClient {
 			ClimateModel climMod,
 			String modelName,
 			int rep,
+			int repModel,
 			boolean isEphemeral,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		if (rep < 1) {
