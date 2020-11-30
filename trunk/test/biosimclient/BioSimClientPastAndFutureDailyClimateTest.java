@@ -64,14 +64,12 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
 				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
 				int dateYr = (Integer) firstDataSet.getValueAt(i, dateFieldIndex);
-				if (dateYr >= initialDateYr && dateYr < 2020) {		// From observation
-					Assert.assertTrue("Testing if was taken from observation", dataType1.contains("Real_Data"));
-					Assert.assertTrue("Testing if was taken from observation", dataType2.contains("Real_Data"));
+				if (dataType1.equals("Real_Data")) {
+					Assert.assertTrue("Testing if was taken from observation", dataType2.equals("Real_Data"));
 					Assert.assertEquals("Testing if the degree-days are the same before 2020", 
 							d1,	d2, 1E-8);
-				} else {											// generated from normals
-					Assert.assertTrue("Testing if was simulated", dataType1.contains("Simulated"));
-					Assert.assertTrue("Testing if was simulated", dataType2.contains("Simulated"));
+				} else if (dataType1.equals("Simulated")) {
+					Assert.assertTrue("Testing if was simulated", dataType2.equals("Simulated"));
 					Assert.assertTrue("Testing that the degree-days are different for 2020 and after",
 							Math.abs(d1 - d2) > 1E-8);
 				}
