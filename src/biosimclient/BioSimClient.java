@@ -441,24 +441,13 @@ public final class BioSimClient {
 //		return variablesQuery;
 //	}
 
-	/**
-	 * Generate climate variable and apply a particular model on these generated variables.
-	 * 
-	 * This method is based on the ephemeral mode. The generated climate variables are not 
-	 * cached.
-	 * 
-	 * @param modelName  the name of the model
-	 * @param teleIORefs a LinkedHashMap with the references to the TeleIO objects on the server
-	 * @param additionalParms a BioSimParameterMap instance that contains the eventual additional parameters for the model
-	 * @return a LinkedHashMap with BioSimPlot instances as keys and a Map with years and climate variables values as values.
-	 * @throws BioSimClientException
-	 */
 	static LinkedHashMap<BioSimPlot, BioSimDataSet> applyModel(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations,
 			RCP rcp,
 			ClimateModel climModel,
 			int rep,
+			int repModel,
 			String modelName,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		String query = constructCoordinatesQuery(locations);
@@ -486,6 +475,9 @@ public final class BioSimClient {
 		}
 		
 		query += "&model=" + modelName;
+		if (repModel >  1) {
+			query += "&repmodel=" + repModel;
+		}
 		if (additionalParms != null) {
 			query += "&" + additionalParms.parse();
 		}
@@ -630,6 +622,7 @@ public final class BioSimClient {
 	 * Applies a particular model on some generated climate variables.
 	 * 
 	 * @param modelName  the name of the model
+	 * @param repModel the number of replications for the model
 	 * @param teleIORefs a LinkedHashMap with the references to the TeleIO objects on the server
 	 * @param additionalParms a BioSimParameterMap instance that contains the eventual additional parameters for the model
 	 * @return a LinkedHashMap with BioSimPlot instances as keys and a Map with years and climate variables values as values.
@@ -637,14 +630,13 @@ public final class BioSimClient {
 	 */
 	static LinkedHashMap<BioSimPlot, BioSimDataSet> applyModel(
 			String modelName,
+			int repModel,
 			LinkedHashMap<BioSimPlot, String> teleIORefs,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		if (!getReferenceModelList().contains(modelName)) {
 			throw new InvalidParameterException("The model " + modelName
 					+ " is not a valid model. Please consult the list of models through the function getModelList()");
 		}
-//		boolean compress = false; // disabling compression
-
 		String wgoutQuery = "";
 		List<BioSimPlot> refListForLocations = new ArrayList<BioSimPlot>();
 		for (BioSimPlot location : teleIORefs.keySet()) {
@@ -659,12 +651,10 @@ public final class BioSimClient {
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 		String query = "";
 		query += "model=" + modelName;
-//		if (compress) {
-//			query += "&compress=1";
-//		} else {
-//			query += "&compress=0";
-//		}
 		query += "&wgout=" + wgoutQuery;
+		if (repModel >  1) {
+			query += "&repmodel=" + repModel;
+		}
 		if (additionalParms != null) {
 			query += "&" + additionalParms.parse();
 		}
@@ -722,6 +712,7 @@ public final class BioSimClient {
 			ClimateModel climMod,
 			String modelName, 
 			int rep,
+			int repModel,
 			boolean isEphemeral,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		Map<BioSimPlot, String> alreadyGeneratedClimate = new HashMap<BioSimPlot, String>();
@@ -729,7 +720,7 @@ public final class BioSimClient {
 		
 		if (isEphemeral) {
 			locationsToGenerate.addAll(locations);
-			return BioSimClient.applyModel(fromYr, toYr, locationsToGenerate, rcp, climMod, rep, modelName, additionalParms);
+			return BioSimClient.applyModel(fromYr, toYr, locationsToGenerate, rcp, climMod, rep, repModel, modelName, additionalParms);
 		} else { // here we retrieve what is already available
 			for (BioSimPlot location : locations) {
 				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep, ForceClimateGenerationEnabled);
@@ -757,7 +748,7 @@ public final class BioSimClient {
 			for (BioSimPlot location : locations) {
 				mapForModels.put(location, generatedClimate.get(location));
 			}
-			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.applyModel(modelName, mapForModels, additionalParms);
+			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = BioSimClient.applyModel(modelName, repModel, mapForModels, additionalParms);
 			return resultingMap;
 		}
 
@@ -869,8 +860,8 @@ public final class BioSimClient {
 			int repModel,
 			boolean isEphemeral,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
-		if (rep < 1) {
-			throw new InvalidParameterException("The rep parameter should be equal to or greater than 1!");
+		if (rep < 1 || repModel < 1) {
+			throw new InvalidParameterException("The rep and repModel parameters should be equal to or greater than 1!");
 		} 
 		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
@@ -884,12 +875,12 @@ public final class BioSimClient {
 				while (!copyList.isEmpty() && subList.size() < BioSimClient.getMaximumNbLocationsPerBatchWeatherGeneration()) {
 					subList.add(copyList.remove(0));
 				}
-				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelName, rep, isEphemeral, additionalParms));
+				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelName, rep, repModel, isEphemeral, additionalParms));
 				subList.clear();
 			}
 			return resultingMap;
 		} else {
-			return internalCalculationForClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, rep, isEphemeral, additionalParms);
+			return internalCalculationForClimateVariables(fromYr, toYr, locations, rcp, climMod, modelName, rep, repModel, isEphemeral, additionalParms);
 		}
 	}
 	

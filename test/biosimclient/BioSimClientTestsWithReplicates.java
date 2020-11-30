@@ -119,4 +119,25 @@ public class BioSimClientTestsWithReplicates {
 		BioSimClient.resetClientConfiguration();
 	}
 
+
+	@Test
+	public void test1981to2010_2repOnTheModelEnd() throws BioSimClientException, BioSimServerException {
+		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "DegreeDay_Annual", 1, 2, true, null);
+		for (BioSimPlot l : locations) {
+			BioSimDataSet dataset = climateOutput.get(l); 
+			Assert.assertEquals("Testing the number of observations", 30 * 2, dataset.getNumberOfObservations());
+		}
+	}
+	
+	@Test
+	public void test1981to2010_2repOnWGPlus2repTheModelEnd() throws BioSimClientException, BioSimServerException {
+		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "DegreeDay_Annual", 2, 2, true, null);
+		for (BioSimPlot l : locations) {
+			BioSimDataSet dataset = climateOutput.get(l); 
+			Assert.assertEquals("Testing the number of observations", 30 * 4, dataset.getNumberOfObservations());
+		}
+	}
+	
 }
