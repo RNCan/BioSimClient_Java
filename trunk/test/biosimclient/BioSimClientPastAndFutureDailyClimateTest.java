@@ -198,7 +198,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 				double d2 = (Double) secondDataSet.getValueAt(i, ddFieldIndex);;
 				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
 				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
-				Assert.assertTrue("Testing that the degree-days are different for 2020 and after", Math.abs(d1 - d2) > 1E-8);
+				Assert.assertTrue("Testing that the degree-days are different for all years", Math.abs(d1 - d2) > 1E-8);
 				Assert.assertTrue("Testing if was simulated", dataType1.contains("Simulated"));
 				Assert.assertTrue("Testing if was simulated", dataType2.contains("Simulated"));
 			}
