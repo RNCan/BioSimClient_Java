@@ -61,7 +61,7 @@ public class BioSimClientShutdownHookTest {
 
 
 	@Test
-	public void textClearCacheAndShutdownHook() throws Exception {
+	public void testClearCacheAndShutdownHook() throws Exception {
 		BioSimClientShutdownHookTest.testingWithDegreeDaysAbove5C(2000, 2005);
 		BioSimClient.clearCache();
 		Map copy = BioSimClient.GeneratedClimateMap;

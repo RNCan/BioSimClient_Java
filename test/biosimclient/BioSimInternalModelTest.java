@@ -28,63 +28,110 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import repicea.serial.xml.XmlDeserializer;
+import repicea.util.ObjectUtility;
+
 
 public class BioSimInternalModelTest {
 
 	
 	@Test
-	public void testingIfReturnDataSetHasAtLeastOneObservation() throws NoSuchMethodException, SecurityException, BioSimClientException, BioSimServerException {
+	public void testingEachModel() throws NoSuchMethodException, SecurityException, BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		for (int i = 0; i < 1; i++) {
-			BioSimFakeLocation loc = new BioSimFakeLocation(45 + BioSimClientTest.RANDOM.nextDouble() * 7,
-					-74 + BioSimClientTest.RANDOM.nextDouble() * 8,
-					300 + BioSimClientTest.RANDOM.nextDouble() * 400);
-			locations.add(loc);
-		}
+		locations.add(new BioSimFakeLocation(45, -74, 300));
 		
 		int nbFailures = 0;
 		int nbSuccesses = 0;
 		List<String> modelList = BioSimClient.getModelList();
 		for (String model : modelList) {
-//			if (!model.equals("ForestTentCaterpillar") // can cause an Exception on the server side
-//					&& !model.equals("HWA_Phenology") // can cause an Exception on the server side
-//					&& !model.equals("Insect_Development_Database_II")  // can cause an Exception on the server side
-//					&& !model.equals("Insect_Development_Database_III")  // can cause an Exception on the server side
-//					&& !model.equals("PlantHardiness")	// bad number of parameters 
-//					&& !model.equals("Climdex_Annual")  // the base period is not inside the simulation period
-//					&& !model.equals("Climdex_Monthly") // the base period is not inside the simulation period
-//					&& !model.equals("Spruce_Budworm_Dispersal") // encoding cause an exception from Python to C++ 
-//					) { 
-//			model = "MPB_Cold_Tolerance_Annual";
-				System.out.print("Testing model: " + model);
-				try {
-//					if (model.equals("Spruce_Budworm_Dispersal")) {
-//						int u = 0;
-//					}
-					Map<BioSimPlot, BioSimDataSet> output = BioSimClient.getModelOutput(2015, 
-							2019, 
-							locations, 
-							null, 
-							null, 
-							model, 
-							1, 
-							1, 
-							false, 
-							null);					
-					for (BioSimDataSet ds : output.values()) {
-						Assert.assertTrue("Testing if DataSet instance has at least one observation", ds.getNumberOfObservations() > 0);
-						System.out.println(" - Ok ");
-						nbSuccesses++;
+			System.out.print("Testing model: " + model);
+			try {
+//				if (model.equals("MPB_SLR")) {
+//					int u = 0;
+//				}
+				Map<BioSimPlot, BioSimDataSet> output = BioSimClient.getModelOutput(2018, 
+						2019, 
+						locations, 
+						null, 
+						null, 
+						model, 
+						1, 
+						1, 
+						false, 
+						null);					
+				Assert.assertTrue("There is only one dataset in the output", output.size() == 1);
+				BioSimDataSet obsDataset = output.values().iterator().next();
+				List<Observation> observations = obsDataset.getObservations();
+				String filename = ObjectUtility.getPackagePath(getClass()).replace("bin", "test") + model + "ref.xml";
+//				UNCOMMENT THESE TWO LINES TO UPDATE THE TEST RESULTS
+//				XmlSerializer serializer = new XmlSerializer(filename);
+//				serializer.writeObject(observations);
+				
+				XmlDeserializer deserializer = new XmlDeserializer(filename);
+				List<Observation> references = (List) deserializer.readObject();
+				
+				Assert.assertEquals("Testing dataset have equal size", 
+						observations.size(), 
+						references.size());
+				
+				int nbSuccessful = 0;
+				int nbUnsuccessful = 0;
+				for (int i = 0; i < references.size(); i++) {
+					List<Object> refValues = references.get(i).values;
+					List<Object> obsValues = observations.get(i).values;
+					Assert.assertEquals("Testing observations have equal number of fields", 
+							refValues.size(), 
+							obsValues.size());
+					for (int j = 0; j < refValues.size(); j++) {
+						Object refValue = refValues.get(j);
+						Object obsValue = obsValues.get(j);
+						if (refValue instanceof Number && obsValue instanceof Number) {
+//							Assert.assertEquals("Testing values at line " + i + " field " + j, 
+//									((Number) refValue).doubleValue(), 
+//									((Number) obsValue).doubleValue(),
+//									1E-8);
+							if (Math.abs(((Number) refValue).doubleValue() - ((Number) obsValue).doubleValue()) < 1E-8) {
+								nbSuccessful++;
+							} else {
+								nbUnsuccessful++;
+							}
+						} else {
+//							Assert.assertEquals("Testing observations have equal number of fields", 
+//									refValue, 
+//									obsValue);
+							if (refValue.equals(obsValue)) {
+								nbSuccessful++;
+							} else {
+								nbUnsuccessful++;
+							}
+						}
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					nbFailures++;
-					System.out.println(" - Failed for this reason " + e.toString());
 				}
-//			}
+				nbSuccesses++;
+				int total = nbUnsuccessful + nbSuccessful;
+				System.out.println(" - Number of unsuccessful check = " + nbUnsuccessful + " / " + total);
+			} catch (Exception e) {
+				e.printStackTrace();
+				nbFailures++;
+				System.out.println(" - Failed for this reason " + e.toString());
+			}
 		}
 		System.out.println("Nb of failures = " + nbFailures + "; Nb of successes = " + nbSuccesses);
 		Assert.assertTrue("No exception thrown", nbFailures == 0);
 	}
 	
 }
+
+
+// 10 models with variable results
+
+//Testing model: HemlockLooper - Number of unsuccessful check = 2114 / 16790
+//Testing model: LaricobiusNigrinus - Number of unsuccessful check = 1678 / 16790
+//Testing model: ObliqueBandedLeafroller - Number of unsuccessful check = 3260 / 14600
+//Testing model: Spruce_Budworm_Biology_Annual - Number of unsuccessful check = 1 / 4
+//Testing model: Spruce_Budworm_Biology - Number of unsuccessful check = 1271 / 21170
+//Testing model: Tranosema_OBL_SBW_daily - Number of unsuccessful check = 10935 / 51100
+//Testing model: Western_Spruce_Budworm_annual - Number of unsuccessful check = 14 / 30
+//Testing model: Western_Spruce_Budworm - Number of unsuccessful check = 2887 / 27740
+//Testing model: WhitemarkedTussockMoth - Number of unsuccessful check = 1100 / 14600
+//Testing model: WhitePineWeevil - Number of unsuccessful check = 0 / 10950
