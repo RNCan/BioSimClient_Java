@@ -106,7 +106,7 @@ public final class BioSimClient {
 	}
 
 	static boolean isLocal = false;
-	static boolean isDebug = true;
+	static boolean isDebug = false;
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
 	

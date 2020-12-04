@@ -48,7 +48,7 @@ public class BioSimInternalModelTest {
 		List<String> modelList = BioSimClient.getModelList();
 		for (String model : modelList) {
 			if (!blackList.contains(model)) {
-				System.out.print("Testing model: " + model);
+//				System.out.print("Testing model: " + model);
 				try {
 //					if (model.equals("MPB_SLR")) {
 //						int u = 0;
@@ -113,7 +113,11 @@ public class BioSimInternalModelTest {
 					}
 					nbSuccesses++;
 					int total = nbUnsuccessful + nbSuccessful;
-					System.out.println(" - Number of unsuccessful check = " + nbUnsuccessful + " / " + total);
+					if (nbUnsuccessful > 0) {
+						System.out.println(model + " tested - Number of unsuccessful check = " + nbUnsuccessful + " / " + total);
+					} else {
+						System.out.println(model + " successfully tested");
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					nbFailures++;
@@ -130,6 +134,7 @@ public class BioSimInternalModelTest {
 
 // 10 models with variable results
 
+// On development server
 //Testing model: HemlockLooper - Number of unsuccessful check = 2114 / 16790
 //Testing model: LaricobiusNigrinus - Number of unsuccessful check = 1678 / 16790
 //Testing model: ObliqueBandedLeafroller - Number of unsuccessful check = 3260 / 14600
@@ -139,4 +144,15 @@ public class BioSimInternalModelTest {
 //Testing model: Western_Spruce_Budworm_annual - Number of unsuccessful check = 14 / 30
 //Testing model: Western_Spruce_Budworm - Number of unsuccessful check = 2887 / 27740
 //Testing model: WhitemarkedTussockMoth - Number of unsuccessful check = 1100 / 14600
-//Testing model: WhitePineWeevil - Number of unsuccessful check = 0 / 10950
+
+
+// On production server
+//HemlockLooper tested - Number of unsuccessful check = 2175 / 16790
+//LaricobiusNigrinus tested - Number of unsuccessful check = 1669 / 16790
+//ObliqueBandedLeafroller tested - Number of unsuccessful check = 3027 / 14600
+//Spruce_Budworm_Biology_Annual tested - Number of unsuccessful check = 1 / 4
+//Spruce_Budworm_Biology tested - Number of unsuccessful check = 1357 / 21170
+//Tranosema_OBL_SBW_daily tested - Number of unsuccessful check = 10717 / 51100
+//Western_Spruce_Budworm_annual tested - Number of unsuccessful check = 14 / 30
+//Western_Spruce_Budworm tested - Number of unsuccessful check = 2774 / 27740
+//WhitemarkedTussockMoth tested - Number of unsuccessful check = 867 / 14600
