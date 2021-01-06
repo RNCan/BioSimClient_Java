@@ -2,7 +2,7 @@
  * This file is part of the biosimclient library
  *
  * Author Mathieu Fortin - Canadian Forest Service
- * Copyright (C) 2020 Her Majesty the Queen in right of Canada
+ * Copyright (C) 2020-2021 Her Majesty the Queen in right of Canada
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,13 +21,10 @@
  */
 package biosimclient;
 
-/**
- * A class for exceptions specific to the BioSim server
- * @author Mathieu Fortin - November 2019
- */
-public class BioSimServerException extends BioSimException {
+public class BioSimException extends Exception {
 
-		public BioSimServerException(String message) {
-			super(message);
-		}
+	protected BioSimException(String message) {
+		super(message);
+	}
+	
 }
