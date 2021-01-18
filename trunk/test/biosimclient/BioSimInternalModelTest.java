@@ -29,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import repicea.serial.xml.XmlDeserializer;
+import repicea.serial.xml.XmlSerializer;
 import repicea.util.ObjectUtility;
 
 
@@ -132,18 +133,20 @@ public class BioSimInternalModelTest {
 }
 
 
-// 10 models with variable results
+// 9 models with variable results
 
-// On development server
-//Testing model: HemlockLooper - Number of unsuccessful check = 2114 / 16790
-//Testing model: LaricobiusNigrinus - Number of unsuccessful check = 1678 / 16790
-//Testing model: ObliqueBandedLeafroller - Number of unsuccessful check = 3260 / 14600
-//Testing model: Spruce_Budworm_Biology_Annual - Number of unsuccessful check = 1 / 4
-//Testing model: Spruce_Budworm_Biology - Number of unsuccessful check = 1271 / 21170
-//Testing model: Tranosema_OBL_SBW_daily - Number of unsuccessful check = 10935 / 51100
-//Testing model: Western_Spruce_Budworm_annual - Number of unsuccessful check = 14 / 30
-//Testing model: Western_Spruce_Budworm - Number of unsuccessful check = 2887 / 27740
-//Testing model: WhitemarkedTussockMoth - Number of unsuccessful check = 1100 / 14600
+// On development server as of 2021-01-18
+//HemlockLooper tested - Number of unsuccessful check = 2282 / 16790
+//LaricobiusNigrinus tested - Number of unsuccessful check = 1271 / 16790
+//ObliqueBandedLeafroller tested - Number of unsuccessful check = 2979 / 14600
+//Spruce_Budworm_Biology_Annual tested - Number of unsuccessful check = 1 / 4
+//Spruce_Budworm_Biology tested - Number of unsuccessful check = 1216 / 21170
+//Tranosema_OBL_SBW_daily tested - Number of unsuccessful check = 10686 / 51100
+//Western_Spruce_Budworm_annual tested - Number of unsuccessful check = 13 / 30
+//Western_Spruce_Budworm tested - Number of unsuccessful check = 2818 / 27740
+//WhitemarkedTussockMoth tested - Number of unsuccessful check = 1258 / 14600
+
+
 
 
 // On production server
