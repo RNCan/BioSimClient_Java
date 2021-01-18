@@ -150,12 +150,12 @@ public class BioSimInternalModelTest {
 
 
 // On production server
-//HemlockLooper tested - Number of unsuccessful check = 2175 / 16790
-//LaricobiusNigrinus tested - Number of unsuccessful check = 1669 / 16790
-//ObliqueBandedLeafroller tested - Number of unsuccessful check = 3027 / 14600
+//HemlockLooper tested - Number of unsuccessful check = 2203 / 16790
+//LaricobiusNigrinus tested - Number of unsuccessful check = 1131 / 16790
+//ObliqueBandedLeafroller tested - Number of unsuccessful check = 2968 / 14600
 //Spruce_Budworm_Biology_Annual tested - Number of unsuccessful check = 1 / 4
-//Spruce_Budworm_Biology tested - Number of unsuccessful check = 1357 / 21170
-//Tranosema_OBL_SBW_daily tested - Number of unsuccessful check = 10717 / 51100
+//Spruce_Budworm_Biology tested - Number of unsuccessful check = 1190 / 21170
+//Tranosema_OBL_SBW_daily tested - Number of unsuccessful check = 10911 / 51100
 //Western_Spruce_Budworm_annual tested - Number of unsuccessful check = 14 / 30
-//Western_Spruce_Budworm tested - Number of unsuccessful check = 2774 / 27740
-//WhitemarkedTussockMoth tested - Number of unsuccessful check = 867 / 14600
+//Western_Spruce_Budworm tested - Number of unsuccessful check = 2793 / 27740
+//WhitemarkedTussockMoth tested - Number of unsuccessful check = 938 / 14600
