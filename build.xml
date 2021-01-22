@@ -1,0 +1,103 @@
+<project name="biosimclient">
+
+	<property name="project.name" value="biosimclient" />
+	<property name="ext.dir" value="../externallibraries" />
+	<property name="bin.dir" value="bin" />
+	<property name="src.dir" value="src" />
+	<property name="test.dir" value="test" />
+	<property name="test.rep.dir" value="../testreport" />
+	
+
+	<path id="repicea">
+		<fileset dir="${ext.dir}">
+			<include name="repicea.jar" />
+		</fileset>
+	</path>
+	
+	<path id="junit">
+		<fileset dir="${ext.dir}">
+			<include name="junit-4.12.jar" />
+		</fileset>
+	</path>
+
+	<path id="hamcrest">
+		<fileset dir="${ext.dir}">
+			<include name="hamcrest-core-1.3.jar" />
+		</fileset>
+	</path>
+
+
+    <target name="clean">
+        <delete dir="${bin.dir}"/>
+    </target>
+
+	<!-- COMPILE SOURCES ONLY -->
+    <target name="compile" description="Compile src only" depends="clean">
+        <mkdir dir="${bin.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${bin.dir}"/>
+    </target>
+
+	<!-- COMPILE EVERYTHING SOURCES AND TESTS -->
+    <target name="compile-all" description="Clean and compile src and test" depends="compile">
+        <javac srcdir="${test.dir}" destdir="${bin.dir}">
+			<classpath>
+				<path refid="junit"/>
+				<path refid="repicea"/>
+			</classpath>
+		</javac>
+    </target>
+	
+	<!-- TEST -->
+	<target name="test" description="Run all JUnit tests" depends="compile-all">
+		<mkdir dir="${test.rep.dir}"/>
+		<delete dir="${test.rep.dir}/${project.name}"/>
+		<mkdir dir="${test.rep.dir}/${project.name}"/>
+
+		<junit fork="no" printsummary="yes" showOutput="true" filtertrace="off">
+
+			<classpath>
+				<pathelement location="${bin.dir}" />
+				<path refid="junit"/>
+				<path refid="repicea"/>
+				<path refid="hamcrest"/>
+			</classpath>
+			
+			<formatter type="xml"/>
+			
+			<batchtest fork="no" todir="${test.rep.dir}/${project.name}">
+				<fileset dir="${bin.dir}">
+					<include name="**/*Test*" />
+					<!-- Do not include inner class -->
+					<exclude name="**/*$*" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<junitreport todir="${test.rep.dir}">
+			<fileset dir="${test.rep.dir}/${project.name}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="noframes" todir="${test.rep.dir}" />
+		</junitreport>
+	</target>
+
+
+    <target name="jar" depends="compile">
+        <jar destfile="${ext.dir}/biosimclient.jar">
+			<fileset dir="${bin.dir}"/>
+			<fileset dir="${src.dir}" includes="**/*.java"/>
+			<fileset dir="." includes="COPYING.LESSER.txt"/>
+			<fileset dir="." includes="README.txt"/>
+            <manifest>
+                <attribute name="Built-By" value="Mathieu Fortin"/>
+				<attribute name="Specification-Title" value="A Client for BioSIM Web API"/>
+				<attribute name="Specification-Version" value="1.0.0"/>
+				<attribute name="Specification-Vendor" value="Canadian Wood Fibre Centre"/>
+				<attribute name="Implementation-Title" value="${project.name}"/>
+				<attribute name="Implementation-Version" value="build"/>
+				<attribute name="Implementation-Vendor" value="Canadian Wood Fibre Centre"/>
+            </manifest>
+        </jar>
+    </target>
+
+
+</project>
