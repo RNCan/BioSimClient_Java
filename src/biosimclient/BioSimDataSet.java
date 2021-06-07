@@ -261,4 +261,36 @@ public class BioSimDataSet implements Serializable {
 		return monthMap.getMeanForTheseMonths(months);
 	}
 
+	public static BioSimDataSet convertLinkedHashMapToBioSimDataSet(LinkedHashMap<BioSimPlot, BioSimDataSet> map) {
+		BioSimDataSet outputDataSet = null;
+		List<Object> observation = new ArrayList<Object>();
+		int plotId = 0;
+		for (BioSimPlot plot : map.keySet()) {
+			plotId++;
+			BioSimDataSet dataSet = map.get(plot);
+			if (outputDataSet == null) {
+				List<String> fieldNames = new ArrayList<String>();
+				fieldNames.add("KeyID");
+				fieldNames.add("Latitude");
+				fieldNames.add("Longitude");
+				fieldNames.add("Elevation");
+				List<String> fieldNamesInInnerDataSet = dataSet.getFieldNames();
+				fieldNames.addAll(fieldNamesInInnerDataSet);
+				outputDataSet = new BioSimDataSet(fieldNames);
+			}
+			
+			for (Observation innerObs : dataSet.getObservations()) {
+				observation.clear();
+				observation.add(plotId);
+				observation.add(plot.getLatitudeDeg());
+				observation.add(plot.getLongitudeDeg());
+				observation.add(plot.getElevationM());
+				observation.addAll(innerObs.values);
+				outputDataSet.addObservation(observation.toArray());
+			}
+		}
+		return outputDataSet;
+	}
+	
+	
 }
