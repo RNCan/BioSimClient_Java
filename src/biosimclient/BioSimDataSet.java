@@ -270,7 +270,7 @@ public class BioSimDataSet implements Serializable {
 			BioSimDataSet dataSet = map.get(plot);
 			if (outputDataSet == null) {
 				List<String> fieldNames = new ArrayList<String>();
-				fieldNames.add("KeyID");
+				fieldNames.add("InnerKeyID");
 				fieldNames.add("Latitude");
 				fieldNames.add("Longitude");
 				fieldNames.add("Elevation");
