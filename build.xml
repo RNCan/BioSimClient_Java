@@ -19,25 +19,13 @@
 	</path>
 
 	<path id="repicea">
-		<fileset dir="${ext.dir}">
-			<include name="repicea.jar" />
+		<fileset dir="${ext.dir}/repicea">
+			<include name="*.jar" />
 		</fileset>
 	</path>
 	
 	<path id="junit">
-		<fileset dir="${ext.dir}">
-			<include name="junit.jar" />
-		</fileset>
-	</path>
-
-	<path id="hamcrest">
-		<fileset dir="${ext.dir}">
-			<include name="hamcrest-core.jar" />
-		</fileset>
-	</path>
-
-	<path id="jaxb">
-		<fileset dir="${ext.dir}/jaxb-ri/mod">
+		<fileset dir="${ext.dir}/junit4">
 			<include name="*.jar" />
 		</fileset>
 	</path>
@@ -112,9 +100,7 @@
 			<classpath>
 				<pathelement location="${bin.dir}" />
 				<path refid="repicea"/>
-				<path refid="jaxb"/>
 				<path refid="junit"/>
-				<path refid="hamcrest"/>
 			</classpath>
 			
 			<formatter type="xml"/>
@@ -148,9 +134,7 @@
 				<pathelement location="${bin.dir}" />
 				<path refid="myJARFile"/>
 				<path refid="repicea"/>
-				<path refid="jaxb"/>
 				<path refid="junit"/>
-				<path refid="hamcrest"/>
 			</classpath>
 			
 			<formatter type="xml"/>
