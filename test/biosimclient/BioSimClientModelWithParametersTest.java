@@ -35,7 +35,6 @@ public class BioSimClientModelWithParametersTest {
 	/*
 	 * Tests if the weather generation over past and future time intervals.
 	 */
-	@Ignore
 	@Test
 	public void testingWithDegreeDaysAbove5C() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
