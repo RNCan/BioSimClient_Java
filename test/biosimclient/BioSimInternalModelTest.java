@@ -21,6 +21,9 @@
  */
 package biosimclient;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +31,19 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import repicea.serial.xml.XmlDeserializer;
-import repicea.serial.xml.XmlSerializer;
-import repicea.util.ObjectUtility;
-
 
 public class BioSimInternalModelTest {
 
+	public static final String PathSeparator = "/";
+
+	private String getPackagePath(Class anyClass) throws URISyntaxException {
+		String binPath = anyClass.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		int lastPathSeparator = binPath.lastIndexOf(PathSeparator);
+		binPath = binPath.substring(0, lastPathSeparator).concat(PathSeparator);
+		String relativePackagePath = anyClass.getPackage().getName().replace(".", PathSeparator) + PathSeparator;
+		String packagePath = binPath.concat(relativePackagePath);
+		return packagePath;
+	}
 	
 	@Test
 	public void testingEachModelExceptPlanHardiness() throws NoSuchMethodException, SecurityException, BioSimClientException, BioSimServerException {
@@ -67,14 +76,18 @@ public class BioSimInternalModelTest {
 					Assert.assertTrue("There is only one dataset in the output", output.size() == 1);
 					BioSimDataSet obsDataset = output.values().iterator().next();
 					List<Observation> observations = obsDataset.getObservations();
-					String filename = ObjectUtility.getPackagePath(getClass()).replace("bin", "test") + model + "ref.xml";
+					String filename = getPackagePath(getClass()).replace("bin", "test") + model + "ref.ser";
+					
 //					UNCOMMENT THESE TWO LINES TO UPDATE THE TEST RESULTS
-//					XmlSerializer serializer = new XmlSerializer(filename);
-//					serializer.writeObject(observations);
+//					FileOutputStream fos = new FileOutputStream(filename);
+//					ObjectOutputStream oos = new ObjectOutputStream(fos);
+//					oos.writeObject(observations);
+//					oos.close();
 					
-					XmlDeserializer deserializer = new XmlDeserializer(filename);
-					List<Observation> references = (List) deserializer.readObject();
-					
+					FileInputStream fis = new FileInputStream(filename);
+					ObjectInputStream ois = new ObjectInputStream(fis);
+					List<Observation> references = (List) ois.readObject();
+					ois.close();	
 					Assert.assertEquals("Testing dataset have equal size", 
 							observations.size(), 
 							references.size());
