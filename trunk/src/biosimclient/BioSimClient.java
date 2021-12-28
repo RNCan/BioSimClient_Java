@@ -122,7 +122,7 @@ public final class BioSimClient {
 
 	
 	
-	private static synchronized String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
+	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 		long initTime = System.currentTimeMillis();
 		InetSocketAddress address;
 		if (isDebug) {
@@ -140,11 +140,11 @@ public final class BioSimClient {
 			int code = connection.getResponseCode();
 			
 			if (code >= 400 && code < 500) { // client error
-				String msg = getCompleteString(connection, true);
+				String msg = getCompleteString(connection, true).toString();
 				throw new BioSimClientException("Code " + code + ": " + msg);
 			}
 			if (code >= 500 && code < 600) { // server error
-				String msg = getCompleteString(connection, true);
+				String msg = getCompleteString(connection, true).toString();
 				throw new BioSimServerException("Code " + code + ": " + msg);
 			}
 			// TODO handle other codes here
@@ -162,8 +162,9 @@ public final class BioSimClient {
 	}
 
 
-	private static String getCompleteString(HttpURLConnection connection, boolean isError) {
+	private static BioSimStringList getCompleteString(HttpURLConnection connection, boolean isError) {
 		long initTime = System.currentTimeMillis();
+		BioSimStringList stringList = new BioSimStringList();
 		try {
 			InputStream is;
 			if (isError) { 
@@ -172,23 +173,16 @@ public final class BioSimClient {
 				is = connection.getInputStream();
 			}
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			StringBuilder completeString = new StringBuilder();
 			String lineStr;
-			int line = 0;
 			while ((lineStr = br.readLine()) != null) {
-				if (line == 0) {
-					completeString.append(lineStr);
-				} else {
-					completeString.append("\n" + lineStr);
-				}
-				line++;
+				stringList.add(lineStr);
 			}
 			br.close();
 			System.out.println("Time to make the complete string: " + (System.currentTimeMillis() - initTime) + " ms.");
-			return completeString.toString();
 		} catch (IOException e) {
-			return "";
+			stringList.add(e.getMessage());
 		}
+		return stringList;
 	}
 	
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForNormals(Period period,
@@ -209,7 +203,7 @@ public final class BioSimClient {
 			query += "&climMod=" + climModel.name();
 		}
 		
-		String serverReply = BioSimClient.getStringFromConnection(NORMAL_API, query);
+		BioSimStringList serverReply = BioSimClient.getStringFromConnection(NORMAL_API, query);
 		
 		readLines(serverReply, "month", locations, outputMap);
 
@@ -338,7 +332,7 @@ public final class BioSimClient {
 	}
 
 	static int getNbWgoutObjectsOnServer() throws Exception {
-		String serverReply = getStringFromConnection(BIOSIMMEMORYLOAD_API, null);
+		String serverReply = getStringFromConnection(BIOSIMMEMORYLOAD_API, null).toString();
 		try {
 			return Integer.parseInt(serverReply);
 		} catch (NumberFormatException e) {
@@ -351,7 +345,7 @@ public final class BioSimClient {
 	 * @return
 	 */
 	private static int getMaxNbWgoutObjectsOnServer() throws Exception {
-		String serverReply = getStringFromConnection(BIOSIMMAXMEMORY_API, null);
+		String serverReply = getStringFromConnection(BIOSIMMAXMEMORY_API, null).toString();
 		try {
 			return Integer.parseInt(serverReply);
 		} catch (NumberFormatException e) {
@@ -475,7 +469,7 @@ public final class BioSimClient {
 			query += "&" + additionalParms.parse();
 		}
 		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
-		String serverReply = getStringFromConnection(EPHEMERAL_API, query);
+		BioSimStringList serverReply = getStringFromConnection(EPHEMERAL_API, query);
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 		initTime = System.currentTimeMillis();
 		readLines(serverReply, "rep", locations, outputMap);
@@ -505,18 +499,9 @@ public final class BioSimClient {
 			RCP rcp,
 			ClimateModel climModel,
 			int rep) throws BioSimClientException, BioSimServerException {
-//		boolean compress = false; // disabling compression by default
 		LinkedHashMap<BioSimPlot, String> outputMap = new LinkedHashMap<BioSimPlot, String>();
 
-//		String variablesQuery = getVariablesQuery(Arrays.asList(Variable.values()));
-		
 		String query = constructCoordinatesQuery(locations);
-//		query += "&var=" + variablesQuery;
-//		if (compress) {
-//			query += "&compress=1";
-//		} else {
-//			query += "&compress=0";
-//		}
 		query += "&from=" + fromYr;
 		query += "&to=" + toYr;
 		if (rcp != null) {
@@ -540,9 +525,7 @@ public final class BioSimClient {
 			query += "&rep=" + rep;
 		}
 		
-//		System.out.println("Sending request!");
-		String serverReply = getStringFromConnection(GENERATOR_API, query);
-
+		String serverReply = getStringFromConnection(GENERATOR_API, query).toString();
 		String[] ids = serverReply.split(" ");
 		if (ids.length != locations.size()) {
 			throw new BioSimClientException("The number of wgout ids is different from the number of locations!");
@@ -575,7 +558,7 @@ public final class BioSimClient {
 		if (modelName == null) {
 			throw new InvalidParameterException("THe modelName parameter cannot be set to null!");
 		}
-		String serverReply = getStringFromConnection(BIOSIMMODELHELP, "model=" + modelName);
+		String serverReply = getStringFromConnection(BIOSIMMODELHELP, "model=" + modelName).toString();
 		return serverReply;
 	}
 
@@ -584,7 +567,7 @@ public final class BioSimClient {
 		if (modelName == null) {
 			throw new InvalidParameterException("THe modelName parameter cannot be set to null!");
 		}
-		String serverReply = getStringFromConnection(BIOSIMMODELDEFAULTPARAMETERS, "model=" + modelName);
+		String serverReply = getStringFromConnection(BIOSIMMODELDEFAULTPARAMETERS, "model=" + modelName).toString();
 		String[] parms = serverReply.split(FieldSeparator);
 		BioSimParameterMap parmMap = new BioSimParameterMap();
 		for (String parm : parms) {
@@ -601,9 +584,8 @@ public final class BioSimClient {
 	private static List<String> getReferenceModelList() throws BioSimClientException, BioSimServerException {
 		if (ReferenceModelList == null) {
 			List<String> myList = new ArrayList<String>();
-			String modelList = BioSimClient.getStringFromConnection(BioSimClient.MODEL_LIST_API, null);
-			String[] models = modelList.split("\n");
-			for (String model : models) {
+			BioSimStringList modelList = BioSimClient.getStringFromConnection(BioSimClient.MODEL_LIST_API, null);
+			for (String model : modelList) {
 				myList.add(model);
 			}
 			ReferenceModelList = new ArrayList<String>();
@@ -654,7 +636,7 @@ public final class BioSimClient {
 			query += "&" + additionalParms.parse();
 		}
 
-		String serverReply = getStringFromConnection(MODEL_API, query);
+		BioSimStringList serverReply = getStringFromConnection(MODEL_API, query);
 		
 		readLines(serverReply, "rep", refListForLocations, outputMap);
 		
@@ -662,16 +644,15 @@ public final class BioSimClient {
 	}
 
 	
-	private static void readLines(String serverReply,
+	private static void readLines(BioSimStringList serverReply,
 			String fieldLineStarter,
 			List<BioSimPlot> refListForLocations,
 			LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap) throws BioSimClientException, BioSimServerException {
-		String[] lines = serverReply.split("\n");
 		BioSimDataSet dataSet = null;
 		int locationId = 0;
 		BioSimPlot location = null;
 		boolean properlyInitialized = false;
-		for (String line : lines) {
+		for (String line : serverReply) {
 			if (line.toLowerCase().startsWith("error")) {
 				throw new BioSimServerException(line);
 			} else if (line.toLowerCase().startsWith(fieldLineStarter)) { // means it is a new location
@@ -687,7 +668,7 @@ public final class BioSimClient {
 				properlyInitialized = true;
 			} else {
 				if (!properlyInitialized) {
-					throw new BioSimClientException(serverReply);
+					throw new BioSimClientException(serverReply.toString());
 				} else {
 					Object[] fields = Arrays.asList(line.split(FieldSeparator)).toArray(new Object[]{});
 					dataSet.addObservation(fields);
@@ -887,7 +868,7 @@ public final class BioSimClient {
 
 	private static void setMaxCapacities() throws BioSimClientException, BioSimServerException {
 		if (MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION == -1 || MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS == -1) {
-			String serverReply = getStringFromConnection(BIOSIMMAXCOORDINATES, null);
+			String serverReply = getStringFromConnection(BIOSIMMAXCOORDINATES, null).toString();
 			try {
 				String[] maxCapacities = serverReply.split(FieldSeparator);
 				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[0]);
@@ -956,10 +937,5 @@ public final class BioSimClient {
 		}
 	}
 	
-	public static void main(String[] args) throws BioSimClientException, BioSimServerException {
-//		List<String> modelList = BioSimClient.getModelList();
-//		System.out.print(BioSimClient.getModelDefaultParameters(modelList.get(0)));
-		System.out.print(BioSimClient.getModelDefaultParameters("Spruce_Budworm_Biology"));
-	}
 	
 }
