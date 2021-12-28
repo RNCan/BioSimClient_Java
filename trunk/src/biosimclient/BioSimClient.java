@@ -173,6 +173,7 @@ public final class BioSimClient {
 			String lineStr;
 			int line = 0;
 			while ((lineStr = br.readLine()) != null) {
+				// TODO MF2021-12-26 Use a StringBuilder instead
 				if (line == 0) {
 					completeString += lineStr;
 
