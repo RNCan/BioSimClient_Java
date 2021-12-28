@@ -123,6 +123,7 @@ public final class BioSimClient {
 	
 	
 	private static synchronized String getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
+		long initTime = System.currentTimeMillis();
 		InetSocketAddress address;
 		if (isDebug) {
 			address = BioSimClient.DebugAddress;
@@ -147,6 +148,7 @@ public final class BioSimClient {
 				throw new BioSimServerException("Code " + code + ": " + msg);
 			}
 			// TODO handle other codes here
+			System.out.println("Time for server to process request: " + (System.currentTimeMillis() - initTime) + " ms");
 			return getCompleteString(connection, false);
 		} catch (MalformedURLException e) {
 			throw new BioSimClientException("Malformed URL: " + e.getMessage());
@@ -161,6 +163,7 @@ public final class BioSimClient {
 
 
 	private static String getCompleteString(HttpURLConnection connection, boolean isError) {
+		long initTime = System.currentTimeMillis();
 		try {
 			InputStream is;
 			if (isError) { 
@@ -169,21 +172,20 @@ public final class BioSimClient {
 				is = connection.getInputStream();
 			}
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			String completeString = "";
+			StringBuilder completeString = new StringBuilder();
 			String lineStr;
 			int line = 0;
 			while ((lineStr = br.readLine()) != null) {
-				// TODO MF2021-12-26 Use a StringBuilder instead
 				if (line == 0) {
-					completeString += lineStr;
-
+					completeString.append(lineStr);
 				} else {
-					completeString += "\n" + lineStr;
+					completeString.append("\n" + lineStr);
 				}
 				line++;
 			}
 			br.close();
-			return completeString;
+			System.out.println("Time to make the complete string: " + (System.currentTimeMillis() - initTime) + " ms.");
+			return completeString.toString();
 		} catch (IOException e) {
 			return "";
 		}
@@ -430,17 +432,6 @@ public final class BioSimClient {
 		}
 	}
 	
-//	private static String getVariablesQuery(List<Variable> variables) {		
-//		String variablesQuery = "";
-////		List<Variable> variables = Arrays.asList(Variable.values());
-//		for (Variable v : variables) {
-//			variablesQuery += v.name();
-//			if (variables.indexOf(v) < variables.size() - 1) {
-//				variablesQuery += SPACE_IN_REQUEST;
-//			}
-//		}
-//		return variablesQuery;
-//	}
 
 	static LinkedHashMap<BioSimPlot, BioSimDataSet> applyModel(int fromYr, 
 			int toYr,
@@ -451,6 +442,7 @@ public final class BioSimClient {
 			int repModel,
 			String modelName,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
+		long initTime = System.currentTimeMillis();
 		String query = constructCoordinatesQuery(locations);
 		query += "&from=" + fromYr;
 		query += "&to=" + toYr;
@@ -482,10 +474,12 @@ public final class BioSimClient {
 		if (additionalParms != null) {
 			query += "&" + additionalParms.parse();
 		}
-		
+		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
 		String serverReply = getStringFromConnection(EPHEMERAL_API, query);
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
+		initTime = System.currentTimeMillis();
 		readLines(serverReply, "rep", locations, outputMap);
+		System.out.println("Time to convert string into biosim dataset: " + (System.currentTimeMillis() - initTime) + " ms.");
 		return outputMap;
 	}
 
