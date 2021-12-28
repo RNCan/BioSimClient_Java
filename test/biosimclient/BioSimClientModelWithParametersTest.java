@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -34,6 +35,7 @@ public class BioSimClientModelWithParametersTest {
 	/*
 	 * Tests if the weather generation over past and future time intervals.
 	 */
+	@Ignore
 	@Test
 	public void testingWithDegreeDaysAbove5C() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
@@ -67,6 +69,16 @@ public class BioSimClientModelWithParametersTest {
 	}
 
 
+	/*
+	 * Tests if the weather generation over past and future time intervals.
+	 */
+	@Test
+	public void testingWithDegreeDaysAbove5CLong() throws BioSimClientException, BioSimServerException {
+		int initialDateYr = 1980;
+		BioSimParameterMap parms = new BioSimParameterMap();
+		parms.addParameter("LowerThreshold", 5);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2020, BioSimClientTestsOnNormals.getPlots(), null, null, "DegreeDay_Daily", parms);
+	}
 	
 	
 	
