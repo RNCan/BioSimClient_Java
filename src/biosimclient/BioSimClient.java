@@ -192,18 +192,18 @@ public final class BioSimClient {
 			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 
-		String query = constructCoordinatesQuery(locations);
-		query += "&" + period.parsedQuery;
+		StringBuilder query = constructCoordinatesQuery(locations);
+		query.append("&" + period.parsedQuery);
 
 		if (rcp != null) {
-			query += "&rcp=" + rcp.getURLString();
+			query.append("&rcp=" + rcp.getURLString());
 		}
 		
 		if(climModel != null) {
-			query += "&climMod=" + climModel.name();
+			query.append("&climMod=" + climModel.name());
 		}
 		
-		BioSimStringList serverReply = BioSimClient.getStringFromConnection(NORMAL_API, query);
+		BioSimStringList serverReply = BioSimClient.getStringFromConnection(NORMAL_API, query.toString());
 		
 		readLines(serverReply, "month", locations, outputMap);
 
@@ -387,33 +387,25 @@ public final class BioSimClient {
 		return getNormals(period, locations, rcp, climModel, AllMonths);
 	}
 
-	private static String constructCoordinatesQuery(List<BioSimPlot> locations) {
-		String latStr = "";
-		String longStr = "";
-		String elevStr = "";
+	private static StringBuilder constructCoordinatesQuery(List<BioSimPlot> locations) {
+		StringBuilder latStr = new StringBuilder();
+		StringBuilder longStr = new StringBuilder();
+		StringBuilder elevStr = new StringBuilder();
+		String latStrThisLoc, longStrThisLoc, elevStrThisLoc;
 		for (BioSimPlot location : locations) {
-			if (latStr.isEmpty()) {
-				latStr += location.getLatitudeDeg();
-			} else {
-				latStr += SPACE_IN_REQUEST + location.getLatitudeDeg();
-			}
-			if (longStr.isEmpty()) {
-				longStr += location.getLongitudeDeg();
-			} else {
-				longStr += SPACE_IN_REQUEST + location.getLongitudeDeg();
-			}
-			if (elevStr.isEmpty()) {
-				elevStr += processElevationM(location);
-			} else {
-				elevStr += SPACE_IN_REQUEST + processElevationM(location);
-			}
+			latStrThisLoc = latStr.isEmpty() ? "" + location.getLatitudeDeg() : SPACE_IN_REQUEST + location.getLatitudeDeg();
+			latStr.append(latStrThisLoc);
+			longStrThisLoc = longStr.isEmpty() ? "" + location.getLongitudeDeg() : SPACE_IN_REQUEST + location.getLongitudeDeg();
+			longStr.append(longStrThisLoc);
+			elevStrThisLoc = elevStr.isEmpty() ? "" + processElevationM(location) : SPACE_IN_REQUEST + processElevationM(location);
+			elevStr.append(elevStrThisLoc);
 		}
 
-		String query = "";
-		query += "lat=" + latStr;
-		query += "&long=" + longStr;
+		StringBuilder query = new StringBuilder();
+		query.append("lat=" + latStr.toString());
+		query.append("&long=" + longStr.toString());
 		if (!elevStr.isEmpty()) {
-			query += "&elev=" + elevStr;
+			query.append("&elev=" + elevStr.toString());
 		}
 		return query;
 	}
@@ -437,39 +429,34 @@ public final class BioSimClient {
 			String modelName,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		long initTime = System.currentTimeMillis();
-		String query = constructCoordinatesQuery(locations);
-		query += "&from=" + fromYr;
-		query += "&to=" + toYr;
+		StringBuilder query = constructCoordinatesQuery(locations);
+		query.append("&from=" + fromYr);
+		query.append("&to=" + toYr);
 		if (rcp != null) {
-			query += "&rcp=" + rcp.getURLString();
+			query.append("&rcp=" + rcp.getURLString());
 		}
-		
 		if(climModel != null) {
-			query += "&climMod=" + climModel.name();
+			query.append("&climMod=" + climModel.name());
 		}
-		
 		if (ForceClimateGenerationEnabled) {
 			System.out.println("Warning: past climate is generated instead of being compiled from observations!");
-			query += "&source=FromNormals";
+			query.append("&source=FromNormals");
 		}
-		
 		if (NbNearestNeighbours != null) {
-			query += "&nb_nearest_neighbor=" + NbNearestNeighbours.toString();
+			query.append("&nb_nearest_neighbor=" + NbNearestNeighbours.toString());
 		}
-		
 		if (rep > 1) {
-			query += "&rep=" + rep;
+			query.append("&rep=" + rep);
 		}
-		
-		query += "&model=" + modelName;
+		query.append("&model=" + modelName);
 		if (repModel >  1) {
-			query += "&repmodel=" + repModel;
+			query.append("&repmodel=" + repModel);
 		}
 		if (additionalParms != null) {
-			query += "&" + additionalParms.parse();
+			query.append("&" + additionalParms.parse());
 		}
 		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
-		BioSimStringList serverReply = getStringFromConnection(EPHEMERAL_API, query);
+		BioSimStringList serverReply = getStringFromConnection(EPHEMERAL_API, query.toString());
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 		initTime = System.currentTimeMillis();
 		readLines(serverReply, "rep", locations, outputMap);
@@ -501,31 +488,27 @@ public final class BioSimClient {
 			int rep) throws BioSimClientException, BioSimServerException {
 		LinkedHashMap<BioSimPlot, String> outputMap = new LinkedHashMap<BioSimPlot, String>();
 
-		String query = constructCoordinatesQuery(locations);
-		query += "&from=" + fromYr;
-		query += "&to=" + toYr;
+		StringBuilder query = constructCoordinatesQuery(locations);
+		query.append("&from=" + fromYr);
+		query.append("&to=" + toYr);
 		if (rcp != null) {
-			query += "&rcp=" + rcp.getURLString();
+			query.append("&rcp=" + rcp.getURLString());
 		}
-		
 		if(climModel != null) {
-			query += "&climMod=" + climModel.name();
+			query.append("&climMod=" + climModel.name());
 		}
-		
 		if (ForceClimateGenerationEnabled) {
 			System.out.println("Warning: past climate is going to be generated instead of being compiled from observations!");
-			query += "&source=FromNormals";
+			query.append("&source=FromNormals");
 		}
-		
 		if (NbNearestNeighbours != null) {
-			query += "&nb_nearest_neighbor=" + NbNearestNeighbours.toString();
+			query.append("&nb_nearest_neighbor=" + NbNearestNeighbours.toString());
 		}
-		
 		if (rep > 1) {
-			query += "&rep=" + rep;
+			query.append("&rep=" + rep);
 		}
 		
-		String serverReply = getStringFromConnection(GENERATOR_API, query).toString();
+		String serverReply = getStringFromConnection(GENERATOR_API, query.toString()).toString();
 		String[] ids = serverReply.split(" ");
 		if (ids.length != locations.size()) {
 			throw new BioSimClientException("The number of wgout ids is different from the number of locations!");
@@ -692,29 +675,29 @@ public final class BioSimClient {
 			boolean isEphemeral,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
 		Map<BioSimPlot, String> alreadyGeneratedClimate = new HashMap<BioSimPlot, String>();
-		List<BioSimPlot> locationsToGenerate = new ArrayList<BioSimPlot>();
+		Map<BioSimPlot, BioSimQuerySignature> locationsToGenerate = new LinkedHashMap<BioSimPlot, BioSimQuerySignature>();
 		
 		if (isEphemeral) {
-			locationsToGenerate.addAll(locations);
-			return BioSimClient.applyModel(fromYr, toYr, locationsToGenerate, rcp, climMod, rep, repModel, modelName, additionalParms);
+//			locationsToGenerate.addAll(locations);
+			return BioSimClient.applyModel(fromYr, toYr, locations, rcp, climMod, rep, repModel, modelName, additionalParms);
 		} else { // here we retrieve what is already available
 			for (BioSimPlot location : locations) {
 				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep, ForceClimateGenerationEnabled);
 				if (GeneratedClimateMap.containsKey(querySignature)) {
 					alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
 				} else {
-					locationsToGenerate.add(location);
+					locationsToGenerate.put(location, querySignature);
 				}
 			}
 			
 			Map<BioSimPlot, String> generatedClimate = new HashMap<BioSimPlot, String>();
 			if (!locationsToGenerate.isEmpty()) { // here we generate the climate if needed
-				generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate, rcp, climMod, rep));
+				List<BioSimPlot> plotLocations = new ArrayList<BioSimPlot>();
+				plotLocations.addAll(locationsToGenerate.keySet());
+				generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, plotLocations, rcp, climMod, rep));
 				
 				for (BioSimPlot location : generatedClimate.keySet()) {
-					// TODO FP we could avoid creating again a signature here by storing the signature in a map
-					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, location, rcp, climMod, rep, ForceClimateGenerationEnabled),		
-							generatedClimate.get(location));
+					GeneratedClimateMap.put(locationsToGenerate.get(location), generatedClimate.get(location));
 				}
 			}
 
