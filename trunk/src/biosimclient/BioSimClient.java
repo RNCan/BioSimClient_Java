@@ -123,7 +123,7 @@ public final class BioSimClient {
 	
 	
 	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
-		long initTime = System.currentTimeMillis();
+//		long initTime = System.currentTimeMillis();
 		InetSocketAddress address;
 		if (isDebug) {
 			address = BioSimClient.DebugAddress;
@@ -148,7 +148,7 @@ public final class BioSimClient {
 				throw new BioSimServerException("Code " + code + ": " + msg);
 			}
 			// TODO handle other codes here
-			System.out.println("Time for server to process request: " + (System.currentTimeMillis() - initTime) + " ms");
+//			System.out.println("Time for server to process request: " + (System.currentTimeMillis() - initTime) + " ms");
 			return getCompleteString(connection, false);
 		} catch (MalformedURLException e) {
 			throw new BioSimClientException("Malformed URL: " + e.getMessage());
@@ -163,7 +163,7 @@ public final class BioSimClient {
 
 
 	private static BioSimStringList getCompleteString(HttpURLConnection connection, boolean isError) {
-		long initTime = System.currentTimeMillis();
+//		long initTime = System.currentTimeMillis();
 		BioSimStringList stringList = new BioSimStringList();
 		try {
 			InputStream is;
@@ -178,7 +178,7 @@ public final class BioSimClient {
 				stringList.add(lineStr);
 			}
 			br.close();
-			System.out.println("Time to make the complete string: " + (System.currentTimeMillis() - initTime) + " ms.");
+//			System.out.println("Time to make the complete string: " + (System.currentTimeMillis() - initTime) + " ms.");
 		} catch (IOException e) {
 			stringList.add(e.getMessage());
 		}
@@ -428,7 +428,7 @@ public final class BioSimClient {
 			int repModel,
 			String modelName,
 			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
-		long initTime = System.currentTimeMillis();
+//		long initTime = System.currentTimeMillis();
 		StringBuilder query = constructCoordinatesQuery(locations);
 		query.append("&from=" + fromYr);
 		query.append("&to=" + toYr);
@@ -455,12 +455,12 @@ public final class BioSimClient {
 		if (additionalParms != null) {
 			query.append("&" + additionalParms.parse());
 		}
-		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
+//		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
 		BioSimStringList serverReply = getStringFromConnection(EPHEMERAL_API, query.toString());
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
-		initTime = System.currentTimeMillis();
+		long initTime = System.currentTimeMillis();
 		readLines(serverReply, "rep", locations, outputMap);
-		System.out.println("Time to convert string into biosim dataset: " + (System.currentTimeMillis() - initTime) + " ms.");
+		System.out.println("Total time to convert string into biosim dataset: " + (System.currentTimeMillis() - initTime) + " ms.");
 		return outputMap;
 	}
 
@@ -631,6 +631,8 @@ public final class BioSimClient {
 			String fieldLineStarter,
 			List<BioSimPlot> refListForLocations,
 			LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap) throws BioSimClientException, BioSimServerException {
+		long initTime;
+		long totalTime = 0;
 		BioSimDataSet dataSet = null;
 		int locationId = 0;
 		BioSimPlot location = null;
@@ -640,7 +642,9 @@ public final class BioSimClient {
 				throw new BioSimServerException(line);
 			} else if (line.toLowerCase().startsWith(fieldLineStarter)) { // means it is a new location
 				if (dataSet != null) {	// must be indexed before instantiating a new DataSet
+//					initTime = System.currentTimeMillis();
 					dataSet.indexFieldType();
+//					totalTime += System.currentTimeMillis() - initTime;
 				}
 				location = refListForLocations.get(locationId);
 				String[] fields = line.split(FieldSeparator);
@@ -654,13 +658,18 @@ public final class BioSimClient {
 					throw new BioSimClientException(serverReply.toString());
 				} else {
 					Object[] fields = Arrays.asList(line.split(FieldSeparator)).toArray(new Object[]{});
+					initTime = System.currentTimeMillis();
 					dataSet.addObservation(fields);
+					totalTime += System.currentTimeMillis() - initTime;
 				}
 			}
 		}
 		if (dataSet != null) {
+//			initTime = System.currentTimeMillis();
 			dataSet.indexFieldType();	// last DataSet has not been instantiated so it needs to be here.
+//			totalTime += System.currentTimeMillis() - initTime;
 		}
+		System.out.println("Time to create observations: " + totalTime + " ms");
 	}
 	
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForClimateVariables(
