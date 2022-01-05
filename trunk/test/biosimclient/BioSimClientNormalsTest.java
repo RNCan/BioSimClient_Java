@@ -32,7 +32,7 @@ import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Period;
 import biosimclient.BioSimEnums.RCP;
 
-public class BioSimClientTestsOnNormals {
+public class BioSimClientNormalsTest {
 
 	
 	private static List<BioSimPlot> Plots;

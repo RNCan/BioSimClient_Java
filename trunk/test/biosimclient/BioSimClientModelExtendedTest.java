@@ -37,7 +37,7 @@ public class BioSimClientModelExtendedTest {
 	@Test
 	public void testingWithClimaticQc_Annual() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", null);
@@ -79,7 +79,7 @@ public class BioSimClientModelExtendedTest {
 	@Test
 	public void testingWithClimatic_Annual() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "Climatic_Annual", null);
@@ -104,7 +104,7 @@ public class BioSimClientModelExtendedTest {
 	@Test
 	public void testingWithClimatic_Monthly() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "Climatic_Monthly", null);

@@ -38,7 +38,7 @@ public class BioSimClientModelWithParametersTest {
 	@Test
 	public void testingWithDegreeDaysAbove5C() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
@@ -76,7 +76,7 @@ public class BioSimClientModelWithParametersTest {
 		int initialDateYr = 1980;
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2020, BioSimClientTestsOnNormals.getPlots(), null, null, "DegreeDay_Daily", parms);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2020, BioSimClientNormalsTest.getPlots(), null, null, "DegreeDay_Daily", parms);
 	}
 	
 	

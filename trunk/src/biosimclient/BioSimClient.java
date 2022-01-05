@@ -62,7 +62,7 @@ public final class BioSimClient {
 	static final String FieldSeparator = ",";
 	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
-	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 80);
+	private static final InetSocketAddress LocalAddress = new InetSocketAddress("localhost", 5000);
 	private static final InetSocketAddress DebugAddress = new InetSocketAddress("192.168.0.194", 5001);
 	
 	private static final String SPACE_IN_REQUEST = "%20";
@@ -105,7 +105,7 @@ public final class BioSimClient {
 		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
 	}
 
-	static boolean isLocal = false;		// set to true to connect on 5000 locally (this the production port)
+	static boolean isLocal = true;		// set to true to connect on 5000 locally (this the production port)
 	static boolean isDebug = false;		// set to true to connect on 5001 locally (this is the debug port)
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
@@ -393,18 +393,18 @@ public final class BioSimClient {
 		StringBuilder elevStr = new StringBuilder();
 		String latStrThisLoc, longStrThisLoc, elevStrThisLoc;
 		for (BioSimPlot location : locations) {
-			latStrThisLoc = latStr.isEmpty() ? "" + location.getLatitudeDeg() : SPACE_IN_REQUEST + location.getLatitudeDeg();
+			latStrThisLoc = latStr.length() == 0 ? "" + location.getLatitudeDeg() : SPACE_IN_REQUEST + location.getLatitudeDeg();
 			latStr.append(latStrThisLoc);
-			longStrThisLoc = longStr.isEmpty() ? "" + location.getLongitudeDeg() : SPACE_IN_REQUEST + location.getLongitudeDeg();
+			longStrThisLoc = longStr.length() == 0 ? "" + location.getLongitudeDeg() : SPACE_IN_REQUEST + location.getLongitudeDeg();
 			longStr.append(longStrThisLoc);
-			elevStrThisLoc = elevStr.isEmpty() ? "" + processElevationM(location) : SPACE_IN_REQUEST + processElevationM(location);
+			elevStrThisLoc = elevStr.length() == 0 ? "" + processElevationM(location) : SPACE_IN_REQUEST + processElevationM(location);
 			elevStr.append(elevStrThisLoc);
 		}
 
 		StringBuilder query = new StringBuilder();
 		query.append("lat=" + latStr.toString());
 		query.append("&long=" + longStr.toString());
-		if (!elevStr.isEmpty()) {
+		if (elevStr.length() != 0) {
 			query.append("&elev=" + elevStr.toString());
 		}
 		return query;
@@ -458,9 +458,9 @@ public final class BioSimClient {
 //		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
 		BioSimStringList serverReply = getStringFromConnection(EPHEMERAL_API, query.toString());
 		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
-		long initTime = System.currentTimeMillis();
+//		long initTime = System.currentTimeMillis();
 		readLines(serverReply, "rep", locations, outputMap);
-		System.out.println("Total time to convert string into biosim dataset: " + (System.currentTimeMillis() - initTime) + " ms.");
+//		System.out.println("Total time to convert string into biosim dataset: " + (System.currentTimeMillis() - initTime) + " ms.");
 		return outputMap;
 	}
 
@@ -631,8 +631,8 @@ public final class BioSimClient {
 			String fieldLineStarter,
 			List<BioSimPlot> refListForLocations,
 			LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap) throws BioSimClientException, BioSimServerException {
-		long initTime;
-		long totalTime = 0;
+//		long initTime;
+//		long totalTime = 0;
 		BioSimDataSet dataSet = null;
 		int locationId = 0;
 		BioSimPlot location = null;
@@ -658,9 +658,9 @@ public final class BioSimClient {
 					throw new BioSimClientException(serverReply.toString());
 				} else {
 					Object[] fields = Arrays.asList(line.split(FieldSeparator)).toArray(new Object[]{});
-					initTime = System.currentTimeMillis();
+//					initTime = System.currentTimeMillis();
 					dataSet.addObservation(fields);
-					totalTime += System.currentTimeMillis() - initTime;
+//					totalTime += System.currentTimeMillis() - initTime;
 				}
 			}
 		}
@@ -669,7 +669,7 @@ public final class BioSimClient {
 			dataSet.indexFieldType();	// last DataSet has not been instantiated so it needs to be here.
 //			totalTime += System.currentTimeMillis() - initTime;
 		}
-		System.out.println("Time to create observations: " + totalTime + " ms");
+//		System.out.println("Time to create observations: " + totalTime + " ms");
 	}
 	
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForClimateVariables(
