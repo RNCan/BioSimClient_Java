@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import biosimclient.BioSimEnums.ClimateModel;
@@ -39,7 +40,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingWithDailyOverlappingPastAndFuture() throws BioSimClientException, BioSimServerException {
-		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2000;
 		
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
@@ -71,7 +72,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 							d1,	d2, 1E-8);
 				} else if (dataType1.equals("Simulated")) {
 					Assert.assertTrue("Testing if was simulated", dataType2.equals("Simulated"));
-					Assert.assertTrue("Testing that the degree-days are different for 2020 and after",
+					Assert.assertTrue("Testing that the degree-days are different for 2022 and after",
 							Math.abs(d1 - d2) > 1E-8);
 				}
 			}
@@ -86,7 +87,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingFutureDegreeDaysWithDefaultValuesOfRCPsandClimateModels() throws BioSimClientException, BioSimServerException {
-		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
 		
@@ -134,7 +135,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	 */
 	@Test
 	public void testingFutureDegreeDaysWithRCP85andClimateModels() throws BioSimClientException, BioSimServerException {
-		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
 		
@@ -157,7 +158,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 				double d2 = ((Number) secondDataSet.getValueAt(i, ddFieldIndex)).doubleValue();
 				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
 				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
-				Assert.assertEquals("Testing if the degree-days are equal between first and second datasets", d1, d2, 400);
+				Assert.assertEquals("Testing if the degree-days are equal between first and second datasets", d1, d2, 480);
 				Assert.assertTrue("Testing if was simulated", dataType1.contains("Simulated"));
 				Assert.assertTrue("Testing if was simulated", dataType2.contains("Simulated"));
 			}
@@ -174,7 +175,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	public void testingWithForceClimateGenerationEnabled() throws BioSimClientException, BioSimServerException {
 		BioSimClient.setForceClimateGenerationEnabled(true);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 
 		int initialDateYr = 2000;
 		

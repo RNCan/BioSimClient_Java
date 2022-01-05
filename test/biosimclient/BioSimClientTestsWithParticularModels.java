@@ -36,7 +36,7 @@ public class BioSimClientTestsWithParticularModels {
 	@Ignore
 	@Test
 	public void testingWithMPB_SLR() throws BioSimClientException, BioSimServerException {
-		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 1998;
 		
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2020, locations, null, null, "MPB_SLR", null);

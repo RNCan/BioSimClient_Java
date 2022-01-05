@@ -54,7 +54,7 @@ public class BioSimClientTestsWithReplicates {
 
 
 	private static void testingFutureDegreeDaysWithRCP85andClimateModels(int initialDateYr, int finalDateYr, int nbReplicates) throws BioSimClientException, BioSimServerException {
-		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		
 		int expectedObservationsPerPlot = ((finalDateYr - initialDateYr) + 1) * nbReplicates;
 		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, null, "DegreeDay_Annual", nbReplicates, null);
@@ -68,7 +68,7 @@ public class BioSimClientTestsWithReplicates {
 	@Test
 	public void test2015to2025_2repForcedClimateGeneration() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
 		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(2015, 2025, locations, RCP.RCP85, null, "DegreeDay_Annual", 2, null);
 		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
@@ -99,7 +99,7 @@ public class BioSimClientTestsWithReplicates {
 	@Test
 	public void test2012to2016_1repForcedClimateGeneration() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
 		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(2012, 2016, locations, RCP.RCP85, null, "DegreeDay_Annual", null);
 		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
@@ -111,7 +111,7 @@ public class BioSimClientTestsWithReplicates {
 	@Test
 	public void test1981to2010_2repForcedClimateGeneration() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		locations.add(BioSimClientTestsOnNormals.getPlots().get(0));
+		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
 		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "ClimaticQc_Annual", 2, null);
 		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
@@ -122,7 +122,7 @@ public class BioSimClientTestsWithReplicates {
 
 	@Test
 	public void test1981to2010_2repOnTheModelEnd() throws BioSimClientException, BioSimServerException {
-		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "DegreeDay_Annual", 1, 2, true, null);
 		for (BioSimPlot l : locations) {
 			BioSimDataSet dataset = climateOutput.get(l); 
@@ -132,7 +132,7 @@ public class BioSimClientTestsWithReplicates {
 	
 	@Test
 	public void test1981to2010_2repOnWGPlus2repTheModelEnd() throws BioSimClientException, BioSimServerException {
-		List<BioSimPlot> locations = BioSimClientTestsOnNormals.getPlots();
+		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "DegreeDay_Annual", 2, 2, true, null);
 		for (BioSimPlot l : locations) {
 			BioSimDataSet dataset = climateOutput.get(l); 

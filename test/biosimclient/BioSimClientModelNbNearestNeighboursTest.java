@@ -38,7 +38,7 @@ public class BioSimClientModelNbNearestNeighboursTest {
 	public void testingWithDefaultFourClimateStations() throws BioSimClientException, BioSimServerException {
 		BioSimClient.resetClientConfiguration();
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		BioSimPlot plot = BioSimClientTestsOnNormals.getPlots().get(0);
+		BioSimPlot plot = BioSimClientNormalsTest.getPlots().get(0);
 		locations.add(plot);
 		int initialDateYr = 2000;
 		
@@ -71,7 +71,7 @@ public class BioSimClientModelNbNearestNeighboursTest {
 	public void testingWithTwelveClimateStations() throws BioSimClientException, BioSimServerException {
 		BioSimClient.resetClientConfiguration();
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
-		BioSimPlot plot = BioSimClientTestsOnNormals.getPlots().get(0);
+		BioSimPlot plot = BioSimClientNormalsTest.getPlots().get(0);
 		locations.add(plot);
 		int initialDateYr = 2000;
 		
