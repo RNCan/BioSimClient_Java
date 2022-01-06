@@ -47,7 +47,7 @@ public class BioSimClientModelExtendedTest {
 		if (obs.values.get(index) instanceof Integer) {
 			Assert.assertEquals("Testing DegreeDay", 1575, (Integer) obs.values.get(index), 1E-8);
 		} else {
-			Assert.assertEquals("Testing DegreeDay", 1575, (Double) obs.values.get(index), 1E-8);
+			Assert.assertEquals("Testing DegreeDay", 1575, (Double) obs.values.get(index), 1E-8);		// with new setup failed at 1586.45 MF2022-01-06
 		}
 
 		index = ds.getFieldNames().indexOf("TMean");
@@ -90,7 +90,7 @@ public class BioSimClientModelExtendedTest {
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("TotalRadiation");
-		Assert.assertEquals("Testing TotalRadiation", 4654.3, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing TotalRadiation", 4654.3, (Double) obs.values.get(index), 1E-8);	// with new setup failed at 4621.3 MF2022-01-06
 		
 		index = ds.getFieldNames().indexOf("MeanRelH");
 		Assert.assertEquals("Testing MeanRelH", 73.4, (Double) obs.values.get(index), 1E-8);
@@ -115,7 +115,7 @@ public class BioSimClientModelExtendedTest {
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("TotalRadiation");
-		Assert.assertEquals("Testing TotalRadiation", 219.2, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing TotalRadiation", 219.2, (Double) obs.values.get(index), 1E-8);		// with new setup failed at 216.2 MF20220506
 		
 		index = ds.getFieldNames().indexOf("MeanRelH");
 		Assert.assertEquals("Testing MeanRelH", 73.9, (Double) obs.values.get(index), 1E-8);

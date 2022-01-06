@@ -193,7 +193,7 @@ public class BioSimClientNormalsTest {
 		Assert.assertEquals("Testing observation size", 4, record.length);
 		Assert.assertEquals("Testing Tn", -16.9, (Double) record[1], 1E-8);
 		Assert.assertEquals("Testing Tx", -7.6, (Double) record[2], 1E-8);
-		Assert.assertEquals("Testing P", 100.4, (Double) record[3], 1E-1);
+		Assert.assertEquals("Testing P", 100.4, (Double) record[3], 1E-1);		// with new setup failed at 101.3 MF2022-01-06
 		
 		BioSimDataSet secondPlotDataSet = resultingMap.get(getPlots().get(1));
 		record = secondPlotDataSet.getObservations().get(0).toArray();
