@@ -44,7 +44,11 @@ public class BioSimClientModelExtendedTest {
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("DegreeDay");
-		Assert.assertEquals("Testing DegreeDay", 1575, (Integer) obs.values.get(index), 1E-8);
+		if (obs.values.get(index) instanceof Integer) {
+			Assert.assertEquals("Testing DegreeDay", 1575, (Integer) obs.values.get(index), 1E-8);
+		} else {
+			Assert.assertEquals("Testing DegreeDay", 1575, (Double) obs.values.get(index), 1E-8);
+		}
 
 		index = ds.getFieldNames().indexOf("TMean");
 		Assert.assertEquals("Testing TMean", 4.1776, (Double) obs.values.get(index), 1E-8);

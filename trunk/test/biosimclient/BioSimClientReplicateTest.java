@@ -30,7 +30,7 @@ import org.junit.Test;
 
 import biosimclient.BioSimEnums.RCP;
 
-public class BioSimClientTestsWithReplicates {
+public class BioSimClientReplicateTest {
 
 	@Test
 	public void test2085to2090_2rep() throws BioSimClientException, BioSimServerException {
