@@ -23,9 +23,11 @@ public class BioSimServerExceptionTest {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		} catch (BioSimClientException e) {
 			String errMsg = e.getMessage();
-			Assert.assertEquals("Testing exception", 
-					errMsg, 
-					"Code 400: Error: the lat parameter cannot be parsed, the long parameter cannot be parsed");
+			Assert.assertTrue("Testing exception", 
+					errMsg.contains("the lat parameter cannot be parsed") || errMsg.contains("argument lat could not be parsed to a NaN"));
+			Assert.assertTrue("Testing exception", 
+					errMsg.contains("the long parameter cannot be parsed") || errMsg.contains("argument long could not be parsed to a NaN"));
+			
 		} catch (Exception e) {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		}
@@ -41,9 +43,10 @@ public class BioSimServerExceptionTest {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		} catch (BioSimClientException e) {
 			String errMsg = e.getMessage();
-			Assert.assertEquals("Testing exception", 
-					errMsg, 
-					"Code 400: Error: the latitude must range between -90.0 and 90.0, the longitude must range between -180.0 and 180.0");
+			Assert.assertTrue("Testing exception", 
+					errMsg.contains("lat is out of range") || errMsg.contains("the latitude must range"));
+			Assert.assertTrue("Testing exception", 
+					errMsg.contains("long is out of range") || errMsg.contains("the longitude must range"));
 		} catch (Exception e) {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		}
@@ -60,9 +63,10 @@ public class BioSimServerExceptionTest {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		} catch (BioSimClientException e) {
 			String errMsg = e.getMessage();
-			Assert.assertEquals("Testing exception", 
-					errMsg, 
-					"Code 400: Error: the latitude must range between -90.0 and 90.0, the longitude must range between -180.0 and 180.0");
+			Assert.assertTrue("Testing exception", 
+					errMsg.contains("lat is out of range") || errMsg.contains("the latitude must range"));
+			Assert.assertTrue("Testing exception", 
+					errMsg.contains("long is out of range") || errMsg.contains("the longitude must range"));
 		} catch (Exception e) {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		}
@@ -75,9 +79,7 @@ public class BioSimServerExceptionTest {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		} catch (BioSimClientException e) {
 			String errMsg = e.getMessage();
-			Assert.assertEquals("Testing exception", 
-					errMsg, 
-					"Code 400: Error: Model Blabla does not exist");
+			Assert.assertTrue("Testing exception", errMsg.contains("Error: Model Blabla does not exist"));
 		} catch (Exception e) {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		}
@@ -90,9 +92,7 @@ public class BioSimServerExceptionTest {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		} catch (BioSimClientException e) {
 			String errMsg = e.getMessage();
-			Assert.assertEquals("Testing exception", 
-					errMsg, 
-					"Code 400: Error: Model Blabla does not exist");
+			Assert.assertTrue("Testing exception", errMsg.contains("Error: Model Blabla does not exist"));
 		} catch (Exception e) {
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		}

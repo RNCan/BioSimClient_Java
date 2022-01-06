@@ -60,7 +60,7 @@ public class BioSimClientModelWithParametersTest {
 				} else {
 					expectedDD = 1847.15;
 				}
-				Assert.assertEquals("Testing degree-days above 5C",	expectedDD,	actualDD, 1E-8);
+				Assert.assertEquals("Testing degree-days above 5C",	expectedDD,	actualDD, 1E-8);	// with new setup failed at 1586.45 MF2022-01-06
 			}
 			System.out.println("Degree-days above 5C successfully tested!");
 		}
