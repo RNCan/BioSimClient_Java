@@ -105,7 +105,7 @@ public final class BioSimClient {
 		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
 	}
 
-	static boolean isLocal = true;		// set to true to connect on 5000 locally (this the production port)
+	static boolean isLocal = false;		// set to true to connect on 5000 locally (this the production port)
 	static boolean isDebug = false;		// set to true to connect on 5001 locally (this is the debug port)
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
