@@ -85,6 +85,8 @@ public final class BioSimClient {
 	
 	private static List<String> ReferenceModelList;
 
+	private static double totalServerRequestDuration = 0.0;
+
 	static class InternalShutDownHook extends Thread {
 		@Override
 		public void run() {
@@ -119,8 +121,6 @@ public final class BioSimClient {
 			return urlString;
 		}
 	}
-
-	
 	
 	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 //		long initTime = System.currentTimeMillis();
@@ -136,8 +136,11 @@ public final class BioSimClient {
 		urlString = addQueryIfAny(urlString, query);
 		try {
 			URL bioSimURL = new URL(urlString);
+			long requestInitTime = System.currentTimeMillis();
 			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
 			int code = connection.getResponseCode();
+			long requestEndTime = System.currentTimeMillis();
+			totalServerRequestDuration += (requestEndTime - requestInitTime) * 0.001;
 			
 			if (code >= 400 && code < 500) { // client error
 				String msg = getCompleteString(connection, true).toString();
@@ -834,6 +837,9 @@ public final class BioSimClient {
 		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
+
+		totalServerRequestDuration = 0.0;
+
 		if (locations.size() > BioSimClient.getMaximumNbLocationsPerBatchWeatherGeneration()) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
@@ -928,6 +934,9 @@ public final class BioSimClient {
 			return NbNearestNeighbours;
 		}
 	}
-	
+
+	public static double getLastServerRequestDuration() {
+		return totalServerRequestDuration;
+	}
 	
 }
