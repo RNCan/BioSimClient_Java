@@ -190,8 +190,8 @@ public class BioSimClientPerformanceTest {
 				locations,
 				null,
 				null,
-				modelName,
-				parms);
+				Arrays.asList(new String[] {modelName}),
+				Arrays.asList(new BioSimParameterMap[] {parms})).get(modelName);
 		double elapsedTime = (System.currentTimeMillis() - initial) * .001;
 		double serverTime = BioSimClient.getLastServerRequestDuration();
 		System.out.println("Elapsed time = " + elapsedTime + " , server time = " + serverTime);

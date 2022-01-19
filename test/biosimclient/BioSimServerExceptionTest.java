@@ -1,6 +1,7 @@
 package biosimclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -59,7 +60,7 @@ public class BioSimServerExceptionTest {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(fakeLocation);
 		try {
-			BioSimClient.getModelOutput(2000, 2001, locations, RCP.RCP45, ClimateModel.RCM4, "DegreeDay_Annual", null);
+			BioSimClient.getModelOutput(2000, 2001, locations, RCP.RCP45, ClimateModel.RCM4, Arrays.asList(new String[]{"DegreeDay_Annual"}), null);
 			Assert.fail("Should have thrown a BioSimClientException instance");
 		} catch (BioSimClientException e) {
 			String errMsg = e.getMessage();

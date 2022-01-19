@@ -22,6 +22,7 @@
 package biosimclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -53,9 +54,9 @@ public class BioSimClientMultithreadingClimateGenerationForRegenerationIris2020 
 				locations, 
 				null, 
 				null, 
-				"DegreeDay_Annual", 
+				Arrays.asList(new String[]{"DegreeDay_Annual"}),
 				100, // nb rep 
-				parms);
+				Arrays.asList(new BioSimParameterMap[] {parms}));
 		double elapsedTime = (System.currentTimeMillis() - initial) * .001;
 		System.out.println("Elapsed time = " + elapsedTime);
 		

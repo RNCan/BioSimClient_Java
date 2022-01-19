@@ -22,6 +22,7 @@
 package biosimclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -57,7 +58,15 @@ public class BioSimClientReplicateTest {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		
 		int expectedObservationsPerPlot = ((finalDateYr - initialDateYr) + 1) * nbReplicates;
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, null, "DegreeDay_Annual", nbReplicates, null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(initialDateYr, 
+				finalDateYr, 
+				locations, 
+				RCP.RCP85, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				nbReplicates, 
+				null).get(modelName);
 		
 		for (BioSimPlot plot : oRCP85_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP85_RCM4def.get(plot);
@@ -70,7 +79,15 @@ public class BioSimClientReplicateTest {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(2015, 2025, locations, RCP.RCP85, null, "DegreeDay_Annual", 2, null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(2015, 
+				2025, 
+				locations, 
+				RCP.RCP85, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				2, 
+				null).get(modelName);
 		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
 		int repIndex = dataset.getFieldNames().indexOf("Rep");
 		int yearIndex = dataset.getFieldNames().indexOf("Year");
@@ -101,7 +118,14 @@ public class BioSimClientReplicateTest {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(2012, 2016, locations, RCP.RCP85, null, "DegreeDay_Annual", null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(2012, 
+				2016, 
+				locations, 
+				RCP.RCP85, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				null).get(modelName);
 		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
 		Assert.assertEquals("Testing the number of observations", 5, dataset.getNumberOfObservations());
 		BioSimClient.resetClientConfiguration();
@@ -113,7 +137,15 @@ public class BioSimClientReplicateTest {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "ClimaticQc_Annual", 2, null);
+		String modelName = "ClimaticQc_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(1981, 
+				2010, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				2, 
+				null).get(modelName);
 		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
 		Assert.assertEquals("Testing the number of observations", 30 * 2, dataset.getNumberOfObservations());
 		BioSimClient.resetClientConfiguration();
@@ -123,7 +155,16 @@ public class BioSimClientReplicateTest {
 	@Test
 	public void test1981to2010_2repOnTheModelEnd() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
-		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "DegreeDay_Annual", 1, 2, true, null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.getModelOutput(1981, 
+				2010, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				1, 
+				2, 
+				null).get(modelName);
 		for (BioSimPlot l : locations) {
 			BioSimDataSet dataset = climateOutput.get(l); 
 			Assert.assertEquals("Testing the number of observations", 30 * 2, dataset.getNumberOfObservations());
@@ -133,7 +174,16 @@ public class BioSimClientReplicateTest {
 	@Test
 	public void test1981to2010_2repOnWGPlus2repTheModelEnd() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
-		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.getModelOutput(1981, 2010, locations, null, null, "DegreeDay_Annual", 2, 2, true, null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.getModelOutput(1981, 
+				2010, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				2, 
+				2, 
+				null).get(modelName);
 		for (BioSimPlot l : locations) {
 			BioSimDataSet dataset = climateOutput.get(l); 
 			Assert.assertEquals("Testing the number of observations", 30 * 4, dataset.getNumberOfObservations());

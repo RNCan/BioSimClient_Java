@@ -21,6 +21,7 @@
  */
 package biosimclient;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -38,8 +39,14 @@ public class BioSimClientTestsWithParticularModels {
 	public void testingWithMPB_SLR() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 1998;
-		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2020, locations, null, null, "MPB_SLR", null);
+		String modelName = "MPB_SLR";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+				2020, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}),
+				null).get(modelName);
 		
 		// TODO set this test properly. To be checked with Remi
 		
