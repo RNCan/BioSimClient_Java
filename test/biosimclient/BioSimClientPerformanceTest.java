@@ -185,7 +185,7 @@ public class BioSimClientPerformanceTest {
 		//parms.addParameter("LowerThreshold", 5);
 
 		long initial = System.currentTimeMillis();
-		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.getModelOutput(initialDateYr,
+		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.generateWeather(initialDateYr,
 				finalDateYr,
 				locations,
 				null,
