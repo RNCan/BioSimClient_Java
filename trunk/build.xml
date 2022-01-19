@@ -10,6 +10,8 @@
 	<property name="java.doc.dir" value="../javadoc" />
 	<property name="test.prod.dir" value="../testprod" />
 	<property name="vendor" value="Canadian Wood Fibre Centre" />
+	<property name="version" value="1.1" />
+	
 
 
 	<path id="myJARFile">
@@ -169,7 +171,7 @@
 
 	<!-- CREATE JAR FILE -->
     <target name="jar" depends="compile">
-        <jar destfile="${ext.dir}/${project.name}.jar">
+        <jar destfile="${ext.dir}/${project.name}-${version}.jar">
 			<fileset dir="${bin.dir}"/>
 			<fileset dir="${src.dir}" includes="**/*.java"/>
 			<fileset dir="." includes="COPYING.LESSER.txt"/>
