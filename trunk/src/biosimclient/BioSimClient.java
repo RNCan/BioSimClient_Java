@@ -33,8 +33,6 @@ import java.net.UnknownHostException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +54,7 @@ public final class BioSimClient {
 
 	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = -1; // not set yet
 	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = -1; // not set yet
-	private static final int MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS = 200;
-	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = -1; // not set yet
+	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000; // not set yet
 	
 	static final String FieldSeparator = ",";
 	
@@ -76,45 +73,9 @@ public final class BioSimClient {
 	private static final String BIOSIMMODELDEFAULTPARAMETERS = "BioSimModelDefaultParameters";
 	private static final String BIOSIMWEATHER = "BioSimWeather";
 	
-
-	@Deprecated
-	private static final String GENERATOR_API = "BioSimWG";
-	@Deprecated
-	private static final String EPHEMERAL_API = "BioSimModelEphemeral";
-	@Deprecated
-	private static final String MODEL_API = "BioSimModel";
-	@Deprecated
-	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
-	@Deprecated
-	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
-	@Deprecated
-	private static final String BIOSIMMAXMEMORY_API = "BioSimMaxMemory";
-
-	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
-	
 	private static List<String> ReferenceModelList;
 
 	private static double totalServerRequestDuration = 0.0;
-
-	static class InternalShutDownHook extends Thread {
-		@Override
-		public void run() {
-			try {
-				if (!GeneratedClimateMap.isEmpty()) {
-					System.out.println("Shutdown hook from BioSimClient called!");
-					BioSimClient.clearCache();
-				}
-			} catch (BioSimClientException e) {
-				e.printStackTrace();
-			} catch (BioSimServerException e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
-	
-	static {
-		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
-	}
 
 	static boolean isLocal = true;		// set to true to connect on 5000 locally (this the production port)
 	static boolean isDebug = false;		// set to true to connect on 5001 locally (this is the debug port)
@@ -246,16 +207,6 @@ public final class BioSimClient {
 		}
 	}
 
-	private static int getMaxNumberLocationsInSingleRequest() {
-		if (MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST == -1) { // true when called for the first time
-			try {
-				MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = (int) (BioSimClient.getMaxNbWgoutObjectsOnServer() * .05);
-			} catch (Exception e) {
-				MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000;
-			}
-		}
-		return MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST;
-	}
 
 	
 	/**
@@ -276,7 +227,7 @@ public final class BioSimClient {
 			RCP rcp,
 			ClimateModel climModel,
 			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
-		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
+		if (locations.size() > BioSimClient.MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
 		if (locations.size() > BioSimClient.getMaximumNbLocationsPerBatchNormals()) {
@@ -332,81 +283,6 @@ public final class BioSimClient {
 	}
 
 
-	/**
-	 * This method clears the reference to the teleIO objects that are stored in the internal map.
-	 * @throws BioSimClientException
-	 * @throws BioSimServerException
-	 */
-	@Deprecated
-	public static void clearCache() throws BioSimClientException, BioSimServerException {
-		if (!GeneratedClimateMap.isEmpty()) {
-			BioSimClient.removeWgoutObjectsFromServer(GeneratedClimateMap.values());
-		}
-	}
-
-	@Deprecated
-	static void removeWgoutObjectsFromServer(Collection<String> references) 
-			throws BioSimClientException, BioSimServerException {
-		if (references.size() > MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS) {
-			List<String> referenceList = new ArrayList<String>();
-			referenceList.addAll(references);
-			List<String> subList = new ArrayList<String>();
-			while (!referenceList.isEmpty()) {
-				while (!referenceList.isEmpty() && subList.size() < MAXIMUM_NB_LOCATIONS_PER_BATCH_REMOVALS) {
-					subList.add(referenceList.remove(0));
-				}
-				internalRemovalOfWgoutObjectsFromServer(subList);
-				subList.clear();
-			}
-		} else {
-			internalRemovalOfWgoutObjectsFromServer(references);
-		}
-	}
-
-	@Deprecated
-	private static void internalRemovalOfWgoutObjectsFromServer(Collection<String> references) 
-			throws BioSimClientException, BioSimServerException {
-		if (references != null && !references.isEmpty()) {
-			String query = "";
-			for (String reference : references) {
-				if (query.isEmpty()) {
-					query += reference;
-				} else {
-					query += SPACE_IN_REQUEST + reference;
-				}
-			}
-			getStringFromConnection(BIOSIMCLEANUP_API, "ref=" + query);
-			for (String reference : references) {
-				GeneratedClimateMap.removeValue(reference);
-			}
-		}
-	}
-
-	@Deprecated
-	static int getNbWgoutObjectsOnServer() throws Exception {
-		String serverReply = getStringFromConnection(BIOSIMMEMORYLOAD_API, null).toString();
-		try {
-			return Integer.parseInt(serverReply);
-		} catch (NumberFormatException e) {
-			throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
-		}
-	}
-
-	/**
-	 * The maximum number of wgouts instances that can be stored in the internal map of the server.
-	 * @return
-	 */
-	@Deprecated
-	private static int getMaxNbWgoutObjectsOnServer() throws Exception {
-		String serverReply = getStringFromConnection(BIOSIMMAXMEMORY_API, null).toString();
-		try {
-			return Integer.parseInt(serverReply);
-		} catch (NumberFormatException e) {
-			throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
-		}
-	}
-
-
 	private static StringBuilder constructCoordinatesQuery(List<BioSimPlot> locations) {
 		StringBuilder latStr = new StringBuilder();
 		StringBuilder longStr = new StringBuilder();
@@ -439,65 +315,6 @@ public final class BioSimClient {
 	}
 	
 	
-	/**
-	 * Generates climate for some locations over a particular time interval.
-	 * 
-	 * @param fromYr    beginning of the interval (inclusive)
-	 * @param toYr      end of the interval (inclusive)
-	 * @param locations a List of BioSimPlot instances
-	 * @param rcp an RCP enum variable (by default RCP 4.5)
-	 * @param climModel a ClimateModel enum variable (by default RCM 4)
-	 * @return a LinkedHashMap with BioSimPlot instances as key
-	 *         and String instances as values. Those strings are actually the code
-	 *         for the TeleIO instance on the server.
-	 * @throws BioSimClientException
-	 */
-	@Deprecated
-	static LinkedHashMap<BioSimPlot, String> getGeneratedClimate(
-			int fromYr, 
-			int toYr,
-			List<BioSimPlot> locations,
-			RCP rcp,
-			ClimateModel climModel,
-			int rep) throws BioSimClientException, BioSimServerException {
-		LinkedHashMap<BioSimPlot, String> outputMap = new LinkedHashMap<BioSimPlot, String>();
-
-		StringBuilder query = constructCoordinatesQuery(locations);
-		query.append("&from=" + fromYr);
-		query.append("&to=" + toYr);
-		if (rcp != null) {
-			query.append("&rcp=" + rcp.getURLString());
-		}
-		if(climModel != null) {
-			query.append("&climMod=" + climModel.name());
-		}
-		if (ForceClimateGenerationEnabled) {
-			System.out.println("Warning: past climate is going to be generated instead of being compiled from observations!");
-			query.append("&source=FromNormals");
-		}
-		if (NbNearestNeighbours != null) {
-			query.append("&nb_nearest_neighbor=" + NbNearestNeighbours.toString());
-		}
-		if (rep > 1) {
-			query.append("&rep=" + rep);
-		}
-		
-		String serverReply = getStringFromConnection(GENERATOR_API, query.toString()).toString();
-		String[] ids = serverReply.split(" ");
-		if (ids.length != locations.size()) {
-			throw new BioSimClientException("The number of wgout ids is different from the number of locations!");
-		}
-		for (int i = 0; i < locations.size(); i++) {
-			String id = ids[i];
-			BioSimPlot location = locations.get(i);
-			if (id.toLowerCase().startsWith("error")) {
-				throw new BioSimClientException("The server was unable to generate the climate for this location: "
-						+ location.toString() + ": " + id);
-			}
-			outputMap.put(location, id);
-		}
-		return outputMap;
-	}
 
 	/**
 	 * Returns the names of the available models. This is a clone of the
@@ -812,7 +629,7 @@ public final class BioSimClient {
 		if (rep < 1 || repModel < 1) {
 			throw new InvalidParameterException("The rep and repModel parameters should be equal to or greater than 1!");
 		} 
-		if (locations.size() > BioSimClient.getMaxNumberLocationsInSingleRequest()) {
+		if (locations.size() > MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
 
