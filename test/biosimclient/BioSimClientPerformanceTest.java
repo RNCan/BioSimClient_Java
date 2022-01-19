@@ -154,7 +154,7 @@ public class BioSimClientPerformanceTest {
 
 			// the line data is complete.  Launch test.
 			if (testID == 0) {
-				System.out.println("Performing test # " + Integer.toString(testNumber) + " using model " + modelName + " with " + Integer.toString(locations.size()) + " locations");
+				System.out.println("Performing test # " + Integer.toString(testNumber + 1) + " using model " + modelName + " with " + Integer.toString(locations.size()) + " locations");
 				double elapsed[] = BioSimModelEphemeral(modelName, randomInitialDateYr, randomfinalDateYr, locations);
 				bw.write(Double.toString(elapsed[0]) + ";" + Double.toString(elapsed[1]));
 				bw.newLine();
