@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -65,13 +66,14 @@ public class BioSimClientMultithreadingClimateGeneration {
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
+		String modelName = "DegreeDay_Annual";
 		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.getModelOutput(initialDateYr, 
 				finalDateYr, 
 				locations, 
 				null, 
 				null, 
-				"DegreeDay_Annual", 
-				parms);
+				Arrays.asList(new String[]{modelName}), 
+				Arrays.asList(new BioSimParameterMap[] {parms})).get(modelName);
 		double elapsedTime = (System.currentTimeMillis() - initial) * .001;
 		System.out.println("Elapsed time = " + elapsedTime);
 		

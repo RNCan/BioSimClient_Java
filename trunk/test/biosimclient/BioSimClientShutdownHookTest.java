@@ -22,13 +22,15 @@
 package biosimclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
-
+@Deprecated
 public class BioSimClientShutdownHookTest {
 
 	
@@ -44,22 +46,23 @@ public class BioSimClientShutdownHookTest {
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
+		String modelName = "DegreeDay_Annual";
 		@SuppressWarnings("unused")
 		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.getModelOutput(initialDateYr, 
 				finalDateYr, 
 				locations, 
 				null, 
 				null, 
-				"DegreeDay_Annual", 
+				Arrays.asList(new String[]{modelName}), 
 				1,
 				1,
-				false, 
-				parms);
+				Arrays.asList(new BioSimParameterMap[]{parms})).get(modelName);
 		double elapsedTime = (System.currentTimeMillis() - initial) * .001;
 		System.out.println("Elapsed time = " + elapsedTime);
 	}
 
 
+	@Ignore
 	@Test
 	public void testClearCacheAndShutdownHook() throws Exception {
 		BioSimClientShutdownHookTest.testingWithDegreeDaysAbove5C(2000, 2005);

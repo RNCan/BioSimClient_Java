@@ -22,11 +22,13 @@
 package biosimclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -52,6 +54,7 @@ public class BioSimClientTest {
 	 * Tests if the wgout id is kept in memory for further use instead of generating the wgouts over and
 	 * over again.
 	 */
+	@Ignore
 	@Test
 	public void testingMemorizer() throws BioSimClientException, BioSimServerException {
 //		BioSimClient.setMultithreadingEnabled(false);
@@ -67,13 +70,30 @@ public class BioSimClientTest {
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, 1, false, null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(2018, 
+				2019, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				1, 
+				1, 
+				null).get(modelName);
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, 1, false, null);
+			LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(2018, 
+					2019, 
+					locations, 
+					null, 
+					null, 
+					Arrays.asList(new String[]{modelName}), 
+					1, 
+					1, 
+					null).get(modelName);
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));
@@ -99,6 +119,7 @@ public class BioSimClientTest {
 	 * Tests if the wgout id is kept in memory for further use instead of generating the wgouts over and
 	 * over again.
 	 */
+	@Ignore
 	@Test
 	public void testingExceedingRequestSize() throws BioSimClientException, BioSimServerException {
 //		BioSimClient.setMultithreadingEnabled(false);
@@ -111,7 +132,7 @@ public class BioSimClientTest {
 		}
 
 		try {
-			BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", 1, 1, false, null);
+			BioSimClient.getModelOutput(2018, 2019, locations, null, null, Arrays.asList(new String[]{"DegreeDay_Annual"}), 1, 1, null);
 			Assert.fail("Should have thrown an exception");
 		} catch (BioSimClientException e) {
 			Assert.assertTrue("Testing if the proper exception has been thrown", e.getMessage().startsWith("The maximum number of locations"));
@@ -123,6 +144,7 @@ public class BioSimClientTest {
 	 * Tests if the weather generation over several contexts. It uses the memorization. First run should be longer
 	 * than the others.
 	 */
+	@Ignore
 	@Test
 	public void testingWeatherGenerationOverSeveralContexts() throws BioSimClientException, BioSimServerException {
 //		BioSimClient.setMultithreadingEnabled(false);
@@ -138,16 +160,16 @@ public class BioSimClientTest {
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
+		String modelName = "DegreeDay_Annual"; 
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(2000, 
 				2019, 
 				locations, 
 				null, 
 				null, 
-				"DegreeDay_Annual", 
+				Arrays.asList(new String[]{modelName}), 
 				1, 
 				1, 
-				false, 
-				null);
+				null).get(modelName);
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
@@ -158,11 +180,10 @@ public class BioSimClientTest {
 					locations, 
 					null, 
 					null, 
-					"DegreeDay_Annual", 
+					Arrays.asList(new String[]{modelName}), 
 					1,
 					1, 
-					false, 
-					null);
+					null).get(modelName);
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));	// testing that the computational time is five times faster when the memorization is used.
@@ -185,6 +206,7 @@ public class BioSimClientTest {
 		}
 	}
 	
+	@Ignore
 	@Test
 	public void testingMemoryManagementOnServerAfterEphemeralOptionSetToTrue() throws Exception {
 //		BioSimClient.setMultithreadingEnabled(false);
@@ -199,13 +221,14 @@ public class BioSimClientTest {
 				locations.add(loc);
 			}
 			
-			BioSimClient.getModelOutput(2018, 2019, locations, null, null, "DegreeDay_Annual", null);	// is ephemeral: wgout instances are not stored on the server
+			BioSimClient.getModelOutput(2018, 2019, locations, null, null, Arrays.asList(new String[]{"DegreeDay_Annual"}), null);	// is ephemeral: wgout instances are not stored on the server
 			
 			int nbObjectsAfter = BioSimClient.getNbWgoutObjectsOnServer();
 			Assert.assertEquals("Testing if the number of objects before and after is consistent", nbObjectsBefore, nbObjectsAfter);
 		}
 	}
-
+	
+	@Ignore
 	@Test
 	public void testingMemoryManagementOnServerThroughEventualShutdownHook() throws Exception {
 //		BioSimClient.setMultithreadingEnabled(false);
@@ -223,10 +246,9 @@ public class BioSimClientTest {
 				locations, 
 				null, 
 				null, 
-				"DegreeDay_Annual", 
+				Arrays.asList(new String[]{"DegreeDay_Annual"}), 
 				1, 
 				1,
-				false, 
 				null);
 		
 		System.out.println("Nb objects immediately before eventual shutdown hook = " + BioSimClient.getNbWgoutObjectsOnServer());

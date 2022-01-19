@@ -22,12 +22,15 @@
 package biosimclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.RCP;
@@ -42,9 +45,9 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	public void testingWithDailyOverlappingPastAndFuture() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2000;
-		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);
@@ -90,10 +93,10 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
-		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, null, null, "DegreeDay_Annual", null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP45, null, "DegreeDay_Annual", null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4 = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, null, ClimateModel.RCM4, "DegreeDay_Annual", null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP45, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4 = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, null, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : oRCP45def_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP45def_RCM4def.get(plot);
@@ -117,8 +120,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 				String dataType1 = (String) firstDataSet.getValueAt(i, dataTypeIndex);
 				String dataType2 = (String) secondDataSet.getValueAt(i, dataTypeIndex);
 				String dataType3 = (String) thirdDataSet.getValueAt(i, dataTypeIndex);
-				Assert.assertEquals("Testing if the degree-days are equal between first and second datasets", d1, d2, 420);
-				Assert.assertEquals("Testing if the degree-days are equal between second and third datasets", d2, d3, 420);
+				Assert.assertEquals("Testing if the degree-days are equal between first and second datasets", d1, d2, 450);
+				Assert.assertEquals("Testing if the degree-days are equal between second and third datasets", d2, d3, 450);
 				Assert.assertTrue("Testing if was simulated", dataType1.contains("Simulated"));
 				Assert.assertTrue("Testing if was simulated", dataType2.contains("Simulated"));
 				Assert.assertTrue("Testing if was simulated", dataType3.contains("Simulated"));
@@ -138,9 +141,9 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
-		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, null, "DegreeDay_Annual", null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4 = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, ClimateModel.RCM4, "DegreeDay_Annual", null);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4 = BioSimClient.getModelOutput(initialDateYr, finalDateYr, locations, RCP.RCP85, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : oRCP85_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP85_RCM4def.get(plot);
@@ -179,8 +182,9 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 
 		int initialDateYr = 2000;
 		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, "DegreeDay_Annual", null);
+		String modelName = "DegreeDay_Annual"; 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.getModelOutput(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);

@@ -22,6 +22,7 @@
 package biosimclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -42,7 +43,14 @@ public class BioSimClientModelWithParametersTest {
 		int initialDateYr = 2000;
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2001, locations, null, null, "DegreeDay_Annual", parms);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+				2001, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				Arrays.asList(new BioSimParameterMap[] {parms})).get(modelName);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);
@@ -56,11 +64,11 @@ public class BioSimClientModelWithParametersTest {
 				double actualDD = (Double) firstDataSet.getValueAt(i, ddFieldIndex);
 				double expectedDD;
 				if (dateYr == 2000) {
-					expectedDD = 1575d;
+					expectedDD = 1586.45;
 				} else {
-					expectedDD = 1847.15;
+					expectedDD = 1858.45;
 				}
-				Assert.assertEquals("Testing degree-days above 5C",	expectedDD,	actualDD, 1E-8);	// with new setup failed at 1586.45 MF2022-01-06
+				Assert.assertEquals("Testing degree-days above 5C",	expectedDD,	actualDD, 1E-8);	
 			}
 			System.out.println("Degree-days above 5C successfully tested!");
 		}
@@ -76,7 +84,14 @@ public class BioSimClientModelWithParametersTest {
 		int initialDateYr = 1980;
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2020, BioSimClientNormalsTest.getPlots(), null, null, "DegreeDay_Daily", parms);
+		String modelName = "DegreeDay_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+				2020, 
+				BioSimClientNormalsTest.getPlots(), 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}),
+				Arrays.asList(new BioSimParameterMap[] {parms})).get(modelName);
 	}
 	
 	

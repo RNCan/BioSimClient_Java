@@ -25,8 +25,8 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,9 +44,9 @@ public class BioSimInternalModelTest {
 		String packagePath = binPath.concat(relativePackagePath);
 		return packagePath;
 	}
-	
+
 	@Test
-	public void testingEachModelExceptPlanHardiness() throws NoSuchMethodException, SecurityException, BioSimClientException, BioSimServerException {
+	public void testingEachModelExceptPlanHardiness() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(new BioSimFakeLocation(45, -74, 300));
 
@@ -56,93 +56,75 @@ public class BioSimInternalModelTest {
 		int nbFailures = 0;
 		int nbSuccesses = 0;
 		List<String> modelList = BioSimClient.getModelList();
-		for (String model : modelList) {
-			if (!blackList.contains(model)) {
-//				System.out.print("Testing model: " + model);
-				try {
-//					if (model.equals("MPB_SLR")) {
-//						int u = 0;
-//					}
-					Map<BioSimPlot, BioSimDataSet> output = BioSimClient.getModelOutput(2018, 
-							2019, 
-							locations, 
-							null, 
-							null, 
-							model, 
-							1, 
-							1, 
-							false, 
-							null);					
-					Assert.assertTrue("There is only one dataset in the output", output.size() == 1);
-					BioSimDataSet obsDataset = output.values().iterator().next();
-					List<Observation> observations = obsDataset.getObservations();
-					String filename = getPackagePath(getClass()).replace("bin", "test") + model + "ref.ser";
-					
-//					UNCOMMENT THESE TWO LINES TO UPDATE THE TEST RESULTS
-//					FileOutputStream fos = new FileOutputStream(filename);
-//					ObjectOutputStream oos = new ObjectOutputStream(fos);
-//					oos.writeObject(observations);
-//					oos.close();
-					
-					FileInputStream fis = new FileInputStream(filename);
-					ObjectInputStream ois = new ObjectInputStream(fis);
-					List<Observation> references = (List) ois.readObject();
-					ois.close();	
-					Assert.assertEquals("Testing dataset have equal size", 
-							observations.size(), 
-							references.size());
-					
-					int nbSuccessful = 0;
-					int nbUnsuccessful = 0;
-					for (int i = 0; i < references.size(); i++) {
-						List<Object> refValues = references.get(i).values;
-						List<Object> obsValues = observations.get(i).values;
-						Assert.assertEquals("Testing observations have equal number of fields", 
-								refValues.size(), 
-								obsValues.size());
-						for (int j = 0; j < refValues.size(); j++) {
-							Object refValue = refValues.get(j);
-							Object obsValue = obsValues.get(j);
-							if (refValue instanceof Number && obsValue instanceof Number) {
-//								Assert.assertEquals("Testing values at line " + i + " field " + j, 
-//										((Number) refValue).doubleValue(), 
-//										((Number) obsValue).doubleValue(),
-//										1E-8);
-								if (Math.abs(((Number) refValue).doubleValue() - ((Number) obsValue).doubleValue()) < 1E-8) {
-									nbSuccessful++;
-								} else {
-									nbUnsuccessful++;
-								}
-							} else {
-//								Assert.assertEquals("Testing observations have equal number of fields", 
-//										refValue, 
-//										obsValue);
-								if (refValue.equals(obsValue)) {
-									nbSuccessful++;
-								} else {
-									nbUnsuccessful++;
-								}
-							}
+		modelList.removeAll(blackList);
+		LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> overallOutput = BioSimClient.getModelOutput(2018, 
+				2019, 
+				locations, 
+				null, 
+				null, 
+				modelList, 
+				1, 
+				1, 
+				null);
+		for (String modelName : modelList) {
+			LinkedHashMap<BioSimPlot, BioSimDataSet> output = overallOutput.get(modelName);
+			Assert.assertTrue("There is only one dataset in the output", output.size() == 1);
+			BioSimDataSet obsDataset = output.values().iterator().next();
+			List<Observation> observations = obsDataset.getObservations();
+			String filename = getPackagePath(getClass()).replace("bin", "test") + modelName + "ref.ser";
+
+			//					UNCOMMENT THESE TWO LINES TO UPDATE THE TEST RESULTS
+			//					FileOutputStream fos = new FileOutputStream(filename);
+			//					ObjectOutputStream oos = new ObjectOutputStream(fos);
+			//					oos.writeObject(observations);
+			//					oos.close();
+
+			FileInputStream fis = new FileInputStream(filename);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			List<Observation> references = (List) ois.readObject();
+			ois.close();	
+			Assert.assertEquals("Testing dataset have equal size", 
+					observations.size(), 
+					references.size());
+
+			int nbSuccessful = 0;
+			int nbUnsuccessful = 0;
+			for (int i = 0; i < references.size(); i++) {
+				List<Object> refValues = references.get(i).values;
+				List<Object> obsValues = observations.get(i).values;
+				Assert.assertEquals("Testing observations have equal number of fields", 
+						refValues.size(), 
+						obsValues.size());
+				for (int j = 0; j < refValues.size(); j++) {
+					Object refValue = refValues.get(j);
+					Object obsValue = obsValues.get(j);
+					if (refValue instanceof Number && obsValue instanceof Number) {
+						if (Math.abs(((Number) refValue).doubleValue() - ((Number) obsValue).doubleValue()) < 1E-8) {
+							nbSuccessful++;
+						} else {
+							nbUnsuccessful++;
+						}
+					} else {
+						if (refValue.equals(obsValue)) {
+							nbSuccessful++;
+						} else {
+							nbUnsuccessful++;
 						}
 					}
-					nbSuccesses++;
-					int total = nbUnsuccessful + nbSuccessful;
-					if (nbUnsuccessful > 0) {
-						System.out.println(model + " tested - Number of unsuccessful check = " + nbUnsuccessful + " / " + total);
-					} else {
-						System.out.println(model + " successfully tested");
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					nbFailures++;
-					System.out.println(" - Failed for this reason " + e.toString());
 				}
+			}
+			nbSuccesses++;
+			int total = nbUnsuccessful + nbSuccessful;
+			if (nbUnsuccessful > 0) {
+				System.out.println(modelName + " tested - Number of unsuccessful check = " + nbUnsuccessful + " / " + total);
+			} else {
+				System.out.println(modelName + " successfully tested");
 			}
 		}
 		System.out.println("Nb of failures = " + nbFailures + "; Nb of successes = " + nbSuccesses);
 		Assert.assertTrue("No exception thrown", nbFailures == 0);
 	}
-	
+
 }
 
 

@@ -22,6 +22,7 @@
 package biosimclient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -39,37 +40,43 @@ public class BioSimClientModelExtendedTest {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
-		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "ClimaticQc_Annual", null);
+		String modelName = "ClimaticQc_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+				2000, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}), 
+				null).get(modelName);
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("DegreeDay");
 		if (obs.values.get(index) instanceof Integer) {
 			Assert.assertEquals("Testing DegreeDay", 1575, (Integer) obs.values.get(index), 1E-8);
 		} else {
-			Assert.assertEquals("Testing DegreeDay", 1575, (Double) obs.values.get(index), 1E-8);		// with new setup failed at 1586.45 MF2022-01-06
+			Assert.assertEquals("Testing DegreeDay", 1586.45, (Double) obs.values.get(index), 1E-8);
 		}
 
 		index = ds.getFieldNames().indexOf("TMean");
-		Assert.assertEquals("Testing TMean", 4.1776, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing TMean", 4.26612, (Double) obs.values.get(index), 1E-8);
 		
 		index = ds.getFieldNames().indexOf("GrowingSeasonTmean");
-		Assert.assertEquals("Testing GrowingSeasonTmean", 13.9292, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing GrowingSeasonTmean", 13.9918, (Double) obs.values.get(index), 1E-8);
 
 		index = ds.getFieldNames().indexOf("JulyTmean");
 		Assert.assertEquals("Testing JulyTmean", 18.1387, (Double) obs.values.get(index), 1E-8);
 
 		index = ds.getFieldNames().indexOf("SnowfallProportion");
-		Assert.assertEquals("Testing SnowfallProportion", 30.7134, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing SnowfallProportion", 29.3919, (Double) obs.values.get(index), 1E-8);
 
 		index = ds.getFieldNames().indexOf("TotalSnowfall");
-		Assert.assertEquals("Testing TotalSnowfall", 363.8, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing TotalSnowfall", 339.3, (Double) obs.values.get(index), 1E-8);
 
 		index = ds.getFieldNames().indexOf("TotalRadiation");
-		Assert.assertEquals("Testing TotalRadiation", 4654.31, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing TotalRadiation", 4621.28, (Double) obs.values.get(index), 1E-8);
 
 		index = ds.getFieldNames().indexOf("GrowingSeasonRadiation");
-		Assert.assertEquals("Testing GrowingSeasonRadiation", 2820.74, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing GrowingSeasonRadiation", 2806.32, (Double) obs.values.get(index), 1E-8);
 	}
 
 
@@ -85,12 +92,18 @@ public class BioSimClientModelExtendedTest {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
-		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "Climatic_Annual", null);
+		String modelName = "Climatic_Annual";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+				2000, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}),
+				null).get(modelName);
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("TotalRadiation");
-		Assert.assertEquals("Testing TotalRadiation", 4654.3, (Double) obs.values.get(index), 1E-8);	// with new setup failed at 4621.3 MF2022-01-06
+		Assert.assertEquals("Testing TotalRadiation", 4621.3, (Double) obs.values.get(index), 1E-8);	
 		
 		index = ds.getFieldNames().indexOf("MeanRelH");
 		Assert.assertEquals("Testing MeanRelH", 73.4, (Double) obs.values.get(index), 1E-8);
@@ -99,7 +112,7 @@ public class BioSimClientModelExtendedTest {
 		Assert.assertEquals("Testing MeanTdew", 0.1, (Double) obs.values.get(index), 1E-8);
 		
 		index = ds.getFieldNames().indexOf("MeanTair");
-		Assert.assertEquals("Testing MeanTair", 4.2, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing MeanTair", 4.3, (Double) obs.values.get(index), 1E-8);
 	}
 
 	/*
@@ -110,12 +123,18 @@ public class BioSimClientModelExtendedTest {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
-		
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 2000, locations, null, null, "Climatic_Monthly", null);
+		String modelName = "Climatic_Monthly";
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+				2000, 
+				locations, 
+				null, 
+				null, 
+				Arrays.asList(new String[]{modelName}),
+				null).get(modelName);
 		BioSimDataSet ds = teleIORefs.values().iterator().next();
 		Observation obs = ds.getObservations().get(0);
 		int index = ds.getFieldNames().indexOf("TotalRadiation");
-		Assert.assertEquals("Testing TotalRadiation", 219.2, (Double) obs.values.get(index), 1E-8);		// with new setup failed at 216.2 MF20220506
+		Assert.assertEquals("Testing TotalRadiation", 216.2, (Double) obs.values.get(index), 1E-8);		
 		
 		index = ds.getFieldNames().indexOf("MeanRelH");
 		Assert.assertEquals("Testing MeanRelH", 73.9, (Double) obs.values.get(index), 1E-8);
@@ -124,7 +143,7 @@ public class BioSimClientModelExtendedTest {
 		Assert.assertEquals("Testing MeanTdew", -15.8, (Double) obs.values.get(index), 1E-8);
 		
 		index = ds.getFieldNames().indexOf("MeanTair");
-		Assert.assertEquals("Testing MeanTair", -12.7, (Double) obs.values.get(index), 1E-8);
+		Assert.assertEquals("Testing MeanTair", -12.6, (Double) obs.values.get(index), 1E-8);
 	}
 	
 	

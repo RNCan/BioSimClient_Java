@@ -30,6 +30,7 @@ import biosimclient.BioSimEnums.RCP;
  * elevation are assumed to be within a one-meter difference.  
  * @author Mathieu Fortin - December 2019
  */
+@Deprecated
 class BioSimQuerySignature {
 	
 	final int initialYear;
