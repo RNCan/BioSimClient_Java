@@ -41,7 +41,7 @@ public class BioSimClientModelExtendedTest {
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		String modelName = "ClimaticQc_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
@@ -93,7 +93,7 @@ public class BioSimClientModelExtendedTest {
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		String modelName = "Climatic_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
@@ -124,7 +124,7 @@ public class BioSimClientModelExtendedTest {
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		String modelName = "Climatic_Monthly";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 

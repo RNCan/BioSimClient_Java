@@ -49,7 +49,7 @@ public class BioSimClientMultithreadingClimateGenerationForRegenerationIris2020 
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
-		BioSimClient.getModelOutput(initialDateYr, 
+		BioSimClient.generateWeather(initialDateYr, 
 				finalDateYr, 
 				locations, 
 				null, 

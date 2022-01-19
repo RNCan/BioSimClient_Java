@@ -67,7 +67,7 @@ public class BioSimClientMultithreadingClimateGeneration {
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
 		String modelName = "DegreeDay_Annual";
-		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.getModelOutput(initialDateYr, 
+		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.generateWeather(initialDateYr, 
 				finalDateYr, 
 				locations, 
 				null, 

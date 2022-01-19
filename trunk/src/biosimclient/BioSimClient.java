@@ -546,7 +546,7 @@ public final class BioSimClient {
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
 	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
 	 */
-	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> getModelOutput(int fromYr, 
+	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> generateWeather(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
 			RCP rcp,
@@ -554,7 +554,7 @@ public final class BioSimClient {
 			List<String> modelNames,
 			int rep,
 			List<BioSimParameterMap> additionalParms)	throws BioSimClientException, BioSimServerException {
-		return BioSimClient.getModelOutput(fromYr, toYr, locations, rcp, climMod, modelNames, rep, 1, additionalParms); 
+		return BioSimClient.generateWeather(fromYr, toYr, locations, rcp, climMod, modelNames, rep, 1, additionalParms); 
 	}
 
 	
@@ -577,7 +577,7 @@ public final class BioSimClient {
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
 	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
 	 */
-	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> getModelOutput(int fromYr, 
+	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> generateWeather(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
 			RCP rcp,
@@ -585,7 +585,7 @@ public final class BioSimClient {
 			List<String> modelNames,
 			List<BioSimParameterMap> additionalParms)
 			throws BioSimClientException, BioSimServerException {
-		return BioSimClient.getModelOutput(fromYr, toYr, locations, rcp, climMod, modelNames, 1, 1, additionalParms);
+		return BioSimClient.generateWeather(fromYr, toYr, locations, rcp, climMod, modelNames, 1, 1, additionalParms);
 	}
 
 	
@@ -617,7 +617,7 @@ public final class BioSimClient {
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
 	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
 	 */
-	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> getModelOutput(int fromYr, 
+	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> generateWeather(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
 			RCP rcp,

@@ -40,7 +40,7 @@ public class BioSimClientTestsWithParticularModels {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 1998;
 		String modelName = "MPB_SLR";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.getModelOutput(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
 				2020, 
 				locations, 
 				null, 

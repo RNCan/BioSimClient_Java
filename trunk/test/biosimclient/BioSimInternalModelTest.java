@@ -57,7 +57,7 @@ public class BioSimInternalModelTest {
 		int nbSuccesses = 0;
 		List<String> modelList = BioSimClient.getModelList();
 		modelList.removeAll(blackList);
-		LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> overallOutput = BioSimClient.getModelOutput(2018, 
+		LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> overallOutput = BioSimClient.generateWeather(2018, 
 				2019, 
 				locations, 
 				null, 
