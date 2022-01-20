@@ -80,13 +80,6 @@ dependencies {
     testImplementation "junit:junit:4.12"    
 }
 
-task updateRevision(type: WriteProperties) {
-	project.ext.build = getSvnRevision()
-	outputFile = file("$buildDir/classes/java/main/repicea/app/revision")	
-	property "Revision", project.ext.build
-	property "Version", biosimclientVersion
-}
- 
 compileJava {
 	project.version=biosimclientVersion
 	println "Building " + rootProject.name + " v" + project.version
@@ -122,7 +115,6 @@ task integrationTest(type: Test) {
 check.dependsOn integrationTest
 
 jar {
-	dependsOn updateRevision
 	 manifest {
         attributes("Built-By": "Mathieu Fortin",
         		   "Specification-Title": "Client for BioSIM Web API",
