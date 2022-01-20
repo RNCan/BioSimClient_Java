@@ -22,9 +22,10 @@
 package biosimclient;
 
 import java.security.InvalidParameterException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
-public class BioSimParameterMap extends HashMap<String,Object> {
+@SuppressWarnings("serial")
+public class BioSimParameterMap extends LinkedHashMap<String,Object> {
 
 	public void addParameter(String parameterName, Object value) {
 		if (value instanceof Number || value instanceof String) {
@@ -34,40 +35,25 @@ public class BioSimParameterMap extends HashMap<String,Object> {
 		}
 	}
 
-	protected String parse() {
-		if (isEmpty()) {
-			return null;
-		} else {
-			String str = "Parameters=";
-			String sep = "*"; 
-			for (String key : keySet()) {
-				Object value = get(key);
-				String valueString;
-				if (value == null) {
-					valueString = "";
-				} else {
-					valueString = value.toString().trim();
-				}
-				str += sep + key.trim() + ":" + valueString;
-			}
-			return str;
-		}
-	}
+//	protected String convertToString() {
+//		if (isEmpty()) 
+//			return null;
+//		else 
+//			return "Parameters=" + toString();
+//	}
 
 	@Override
 	public String toString() {
-		String str = "";
+		StringBuilder sb = new StringBuilder();
+		String sep = "*"; 
 		for (String key : keySet()) {
 			Object value = get(key);
-			String valueString;
-			if (value == null) {
-				valueString = "";
-			} else {
-				valueString = value.toString().trim();
-			}
-			str += key.trim() + ":" + valueString + BioSimClient.FieldSeparator;
+			String valueString = value == null ? "" : value.toString().trim();
+			if (sb.length() == 0)
+				sb.append(key.trim() + ":" + valueString);
+			else 
+				sb.append(sep + key.trim() + ":" + valueString);
 		}
-		str = str.substring(0, str.length() - 1);
-		return str;
+		return sb.toString();
 	}
 }

@@ -60,7 +60,6 @@ public final class BioSimClient {
 	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
 	private static final InetSocketAddress LocalAddress = new InetSocketAddress("localhost", 5000);
-	private static final InetSocketAddress DebugAddress = new InetSocketAddress("192.168.0.194", 5001);
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
@@ -77,12 +76,12 @@ public final class BioSimClient {
 
 	private static double totalServerRequestDuration = 0.0;
 
-	static boolean isLocal = true;		// set to true to connect on 5000 locally (this the production port)
-	static boolean isDebug = false;		// set to true to connect on 5001 locally (this is the debug port)
+	public static boolean isLocal = true;		// set to true to connect on 5000 locally 
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
 	
 	static Integer NbNearestNeighbours = null;
+	
 	
 	private static String addQueryIfAny(String urlString, String query) {
 		if (query != null && !query.isEmpty()) {
@@ -92,12 +91,11 @@ public final class BioSimClient {
 		}
 	}
 	
+	
 	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 //		long initTime = System.currentTimeMillis();
 		InetSocketAddress address;
-		if (isDebug) {
-			address = BioSimClient.DebugAddress;
-		} else if (isLocal) {
+		if (isLocal) {
 			address = BioSimClient.LocalAddress;
 		} else {
 			address = BioSimClient.REpiceaAddress;
@@ -158,6 +156,7 @@ public final class BioSimClient {
 		return stringList;
 	}
 	
+	
 	private static LinkedHashMap<BioSimPlot, BioSimDataSet> internalCalculationForNormals(Period period,
 			List<BioSimPlot> locations,
 			RCP rcp,
@@ -207,7 +206,6 @@ public final class BioSimClient {
 		}
 	}
 
-
 	
 	/**
 	 * Retrieves the normals and compiles the mean or sum over some months.
@@ -248,6 +246,7 @@ public final class BioSimClient {
 		}
 	}
 	
+	
 	/**
 	 * Retrieves the monthly normals.
 	 * @param period a Period enum variable
@@ -265,6 +264,7 @@ public final class BioSimClient {
 		return getNormals(period, locations, rcp, climModel, null);
 	}
 
+	
 	/**
 	 * Retrieves the yearly normals.
 	 * @param period a Period enum variable
@@ -314,7 +314,6 @@ public final class BioSimClient {
 		}
 	}
 	
-	
 
 	/**
 	 * Returns the names of the available models. This is a clone of the
@@ -342,7 +341,7 @@ public final class BioSimClient {
 			throw new InvalidParameterException("THe modelName parameter cannot be set to null!");
 		}
 		String serverReply = getStringFromConnection(BIOSIMMODELDEFAULTPARAMETERS, "model=" + modelName).toString();
-		String[] parms = serverReply.split(FieldSeparator);
+		String[] parms = serverReply.split("\\*");
 		BioSimParameterMap parmMap = new BioSimParameterMap();
 		for (String parm : parms) {
 			String[] keyValue = parm.split(":");
@@ -354,6 +353,7 @@ public final class BioSimClient {
 		}
 		return parmMap;
 	}
+	
 
 	private static List<String> getReferenceModelList() throws BioSimClientException, BioSimServerException {
 		if (ReferenceModelList == null) {
@@ -368,56 +368,7 @@ public final class BioSimClient {
 		return ReferenceModelList;
 	}
  	
-	
-//	/**
-//	 * Applies a particular model on some generated climate variables.
-//	 * 
-//	 * @param modelName  the name of the model
-//	 * @param repModel the number of replications for the model
-//	 * @param teleIORefs a LinkedHashMap with the references to the TeleIO objects on the server
-//	 * @param additionalParms a BioSimParameterMap instance that contains the eventual additional parameters for the model
-//	 * @return a LinkedHashMap with BioSimPlot instances as keys and a Map with years and climate variables values as values.
-//	 * @throws BioSimClientException
-//	 */
-//	static LinkedHashMap<BioSimPlot, BioSimDataSet> applyModel(
-//			String modelName,
-//			int repModel,
-//			LinkedHashMap<BioSimPlot, String> teleIORefs,
-//			BioSimParameterMap additionalParms) throws BioSimClientException, BioSimServerException {
-//		if (!getReferenceModelList().contains(modelName)) {
-//			throw new InvalidParameterException("The model " + modelName
-//					+ " is not a valid model. Please consult the list of models through the function getModelList()");
-//		}
-//		String wgoutQuery = "";
-//		List<BioSimPlot> refListForLocations = new ArrayList<BioSimPlot>();
-//		for (BioSimPlot location : teleIORefs.keySet()) {
-//			refListForLocations.add(location);
-//			if (wgoutQuery.isEmpty()) {
-//				wgoutQuery += teleIORefs.get(location);
-//			} else {
-//				wgoutQuery += SPACE_IN_REQUEST + teleIORefs.get(location);
-//			}
-//		}
-//
-//		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
-//		String query = "";
-//		query += "model=" + modelName;
-//		query += "&wgout=" + wgoutQuery;
-//		if (repModel >  1) {
-//			query += "&repmodel=" + repModel;
-//		}
-//		if (additionalParms != null) {
-//			query += "&" + additionalParms.parse();
-//		}
-//
-//		BioSimStringList serverReply = getStringFromConnection(MODEL_API, query);
-//		
-//		readLines(serverReply, "rep", refListForLocations, outputMap);
-//		
-//		return outputMap;
-//	}
-
-	
+		
 	private static void readLines(BioSimStringList serverReply,
 			String fieldLineStarter,
 			List<BioSimPlot> refListForLocations,
@@ -512,9 +463,9 @@ public final class BioSimClient {
 			int i = 0;
 			for (BioSimParameterMap oMap : additionalParms) {
 				if (i == 0)
-					query.append("&" + oMap.parse());
+					query.append("&Parameters=" + oMap.toString());
 				else 
-					query.append(SPACE_IN_REQUEST + oMap.parse());
+					query.append(SPACE_IN_REQUEST + oMap.toString());
 			}
 		}
 //		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
