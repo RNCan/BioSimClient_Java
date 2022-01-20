@@ -27,11 +27,23 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
 public class BioSimClientModelWithParametersTest {
+
+	
+	/*
+	 * Testing parameter map conversion to String
+	 */
+	@Test
+	public void testingParametersWithDegreeDays() throws BioSimClientException, BioSimServerException {
+		BioSimParameterMap parameterMap = BioSimClient.getModelDefaultParameters("DegreeDay_Annual");
+		String paramStr = parameterMap.toString();
+		Assert.assertEquals("Method:0*LowerThreshold:0*UpperThreshold:999*Cutoff:0*FirstDate:01/01*LastDate:12/31*SummationType:1*DDSummation:0", 
+				paramStr);
+		
+	}
 
 	/*
 	 * Tests if the weather generation over past and future time intervals.
