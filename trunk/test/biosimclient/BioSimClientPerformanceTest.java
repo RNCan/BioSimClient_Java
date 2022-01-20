@@ -21,11 +21,20 @@
  */
 package biosimclient;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Random;
 
 public class BioSimClientPerformanceTest {
 
@@ -185,7 +194,7 @@ public class BioSimClientPerformanceTest {
 		//parms.addParameter("LowerThreshold", 5);
 
 		long initial = System.currentTimeMillis();
-		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.generateWeather(initialDateYr,
+		LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.generateWeather(initialDateYr,
 				finalDateYr,
 				locations,
 				null,
