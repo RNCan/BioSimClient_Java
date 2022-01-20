@@ -54,6 +54,9 @@ public class BioSimParameterMap extends LinkedHashMap<String,Object> {
 			else 
 				sb.append(sep + key.trim() + ":" + valueString);
 		}
-		return sb.toString();
+		if (sb.length() == 0)
+			return "null";
+		else 
+			return sb.toString();
 	}
 }
