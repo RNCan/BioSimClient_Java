@@ -50,7 +50,9 @@ public class BioSimClientPerformanceTest {
 			e.printStackTrace();
 		}
 
-		String path = tmpDirectory + File.separator + ".." + File.separator + ".." + File.separator + ".." + File.separator + "testData";
+		File currentDirectory = new File(tmpDirectory);
+		String rootDirectory = currentDirectory.getParentFile().getParentFile().getAbsolutePath();
+		String path = rootDirectory + File.separator + "testData";
 		this.testRunFilename = path + File.separator + "performanceTestRun" + ".txt";
 		this.testResultsFilename = path + File.separator + "performanceTestResults" + ".txt";
 
