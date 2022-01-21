@@ -21,6 +21,7 @@
  */
 package biosimclient;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -29,6 +30,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import repicea.serial.xml.XmlDeserializer;
+import repicea.serial.xml.XmlSerializer;
+
 
 public class BioSimClientModelExtendedTest {
 
@@ -36,47 +40,30 @@ public class BioSimClientModelExtendedTest {
 	 * Testing ClimaticQc_Annual model
 	 */
 	@Test
-	public void testingWithClimaticQc_Annual() throws BioSimClientException, BioSimServerException {
+	public void testingWithClimaticQc_Annual() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		String modelName = "ClimaticQc_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
 				null, 
 				Arrays.asList(new String[]{modelName}), 
 				null).get(modelName);
-		BioSimDataSet ds = teleIORefs.values().iterator().next();
-		Observation obs = ds.getObservations().get(0);
-		int index = ds.getFieldNames().indexOf("DegreeDay");
-		if (obs.values.get(index) instanceof Integer) {
-			Assert.assertEquals("Testing DegreeDay", 1575, (Integer) obs.values.get(index), 1E-8);
-		} else {
-			Assert.assertEquals("Testing DegreeDay", 1586.45, (Double) obs.values.get(index), 1E-8);
+		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
+		if (!BioSimClientTestSettings.Validation) {
+			XmlSerializer serializer = new XmlSerializer(validationFilename);
+			serializer.writeObject(teleIO);
 		}
-
-		index = ds.getFieldNames().indexOf("TMean");
-		Assert.assertEquals("Testing TMean", 4.26612, (Double) obs.values.get(index), 1E-8);
+		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
+		XmlDeserializer deser = new XmlDeserializer(validationFilename);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) deser.readObject();
 		
-		index = ds.getFieldNames().indexOf("GrowingSeasonTmean");
-		Assert.assertEquals("Testing GrowingSeasonTmean", 13.9918, (Double) obs.values.get(index), 1E-8);
-
-		index = ds.getFieldNames().indexOf("JulyTmean");
-		Assert.assertEquals("Testing JulyTmean", 18.1387, (Double) obs.values.get(index), 1E-8);
-
-		index = ds.getFieldNames().indexOf("SnowfallProportion");
-		Assert.assertEquals("Testing SnowfallProportion", 29.3919, (Double) obs.values.get(index), 1E-8);
-
-		index = ds.getFieldNames().indexOf("TotalSnowfall");
-		Assert.assertEquals("Testing TotalSnowfall", 339.3, (Double) obs.values.get(index), 1E-8);
-
-		index = ds.getFieldNames().indexOf("TotalRadiation");
-		Assert.assertEquals("Testing TotalRadiation", 4621.28, (Double) obs.values.get(index), 1E-8);
-
-		index = ds.getFieldNames().indexOf("GrowingSeasonRadiation");
-		Assert.assertEquals("Testing GrowingSeasonRadiation", 2806.32, (Double) obs.values.get(index), 1E-8);
+		Assert.assertTrue("Comparing the two LinkedHashMap instances",
+				BioSimClientTestSettings.areTheseInnerMapsEqual(teleIO, teleIORefs));
 	}
 
 
@@ -88,62 +75,60 @@ public class BioSimClientModelExtendedTest {
 	 * Testing Climatic_Annual model
 	 */
 	@Test
-	public void testingWithClimatic_Annual() throws BioSimClientException, BioSimServerException {
+	public void testingWithClimatic_Annual() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		String modelName = "Climatic_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
 				null, 
 				Arrays.asList(new String[]{modelName}),
 				null).get(modelName);
-		BioSimDataSet ds = teleIORefs.values().iterator().next();
-		Observation obs = ds.getObservations().get(0);
-		int index = ds.getFieldNames().indexOf("TotalRadiation");
-		Assert.assertEquals("Testing TotalRadiation", 4621.3, (Double) obs.values.get(index), 1E-8);	
+		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
+		if (!BioSimClientTestSettings.Validation) {
+			XmlSerializer serializer = new XmlSerializer(validationFilename);
+			serializer.writeObject(teleIO);
+		}
+		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
+		XmlDeserializer deser = new XmlDeserializer(validationFilename);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) deser.readObject();
 		
-		index = ds.getFieldNames().indexOf("MeanRelH");
-		Assert.assertEquals("Testing MeanRelH", 73.4, (Double) obs.values.get(index), 1E-8);
-
-		index = ds.getFieldNames().indexOf("MeanTdew");
-		Assert.assertEquals("Testing MeanTdew", 0.1, (Double) obs.values.get(index), 1E-8);
-		
-		index = ds.getFieldNames().indexOf("MeanTair");
-		Assert.assertEquals("Testing MeanTair", 4.3, (Double) obs.values.get(index), 1E-8);
+		Assert.assertTrue("Comparing the two LinkedHashMap instances",
+				BioSimClientTestSettings.areTheseInnerMapsEqual(teleIO, teleIORefs));
 	}
 
 	/*
 	 * Testing Climatic_Monthly model
 	 */
 	@Test
-	public void testingWithClimatic_Monthly() throws BioSimClientException, BioSimServerException {
+	public void testingWithClimatic_Monthly() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		int initialDateYr = 2000;
 		String modelName = "Climatic_Monthly";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
 				null, 
 				Arrays.asList(new String[]{modelName}),
 				null).get(modelName);
-		BioSimDataSet ds = teleIORefs.values().iterator().next();
-		Observation obs = ds.getObservations().get(0);
-		int index = ds.getFieldNames().indexOf("TotalRadiation");
-		Assert.assertEquals("Testing TotalRadiation", 216.2, (Double) obs.values.get(index), 1E-8);		
+		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
+		if (!BioSimClientTestSettings.Validation) {
+			XmlSerializer serializer = new XmlSerializer(validationFilename);
+			serializer.writeObject(teleIO);
+		}
+		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
+		XmlDeserializer deser = new XmlDeserializer(validationFilename);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) deser.readObject();
 		
-		index = ds.getFieldNames().indexOf("MeanRelH");
-		Assert.assertEquals("Testing MeanRelH", 73.9, (Double) obs.values.get(index), 1E-8);
-
-		index = ds.getFieldNames().indexOf("MeanTdew");
-		Assert.assertEquals("Testing MeanTdew", -15.8, (Double) obs.values.get(index), 1E-8);
-		
-		index = ds.getFieldNames().indexOf("MeanTair");
-		Assert.assertEquals("Testing MeanTair", -12.6, (Double) obs.values.get(index), 1E-8);
+		Assert.assertTrue("Comparing the two LinkedHashMap instances",
+				BioSimClientTestSettings.areTheseInnerMapsEqual(teleIO, teleIORefs));
 	}
 	
 	

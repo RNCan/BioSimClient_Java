@@ -42,7 +42,6 @@ def getSvnRevision(){
 
 println "Using java version " + JavaVersion.current()
 println "Project directory " + project.projectDir
-//project.buildDir = "${project.projectDir}/bin"
 println "Build directory " + project.buildDir
 
 sourceSets {

@@ -256,7 +256,7 @@ public final class BioSimClient {
 	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
 	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
 	 */
-	public static Map<BioSimPlot, BioSimDataSet> getMonthlyNormals(
+	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getMonthlyNormals(
 			Period period, 
 			List<BioSimPlot> locations,
 			RCP rcp,
@@ -274,7 +274,7 @@ public final class BioSimClient {
 	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
 	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
 	 */
-	public static Map<BioSimPlot, BioSimDataSet> getAnnualNormals(
+	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getAnnualNormals(
 			Period period, 
 			List<BioSimPlot> locations,
 			RCP rcp,
