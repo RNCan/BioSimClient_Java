@@ -38,6 +38,7 @@ import biosimclient.BioSimEnums.Month;
  * @author Mathieu Fortin - March 2020
  *
  */
+@SuppressWarnings("serial")
 public class BioSimDataSet implements Serializable {
 
 	protected List<String> fieldNames;
@@ -297,5 +298,19 @@ public class BioSimDataSet implements Serializable {
 		return outputDataSet;
 	}
 	
-	
+	boolean areEqual(BioSimDataSet otherDataset) {
+		if (fieldNames.equals(otherDataset.fieldNames)) {
+			if (fieldTypes.equals(otherDataset.fieldTypes)) {
+				if (observations.size() == otherDataset.observations.size()) {
+					for (int i = 0; i < observations.size(); i++) {
+						if (!observations.get(i).isEqualToThisObservation(otherDataset.observations.get(i))) {
+							return false;
+						}
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

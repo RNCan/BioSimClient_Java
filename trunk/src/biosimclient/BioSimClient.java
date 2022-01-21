@@ -460,13 +460,16 @@ public final class BioSimClient {
 			query.append("&repmodel=" + repModel);
 		}
 		if (additionalParms != null) {
+			StringBuilder sbParms = new StringBuilder();
 			int i = 0;
 			for (BioSimParameterMap oMap : additionalParms) {
-				if (i == 0)
-					query.append("&Parameters=" + oMap.toString());
+				String strForThisMap = oMap == null || oMap.isEmpty() ? "null" : oMap.toString();
+				if (sbParms.length() == 0)
+					sbParms.append(strForThisMap);
 				else 
-					query.append(SPACE_IN_REQUEST + oMap.toString());
+					sbParms.append(SPACE_IN_REQUEST + strForThisMap);
 			}
+			query.append("&Parameters=" + sbParms.toString());
 		}
 //		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
 		BioSimStringList serverReply = getStringFromConnection(BIOSIMWEATHER, query.toString());
