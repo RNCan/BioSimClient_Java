@@ -41,6 +41,9 @@ def getSvnRevision(){
 }
 
 println "Using java version " + JavaVersion.current()
+println "Project directory " + project.projectDir
+//project.buildDir = "${project.projectDir}/bin"
+println "Build directory " + project.buildDir
 
 sourceSets {
     main {    	
@@ -73,10 +76,10 @@ sourceSets {
 // make sure to set the compliance to Java 1.8 in the project properties if the Java version is later than 1.8
 // make sure to set Java Compiler > Errors Warnings > Deprecated and Restricted API > Forbidden reference to WARNING instead of ERROR
 dependencies {
-//    if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-// 		implementation 'com.sun.xml.bind:jaxb-ri:2.3.5'   
-//	}
-    
+    if(JavaVersion.current() != JavaVersion.VERSION_1_8){
+ 		implementation 'com.sun.xml.bind:jaxb-ri:2.3.5'   
+	}
+	compile group: 'org', name: 'repicea', version: '1+'   
     testImplementation "junit:junit:4.12"    
 }
 

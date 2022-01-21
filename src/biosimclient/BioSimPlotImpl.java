@@ -53,5 +53,13 @@ public class BioSimPlotImpl implements BioSimPlot {
 	@Override
 	public String toString() {return latitude + "_" + longitude + "_" + elevationM;}
 
+	
+	boolean areEqual(BioSimPlotImpl otherPlot) {
+		if (Math.abs(latitude - otherPlot.latitude) < 1E-8) 
+			if (Math.abs(longitude - otherPlot.longitude) < 1E-8)
+				if (Math.abs(elevationM - otherPlot.elevationM) < 1E-8)
+					return true;
+		return false;
+	}
 }
 
