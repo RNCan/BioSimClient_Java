@@ -21,6 +21,7 @@
  */
 package biosimclient;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.net.URISyntaxException;
@@ -34,16 +35,16 @@ import org.junit.Test;
 
 public class BioSimInternalModelTest {
 
-	public static final String PathSeparator = "/";
-
-	private String getPackagePath(Class anyClass) throws URISyntaxException {
-		String binPath = anyClass.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-		int lastPathSeparator = binPath.lastIndexOf(PathSeparator);
-		binPath = binPath.substring(0, lastPathSeparator).concat(PathSeparator);
-		String relativePackagePath = anyClass.getPackage().getName().replace(".", PathSeparator) + PathSeparator;
-		String packagePath = binPath.concat(relativePackagePath);
-		return packagePath;
-	}
+//	public static final String PathSeparator = "/";
+//
+//	private String getPackagePath(Class anyClass) throws URISyntaxException {
+//		String binPath = anyClass.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+//		int lastPathSeparator = binPath.lastIndexOf(PathSeparator);
+//		binPath = binPath.substring(0, lastPathSeparator).concat(PathSeparator);
+//		String relativePackagePath = anyClass.getPackage().getName().replace(".", PathSeparator) + PathSeparator;
+//		String packagePath = binPath.concat(relativePackagePath);
+//		return packagePath;
+//	}
 
 	@Test
 	public void testingEachModelExceptPlanHardiness() throws Exception {
@@ -71,7 +72,8 @@ public class BioSimInternalModelTest {
 			Assert.assertTrue("There is only one dataset in the output", output.size() == 1);
 			BioSimDataSet obsDataset = output.values().iterator().next();
 			List<Observation> observations = obsDataset.getObservations();
-			String filename = getPackagePath(getClass()).replace("bin", "test") + modelName + "ref.ser";
+			String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + modelName + "ref.ser";;
+
 
 			//					UNCOMMENT THESE TWO LINES TO UPDATE THE TEST RESULTS
 			//					FileOutputStream fos = new FileOutputStream(filename);
@@ -79,7 +81,7 @@ public class BioSimInternalModelTest {
 			//					oos.writeObject(observations);
 			//					oos.close();
 
-			FileInputStream fis = new FileInputStream(filename);
+			FileInputStream fis = new FileInputStream(validationFilename);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			List<Observation> references = (List) ois.readObject();
 			ois.close();	

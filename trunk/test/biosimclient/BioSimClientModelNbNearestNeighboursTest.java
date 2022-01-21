@@ -33,7 +33,7 @@ import org.junit.Test;
 public class BioSimClientModelNbNearestNeighboursTest {
 
 	/*
-	 * Testing ClimaticQc_Annual model
+	 * Testing ClimaticQc_Annual model and ensuring that the default nb of nearest neighbour is 4.
 	 */
 	@Test
 	public void testingWithDefaultFourClimateStations() throws BioSimClientException, BioSimServerException {
@@ -60,28 +60,12 @@ public class BioSimClientModelNbNearestNeighboursTest {
 				null, 
 				Arrays.asList(new String[] {modelName}), 
 				null).get(modelName);
-		
-		BioSimDataSet firstDataSet = teleIORefs.get(plot);
-		Assert.assertTrue("First dataset has one observation", firstDataSet.getNumberOfObservations() == 1);
-		
-		BioSimDataSet secondDataSet = teleIORefs2.get(plot);
-		Assert.assertTrue("Second dataset has one observation", secondDataSet.getNumberOfObservations() == 1);
-
-		List<Object> firstObs = firstDataSet.getObservations().get(0).values;
-		Assert.assertTrue("First observation has some values", firstObs.size() > 0);
-		List<Object> secondObs = secondDataSet.getObservations().get(0).values;
-		Assert.assertTrue("Second observation has some values", secondObs.size() > 0);
-
-		for (int i = 2; i < firstObs.size(); i++) {
-			Object obj1 = firstObs.get(i);
-			Object obj2 = secondObs.get(i);
-			Assert.assertEquals("Testing if values at location " + i + " are equal", obj1, obj2);
-		}
+		Assert.assertTrue("Comparing the two LinkedHasMap instances", BioSimClientTestSettings.areTheseInnerMapsEqual(teleIORefs, teleIORefs2));
 		BioSimClient.resetClientConfiguration();
 	}
 
 	@Test
-	public void testingWithTwelveClimateStations() throws BioSimClientException, BioSimServerException {
+	public void testingWithTwentyClimateStations() throws BioSimClientException, BioSimServerException {
 		BioSimClient.resetClientConfiguration();
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		BioSimPlot plot = BioSimClientNormalsTest.getPlots().get(0);
@@ -106,22 +90,8 @@ public class BioSimClientModelNbNearestNeighboursTest {
 				Arrays.asList(new String[]{modelName}),
 				null).get(modelName);
 		
-		BioSimDataSet firstDataSet = teleIORefs.get(plot);
-		Assert.assertTrue("First dataset has one observation", firstDataSet.getNumberOfObservations() == 1);
-		
-		BioSimDataSet secondDataSet = teleIORefs2.get(plot);
-		Assert.assertTrue("Second dataset has one observation", secondDataSet.getNumberOfObservations() == 1);
-
-		List<Object> firstObs = firstDataSet.getObservations().get(0).values;
-		Assert.assertTrue("First observation has some values", firstObs.size() > 0);
-		List<Object> secondObs = secondDataSet.getObservations().get(0).values;
-		Assert.assertTrue("Second observation has some values", secondObs.size() > 0);
-
-		for (int i = 2; i < 10; i++) {
-			Object obj1 = firstObs.get(i);
-			Object obj2 = secondObs.get(i);
-			Assert.assertTrue("Testing if values at location " + i + " are different", !obj1.equals(obj2));
-		}
+		Assert.assertTrue("Comparing the two LinkedHasMap instances. Expecting them to be different",
+				!BioSimClientTestSettings.areTheseInnerMapsEqual(teleIORefs, teleIORefs2));
 		BioSimClient.resetClientConfiguration();
 	}
 
