@@ -26,7 +26,9 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,6 +38,17 @@ import biosimclient.BioSimEnums.RCP;
 
 
 public class BioSimClientPastAndFutureDailyClimateTest {
+
+	
+	@BeforeClass
+	public static void initializeTest() {
+		BioSimClient.isLocal = true;
+	}
+	
+	@AfterClass
+	public static void finalizeTest() {
+		BioSimClient.isLocal = false;
+	}
 
 	/*
 	 * Tests if the weather generation over past and future time intervals.

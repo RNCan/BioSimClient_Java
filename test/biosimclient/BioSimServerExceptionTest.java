@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import biosimclient.BioSimEnums.ClimateModel;
@@ -13,7 +15,16 @@ import biosimclient.BioSimEnums.RCP;
 
 public class BioSimServerExceptionTest {
 
+	@BeforeClass
+	public static void initializeTest() {
+		BioSimClient.isLocal = true;
+	}
 	
+	@AfterClass
+	public static void finalizeTest() {
+		BioSimClient.isLocal = false;
+	}
+
 	@Test
 	public void incorrectNormalsRequestWithNaN() {
 		BioSimFakeLocation fakeLocation = new BioSimFakeLocation(Double.NaN, Double.NaN, Double.NaN);

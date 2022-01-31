@@ -26,12 +26,24 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import biosimclient.BioSimEnums.RCP;
 
 public class BioSimClientReplicateTest {
+
+	@BeforeClass
+	public static void initializeTest() {
+		BioSimClient.isLocal = true;
+	}
+	
+	@AfterClass
+	public static void finalizeTest() {
+		BioSimClient.isLocal = false;
+	}
 
 	@Test
 	public void test2085to2090_2rep() throws BioSimClientException, BioSimServerException {

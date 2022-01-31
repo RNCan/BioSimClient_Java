@@ -59,7 +59,7 @@ public final class BioSimClient {
 	static final String FieldSeparator = ",";
 	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
-	private static final InetSocketAddress LocalAddress = new InetSocketAddress("localhost", 5000);
+	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 8082);	// BioSIM_B
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
@@ -76,7 +76,7 @@ public final class BioSimClient {
 
 	private static double totalServerRequestDuration = 0.0;
 
-	public static boolean isLocal = true;		// set to true to connect on 5000 locally 
+	public static boolean isLocal = false;		// set to true to connect on 5000 locally 
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
 	
@@ -94,12 +94,7 @@ public final class BioSimClient {
 	
 	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 //		long initTime = System.currentTimeMillis();
-		InetSocketAddress address;
-		if (isLocal) {
-			address = BioSimClient.LocalAddress;
-		} else {
-			address = BioSimClient.REpiceaAddress;
-		}
+		InetSocketAddress address = isLocal ? BioSimClient.LocalAddress : BioSimClient.REpiceaAddress;
 		String urlString = "http://" + address.getHostName() + ":" + address.getPort() + "/" + api;
 		urlString = addQueryIfAny(urlString, query);
 		try {
@@ -346,9 +341,9 @@ public final class BioSimClient {
 		for (String parm : parms) {
 			String[] keyValue = parm.split(":");
 			if (keyValue.length > 1) {
-				parmMap.put(keyValue[0], keyValue[1]);
+				parmMap.addParameter(keyValue[0], keyValue[1]);
 			} else {
-				parmMap.put(keyValue[0], null);
+				parmMap.addParameter(keyValue[0], null); // TODO MF2022-01-27 Possibility of bug here. Check that.
 			}
 		}
 		return parmMap;

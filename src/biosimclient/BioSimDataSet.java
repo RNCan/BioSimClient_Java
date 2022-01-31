@@ -58,10 +58,12 @@ public class BioSimDataSet implements Serializable {
 		}
 	}
 
-	private void addFieldName(String name) {
+	private void addFieldName(String originalName) {
 		int index = 0;
+		String name = originalName;
 		while (fieldNames.contains(name)) {
-			name = name.concat(((Integer) index).toString());
+			name = originalName + index;
+			index++;
 		}
 		fieldNames.add(name);
 	}
@@ -113,18 +115,21 @@ public class BioSimDataSet implements Serializable {
 
 	private void parseDifferentFields(Object[] lineRead) {
 		for (int i = 0; i < fieldNames.size(); i++) {
-			String valueStr = lineRead[i].toString();
-			if (valueStr.contains(".")) { // might be a double or a string
-				try {
-					lineRead[i] = Double.parseDouble(valueStr);
-				} catch (NumberFormatException e2) {
-					lineRead[i] = valueStr;
-				}
-			} else {	// might be an integer or a string
-				try {
-					lineRead[i] = Integer.parseInt(valueStr);
-				} catch (NumberFormatException e2) {
-					lineRead[i] = valueStr;
+			// TODO MF2022-01-31 uncomment after translation to C#
+			if (!(lineRead[i] instanceof Double) && !(lineRead[i] instanceof Integer)) {
+				String valueStr = lineRead[i].toString();
+				if (valueStr.contains(".")) { // might be a double or a string
+					try {
+						lineRead[i] = Double.parseDouble(valueStr);
+					} catch (NumberFormatException e2) {
+						lineRead[i] = valueStr;
+					}
+				} else {	// might be an integer or a string
+					try {
+						lineRead[i] = Integer.parseInt(valueStr);
+					} catch (NumberFormatException e2) {
+						lineRead[i] = valueStr;
+					}
 				}
 			}
 		}
@@ -146,8 +151,8 @@ public class BioSimDataSet implements Serializable {
 		boolean isInteger = true;
 		for (int i = 0; i < getNumberOfObservations(); i++) {
 			if (!(getValueAt(i,j) instanceof Integer)) {
-					isInteger = false;
-					break;
+				isInteger = false;
+				break;
 			} 
 		}
 		return isInteger;
@@ -295,6 +300,7 @@ public class BioSimDataSet implements Serializable {
 				outputDataSet.addObservation(observation.toArray());
 			}
 		}
+		outputDataSet.indexFieldType();
 		return outputDataSet;
 	}
 	

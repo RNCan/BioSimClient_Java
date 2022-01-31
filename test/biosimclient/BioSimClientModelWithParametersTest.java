@@ -27,7 +27,9 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import repicea.serial.xml.XmlDeserializer;
@@ -35,6 +37,16 @@ import repicea.serial.xml.XmlSerializer;
 
 
 public class BioSimClientModelWithParametersTest {
+
+	@BeforeClass
+	public static void initializeTest() {
+		BioSimClient.isLocal = true;
+	}
+	
+	@AfterClass
+	public static void finalizeTest() {
+		BioSimClient.isLocal = false;
+	}
 
 	
 	/*

@@ -21,11 +21,19 @@
  */
 package biosimclient;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.junit.Assert;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BioSimClientTestSettings {
 
@@ -43,6 +51,39 @@ public class BioSimClientTestSettings {
 			e.printStackTrace();
 		}
 	}
+	
+	static String getValidationFilename(String methodName) {
+		return BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.json";
+	}
+
+	static String getJSONObject(BioSimDataSet dataSet, String validationFilename) throws IOException {
+		ObjectMapper om = new ObjectMapper();
+		LinkedHashMap<String, Object> mainObj = new LinkedHashMap<String, Object>();
+		for (int i = 0; i < dataSet.getObservations().size(); i++) {
+			Observation o = dataSet.getObservations().get(i);
+			LinkedHashMap<String, Object> subObj = new LinkedHashMap<String, Object>();
+			mainObj.put(""+i, subObj);
+			for (int j = 0; j < o.values.size(); j++) {
+				subObj.put(dataSet.getFieldNames().get(j), o.values.get(j));
+			}
+		}
+		String outputString = om.writeValueAsString(mainObj);
+		if (!BioSimClientTestSettings.Validation) {
+			FileWriter out = new FileWriter(validationFilename);
+			out.write(outputString);
+			out.close();
+		}
+		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
+		return outputString;
+	}
+
+	static String getReferenceString(String validationFilename) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader(validationFilename));
+		String referenceString = in.readLine();
+		in.close();
+		return referenceString;
+	}
+	
 	
 	static boolean areTheseInnerMapsEqual(LinkedHashMap<BioSimPlot, BioSimDataSet> map1, LinkedHashMap<BioSimPlot, BioSimDataSet> map2) {
 		if (map1.size() == map2.size()) {
