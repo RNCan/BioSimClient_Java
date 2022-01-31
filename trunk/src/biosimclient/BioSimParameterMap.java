@@ -25,11 +25,15 @@ import java.security.InvalidParameterException;
 import java.util.LinkedHashMap;
 
 @SuppressWarnings("serial")
-public class BioSimParameterMap extends LinkedHashMap<String,Object> {
+public class BioSimParameterMap {
+	
+	
+	private LinkedHashMap<String,Object> innerMap = new LinkedHashMap<String, Object>();
+
 
 	public void addParameter(String parameterName, Object value) {
 		if (value instanceof Number || value instanceof String) {
-			put(parameterName, value);
+			innerMap.put(parameterName, value);
 		} else {
 			throw new InvalidParameterException("The value must be a String or a Number instance!");
 		}
@@ -46,8 +50,8 @@ public class BioSimParameterMap extends LinkedHashMap<String,Object> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		String sep = "*"; 
-		for (String key : keySet()) {
-			Object value = get(key);
+		for (String key : innerMap.keySet()) {
+			Object value = innerMap.get(key);
 			String valueString = value == null ? "" : value.toString().trim();
 			if (sb.length() == 0)
 				sb.append(key.trim() + ":" + valueString);
@@ -58,5 +62,9 @@ public class BioSimParameterMap extends LinkedHashMap<String,Object> {
 			return "null";
 		else 
 			return sb.toString();
+	}
+	
+	public boolean isEmpty() {
+		return innerMap.isEmpty();
 	}
 }

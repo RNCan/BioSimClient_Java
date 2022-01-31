@@ -29,22 +29,24 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
 public class BioSimInternalModelTest {
 
-//	public static final String PathSeparator = "/";
-//
-//	private String getPackagePath(Class anyClass) throws URISyntaxException {
-//		String binPath = anyClass.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-//		int lastPathSeparator = binPath.lastIndexOf(PathSeparator);
-//		binPath = binPath.substring(0, lastPathSeparator).concat(PathSeparator);
-//		String relativePackagePath = anyClass.getPackage().getName().replace(".", PathSeparator) + PathSeparator;
-//		String packagePath = binPath.concat(relativePackagePath);
-//		return packagePath;
-//	}
+	@BeforeClass
+	public static void initializeTest() {
+		BioSimClient.isLocal = true;
+	}
+	
+	@AfterClass
+	public static void finalizeTest() {
+		BioSimClient.isLocal = false;
+	}
+
 
 	@Test
 	public void testingEachModelExceptPlanHardiness() throws Exception {
