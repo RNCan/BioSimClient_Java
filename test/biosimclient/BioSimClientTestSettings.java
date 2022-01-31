@@ -58,6 +58,27 @@ public class BioSimClientTestSettings {
 
 	static String getJSONObject(BioSimDataSet dataSet, String validationFilename) throws IOException {
 		ObjectMapper om = new ObjectMapper();
+//		LinkedHashMap<String, Object> mainObj = new LinkedHashMap<String, Object>();
+//		for (int i = 0; i < dataSet.getObservations().size(); i++) {
+//			Observation o = dataSet.getObservations().get(i);
+//			LinkedHashMap<String, Object> subObj = new LinkedHashMap<String, Object>();
+//			mainObj.put(""+i, subObj);
+//			for (int j = 0; j < o.values.size(); j++) {
+//				subObj.put(dataSet.getFieldNames().get(j), o.values.get(j));
+//			}
+//		}
+		LinkedHashMap<String, Object> mainObj = convertBioSimDataSetToMap(dataSet);
+		String outputString = om.writeValueAsString(mainObj);
+		if (!BioSimClientTestSettings.Validation) {
+			FileWriter out = new FileWriter(validationFilename);
+			out.write(outputString);
+			out.close();
+		}
+		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
+		return outputString;
+	}
+	
+	private static LinkedHashMap<String, Object> convertBioSimDataSetToMap(BioSimDataSet dataSet) {
 		LinkedHashMap<String, Object> mainObj = new LinkedHashMap<String, Object>();
 		for (int i = 0; i < dataSet.getObservations().size(); i++) {
 			Observation o = dataSet.getObservations().get(i);
@@ -66,6 +87,15 @@ public class BioSimClientTestSettings {
 			for (int j = 0; j < o.values.size(); j++) {
 				subObj.put(dataSet.getFieldNames().get(j), o.values.get(j));
 			}
+		}
+		return mainObj;
+	}
+	
+	static String getJSONObject(LinkedHashMap<String,BioSimDataSet> dataSets, String validationFilename) throws IOException {
+		ObjectMapper om = new ObjectMapper();
+		LinkedHashMap<String, Object> mainObj = new LinkedHashMap<String, Object>();
+		for (String modelName : dataSets.keySet()) {
+			mainObj.put(modelName, convertBioSimDataSetToMap(dataSets.get(modelName)));
 		}
 		String outputString = om.writeValueAsString(mainObj);
 		if (!BioSimClientTestSettings.Validation) {
@@ -76,6 +106,20 @@ public class BioSimClientTestSettings {
 		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
 		return outputString;
 	}
+
+	
+	static String getJSONObject(BioSimParameterMap parmMap, String validationFilename) throws IOException {
+		ObjectMapper om = new ObjectMapper();
+		String outputString = om.writeValueAsString(parmMap.innerMap);
+		if (!BioSimClientTestSettings.Validation) {
+			FileWriter out = new FileWriter(validationFilename);
+			out.write(outputString);
+			out.close();
+		}
+		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
+		return outputString;
+	}
+
 
 	static String getReferenceString(String validationFilename) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(validationFilename));

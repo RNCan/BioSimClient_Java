@@ -39,7 +39,7 @@ import biosimclient.BioSimEnums.Month;
  *
  */
 @SuppressWarnings("serial")
-public class BioSimDataSet implements Serializable {
+public final class BioSimDataSet implements Serializable {
 
 	protected List<String> fieldNames;
 	protected List<Class<?>> fieldTypes;
@@ -115,7 +115,6 @@ public class BioSimDataSet implements Serializable {
 
 	private void parseDifferentFields(Object[] lineRead) {
 		for (int i = 0; i < fieldNames.size(); i++) {
-			// TODO MF2022-01-31 uncomment after translation to C#
 			if (!(lineRead[i] instanceof Double) && !(lineRead[i] instanceof Integer)) {
 				String valueStr = lineRead[i].toString();
 				if (valueStr.contains(".")) { // might be a double or a string

@@ -24,12 +24,9 @@ package biosimclient;
 import java.security.InvalidParameterException;
 import java.util.LinkedHashMap;
 
-@SuppressWarnings("serial")
-public class BioSimParameterMap {
+public final class BioSimParameterMap {
 	
-	
-	private LinkedHashMap<String,Object> innerMap = new LinkedHashMap<String, Object>();
-
+	protected LinkedHashMap<String,Object> innerMap = new LinkedHashMap<String, Object>();
 
 	public void addParameter(String parameterName, Object value) {
 		if (value instanceof Number || value instanceof String) {

@@ -24,7 +24,7 @@ package biosimclient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BioSimEnums {
+public final class BioSimEnums {
 	
 	public static enum RCP {
 		/**

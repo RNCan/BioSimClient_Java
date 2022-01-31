@@ -23,7 +23,7 @@ package biosimclient;
 
 import java.util.ArrayList;
 
-class BioSimStringList extends ArrayList<String> {
+final class BioSimStringList extends ArrayList<String> {
 
 	public String toString() {
 		if (size() == 0) {

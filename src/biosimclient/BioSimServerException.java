@@ -25,7 +25,7 @@ package biosimclient;
  * A class for exceptions specific to the BioSim server
  * @author Mathieu Fortin - November 2019
  */
-public class BioSimServerException extends BioSimException {
+public final class BioSimServerException extends BioSimException {
 
 		public BioSimServerException(String message) {
 			super(message);
