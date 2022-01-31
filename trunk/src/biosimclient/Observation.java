@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("rawtypes")
-public class Observation implements Comparable, Serializable {
+public final class Observation implements Comparable, Serializable {
 
 	static List<Integer> comparableFields = new ArrayList<Integer>();
 	

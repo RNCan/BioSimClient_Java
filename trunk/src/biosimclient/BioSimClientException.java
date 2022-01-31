@@ -26,7 +26,7 @@ package biosimclient;
  * @author Mathieu Fortin - November 2019
  */
 @SuppressWarnings("serial")
-public class BioSimClientException extends BioSimException {
+public final class BioSimClientException extends BioSimException {
 	
 	protected BioSimClientException(String message) {
 		super(message);

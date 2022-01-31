@@ -36,7 +36,7 @@ import biosimclient.BioSimEnums.Variable;
  * @author Mathieu Fortin - October 2019
  */
 @SuppressWarnings("serial")
-class BioSimMonthMap extends LinkedHashMap<Month, Map<Variable, Double>> {
+final class BioSimMonthMap extends LinkedHashMap<Month, Map<Variable, Double>> {
 
 	
 	BioSimMonthMap(BioSimDataSet dataSet) {

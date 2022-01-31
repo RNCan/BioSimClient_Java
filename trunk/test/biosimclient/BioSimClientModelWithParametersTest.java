@@ -21,7 +21,6 @@
  */
 package biosimclient;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -30,10 +29,8 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import repicea.serial.xml.XmlDeserializer;
-import repicea.serial.xml.XmlSerializer;
 
 
 public class BioSimClientModelWithParametersTest {
@@ -55,17 +52,22 @@ public class BioSimClientModelWithParametersTest {
 	@Test
 	public void testingParametersWithDegreeDays() throws Exception {
 		BioSimParameterMap parameterMap = BioSimClient.getModelDefaultParameters("DegreeDay_Annual");
-		String paramStr = parameterMap.toString();
 		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
-		if (!BioSimClientTestSettings.Validation) {
-			XmlSerializer serializer = new XmlSerializer(validationFilename);
-			serializer.writeObject(paramStr);
-		}
-		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
-		XmlDeserializer deser = new XmlDeserializer(validationFilename);
-		String refString = (String) deser.readObject();
-		Assert.assertEquals(refString, paramStr);
+		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
+		String observedString = BioSimClientTestSettings.getJSONObject(parameterMap, validationFilename);
+		
+		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
+		Assert.assertEquals("Comparing the two LinkedHashMap instances", referenceString, observedString);
+
+//		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
+//		if (!BioSimClientTestSettings.Validation) {
+//			XmlSerializer serializer = new XmlSerializer(validationFilename);
+//			serializer.writeObject(paramStr);
+//		}
+//		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
+//		XmlDeserializer deser = new XmlDeserializer(validationFilename);
+//		String refString = (String) deser.readObject();
+//		Assert.assertEquals(refString, paramStr);
 	}
 
 	
@@ -89,23 +91,19 @@ public class BioSimClientModelWithParametersTest {
 				Arrays.asList(new BioSimParameterMap[] {parms})).get(modelName);
 		
 		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
-		if (!BioSimClientTestSettings.Validation) {
-			XmlSerializer serializer = new XmlSerializer(validationFilename);
-			serializer.writeObject(teleIO);
-		}
-		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
-		XmlDeserializer deser = new XmlDeserializer(validationFilename);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) deser.readObject();
+		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
+		BioSimDataSet dataSet = BioSimDataSet.convertLinkedHashMapToBioSimDataSet(teleIO);
+		String observedString = BioSimClientTestSettings.getJSONObject(dataSet, validationFilename);
 		
-		Assert.assertTrue("Comparing the two LinkedHashMap instances",
-				BioSimClientTestSettings.areTheseInnerMapsEqual(teleIO, teleIORefs));
+		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
+		Assert.assertEquals("Comparing the two LinkedHashMap instances", referenceString, observedString);
 	}
 
 
 	/*
 	 * Tests if the weather generation over past and future time intervals.
 	 */
+	@Ignore		// TODO MF2022-01-31 reenable this test when the model is enabled on the server side
 	@Test
 	public void testingWithDegreeDaysAndGrowingSeason() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
@@ -124,16 +122,15 @@ public class BioSimClientModelWithParametersTest {
 				Arrays.asList(new BioSimParameterMap[] {null, parms}));
 		
 		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
-		if (!BioSimClientTestSettings.Validation) {
-			XmlSerializer serializer = new XmlSerializer(validationFilename);
-			serializer.writeObject(teleIO);
+		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
+		LinkedHashMap<String, BioSimDataSet> finalMap = new LinkedHashMap<String, BioSimDataSet>();
+		for (String modelName : teleIO.keySet()) {
+			finalMap.put(modelName, BioSimDataSet.convertLinkedHashMapToBioSimDataSet(teleIO.get(modelName)));
 		}
-		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
-		XmlDeserializer deser = new XmlDeserializer(validationFilename);
-		LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> teleIORefs = (LinkedHashMap) deser.readObject();
-		Assert.assertTrue("Comparing the two LinkedHashMap instances",
-				BioSimClientTestSettings.areTheseOuterMapsEqual(teleIO, teleIORefs));
+		String observedString = BioSimClientTestSettings.getJSONObject(finalMap, validationFilename);
+		
+		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
+		Assert.assertEquals("Comparing the two LinkedHashMap instances", referenceString, observedString);
 	}
 
 	/*
@@ -155,17 +152,12 @@ public class BioSimClientModelWithParametersTest {
 				Arrays.asList(new String[]{modelName}), 
 				Arrays.asList(new BioSimParameterMap[] {parms})).get(modelName);
 		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
-		if (!BioSimClientTestSettings.Validation) {
-			XmlSerializer serializer = new XmlSerializer(validationFilename);
-			serializer.writeObject(teleIO);
-		}
-		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
-		XmlDeserializer deser = new XmlDeserializer(validationFilename);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) deser.readObject();
+		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
+		BioSimDataSet dataSet = BioSimDataSet.convertLinkedHashMapToBioSimDataSet(teleIO);
+		String observedString = BioSimClientTestSettings.getJSONObject(dataSet, validationFilename);
 		
-		Assert.assertTrue("Comparing the two LinkedHashMap instances",
-				BioSimClientTestSettings.areTheseInnerMapsEqual(teleIO, teleIORefs));
+		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
+		Assert.assertEquals("Comparing the two LinkedHashMap instances", referenceString, observedString);
 	}
 
 
@@ -186,17 +178,12 @@ public class BioSimClientModelWithParametersTest {
 				Arrays.asList(new String[]{modelName}),
 				Arrays.asList(new BioSimParameterMap[] {parms})).get(modelName);
 		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
-		if (!BioSimClientTestSettings.Validation) {
-			XmlSerializer serializer = new XmlSerializer(validationFilename);
-			serializer.writeObject(teleIO);
-		}
-		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
-		XmlDeserializer deser = new XmlDeserializer(validationFilename);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) deser.readObject();
+		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
+		BioSimDataSet dataSet = BioSimDataSet.convertLinkedHashMapToBioSimDataSet(teleIO);
+		String observedString = BioSimClientTestSettings.getJSONObject(dataSet, validationFilename);
 		
-		Assert.assertTrue("Comparing the two LinkedHashMap instances",
-				BioSimClientTestSettings.areTheseInnerMapsEqual(teleIO, teleIORefs));
+		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
+		Assert.assertEquals("Comparing the two LinkedHashMap instances", referenceString, observedString);
 
 	}
 	
