@@ -29,6 +29,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ public class BioSimClientMultithreadingClimateGeneration {
 		parms.addParameter("LowerThreshold", 5);
 		long initial = System.currentTimeMillis();
 		String modelName = "DegreeDay_Annual";
-		Map<BioSimPlot, BioSimDataSet> outputMap = BioSimClient.generateWeather(initialDateYr, 
+		Map<BioSimPlot, BioSimDataSet> outputMap = (LinkedHashMap)BioSimClient.generateWeather(initialDateYr, 
 				finalDateYr, 
 				locations, 
 				null, 

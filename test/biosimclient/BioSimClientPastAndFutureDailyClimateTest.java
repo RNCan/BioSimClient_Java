@@ -58,8 +58,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2000;
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);
@@ -106,9 +106,9 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4def = BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45_RCM4def = BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP45, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4 = BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, null, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP45, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, null, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : oRCP45def_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP45def_RCM4def.get(plot);
@@ -154,8 +154,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP85, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4 = BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP85, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP85, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP85, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : oRCP85_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP85_RCM4def.get(plot);
@@ -195,8 +195,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		int initialDateYr = 2000;
 		
 		String modelName = "DegreeDay_Annual"; 
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);

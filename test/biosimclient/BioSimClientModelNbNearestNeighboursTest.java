@@ -55,7 +55,7 @@ public class BioSimClientModelNbNearestNeighboursTest {
 		locations.add(plot);
 		int initialDateYr = 2000;
 		String modelName = "ClimaticQc_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
@@ -67,7 +67,7 @@ public class BioSimClientModelNbNearestNeighboursTest {
 
 		BioSimClient.setNbNearestNeighbours(4);
 
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
@@ -89,7 +89,7 @@ public class BioSimClientModelNbNearestNeighboursTest {
 		locations.add(plot);
 		int initialDateYr = 2000;
 		String modelName = "ClimaticQc_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
@@ -101,7 +101,7 @@ public class BioSimClientModelNbNearestNeighboursTest {
 
 		BioSimClient.setNbNearestNeighbours(20);
 
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				2000, 
 				locations, 
 				null, 
