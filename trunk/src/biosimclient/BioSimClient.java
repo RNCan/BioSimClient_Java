@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -59,7 +59,7 @@ public final class BioSimClient {
 	static final String FieldSeparator = ",";
 	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
-	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 8082);	// BioSIM_B
+	private static final InetSocketAddress LocalAddress = new InetSocketAddress("localhost", 5000);	// BioSIM_B
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
@@ -373,15 +373,18 @@ public final class BioSimClient {
 		BioSimDataSet dataSet = null;
 		int locationId = 0;
 		BioSimPlot location = null;
-		boolean properlyInitialized = false;
+		boolean isDataSetProperlyInitialized = false;
+		String modName = null;
 		LinkedHashMap<BioSimPlot, BioSimDataSet> resultMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 		for (String line : serverReply) {
 			if (line.toLowerCase().startsWith("error")) {
 				throw new BioSimServerException(line);
 			} else if (BioSimClient.getModelList().contains(line.trim())) {
 				resultMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
+				modName = line.trim();
 				outputMap.put(line.trim(), resultMap);
 				locationId = 0;
+				isDataSetProperlyInitialized = false;		// reset to false until we get the header
 			} else if (line.toLowerCase().startsWith(fieldLineStarter)) { // means it is a new location
 				if (dataSet != null) {	// must be indexed before instantiating a new DataSet
 //					initTime = System.currentTimeMillis();
@@ -394,10 +397,14 @@ public final class BioSimClient {
 				dataSet = new BioSimDataSet(fieldNames);
 				resultMap.put(location, dataSet);
 				locationId++;
-				properlyInitialized = true;
+				isDataSetProperlyInitialized = true;
 			} else {
-				if (!properlyInitialized) {
-					throw new BioSimClientException(serverReply.toString());
+				if (!isDataSetProperlyInitialized) {
+					if (modName != null) {
+						outputMap.put(modName, new BioSimClientException(line)); // this happens if we are using the Weather route
+					} else {
+						throw new BioSimClientException(serverReply.toString());	// this happens with normals or in case of severe exception with the weather route
+					}
 				} else {
 					Object[] fields = Arrays.asList(line.split(FieldSeparator)).toArray(new Object[]{});
 //					initTime = System.currentTimeMillis();
@@ -417,7 +424,7 @@ public final class BioSimClient {
 //		System.out.println("Time to create observations: " + totalTime + " ms");
 	}
 	
-	private static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> internalCalculationForClimateVariables(int fromYr, 
+	private static LinkedHashMap<String, Object> internalCalculationForClimateVariables(int fromYr, 
 			int toYr, 
 			List<BioSimPlot> locations,
 			RCP rcp,
@@ -468,7 +475,7 @@ public final class BioSimClient {
 		}
 //		System.out.println("Constructing request: " + (System.currentTimeMillis() - initTime) + " ms");
 		BioSimStringList serverReply = getStringFromConnection(BIOSIMWEATHER, query.toString());
-		LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> outputMap = new LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>>();
+		LinkedHashMap<String, Object> outputMap = new LinkedHashMap<String, Object>();
 //		long initTime = System.currentTimeMillis();
 		readLines(serverReply, "rep", locations, outputMap);
 //		System.out.println("Total time to convert string into biosim dataset: " + (System.currentTimeMillis() - initTime) + " ms.");
@@ -495,7 +502,7 @@ public final class BioSimClient {
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
 	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
 	 */
-	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> generateWeather(int fromYr, 
+	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
 			RCP rcp,
@@ -526,7 +533,7 @@ public final class BioSimClient {
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
 	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
 	 */
-	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> generateWeather(int fromYr, 
+	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
 			RCP rcp,
@@ -566,7 +573,7 @@ public final class BioSimClient {
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
 	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
 	 */
-	public static LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> generateWeather(int fromYr, 
+	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
 			RCP rcp,
@@ -585,7 +592,7 @@ public final class BioSimClient {
 		totalServerRequestDuration = 0.0;
 
 		if (locations.size() > BioSimClient.getMaximumNbLocationsPerBatchWeatherGeneration()) {
-			LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> resultingMap = null;
+			LinkedHashMap<String, Object> resultingMap = null;
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
 			copyList.addAll(locations);
 			List<BioSimPlot> subList = new ArrayList<BioSimPlot>();
@@ -593,12 +600,20 @@ public final class BioSimClient {
 				while (!copyList.isEmpty() && subList.size() < BioSimClient.getMaximumNbLocationsPerBatchWeatherGeneration()) {
 					subList.add(copyList.remove(0));
 				}
-				LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> intermediateMap = internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelNames, rep, repModel, additionalParms);
+				LinkedHashMap<String, Object> intermediateMap = internalCalculationForClimateVariables(fromYr, toYr, subList, rcp, climMod, modelNames, rep, repModel, additionalParms);
 				if (resultingMap == null) 
 					resultingMap = intermediateMap;
 				else {
-					for (String key : resultingMap.keySet()) 
-						resultingMap.get(key).putAll(intermediateMap.get(key));
+					Set<String> keys = resultingMap.keySet();
+					for (String key : keys) {
+						Object there = resultingMap.get(key);
+						Object incomingResult = intermediateMap.get(key);
+						if (incomingResult instanceof LinkedHashMap && there instanceof LinkedHashMap) {
+							((LinkedHashMap) there).putAll((LinkedHashMap) incomingResult);
+						} else if (incomingResult instanceof Exception) {
+							resultingMap.put(key, incomingResult);
+						}
+					}
 				}
 				subList.clear();
 			}

@@ -72,7 +72,7 @@ public class BioSimClientModelWithParametersTest {
 		int initialDateYr = 2000;
 		BioSimParameterMap parms = new BioSimParameterMap();
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				2001, 
 				locations, 
 				null, 
@@ -103,7 +103,7 @@ public class BioSimClientModelWithParametersTest {
 		parms.addParameter("LowerThreshold", 5);
 
 		String[] modelNames = new String[]{"GrowingSeason", "DegreeDay_Annual"};
-		LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> teleIO = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> teleIO = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				2001, 
 				locations, 
 				null, 
@@ -134,7 +134,7 @@ public class BioSimClientModelWithParametersTest {
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				2001, 
 				locations, 
 				null, 
@@ -160,7 +160,7 @@ public class BioSimClientModelWithParametersTest {
 		BioSimParameterMap parms = new BioSimParameterMap();
 		parms.addParameter("LowerThreshold", 5);
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				2020, 
 				BioSimClientNormalsTest.getPlots(), 
 				null, 

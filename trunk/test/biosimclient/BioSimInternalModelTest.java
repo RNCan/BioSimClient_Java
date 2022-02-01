@@ -21,10 +21,8 @@
  */
 package biosimclient;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.net.URISyntaxException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +31,8 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class BioSimInternalModelTest {
@@ -49,18 +49,12 @@ public class BioSimInternalModelTest {
 
 
 	@Test
-	public void testingEachModelExceptPlanHardiness() throws Exception {
+	public void testingEachModel() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(new BioSimFakeLocation(45, -74, 300));
 
-		List<String> blackList = new ArrayList<String>();
-		blackList.add("PlantHardinessCanada"); // because it needs 30 years of weather
-		blackList.add("PlantHardinessUSA"); // because it needs 30 years of weather
-		int nbFailures = 0;
-		int nbSuccesses = 0;
 		List<String> modelList = BioSimClient.getModelList();
-		modelList.removeAll(blackList);
-		LinkedHashMap<String, LinkedHashMap<BioSimPlot, BioSimDataSet>> overallOutput = BioSimClient.generateWeather(2018, 
+		LinkedHashMap<String, Object> overallOutput = BioSimClient.generateWeather(2018, 
 				2019, 
 				locations, 
 				null, 
@@ -69,66 +63,34 @@ public class BioSimInternalModelTest {
 				1, 
 				1, 
 				null);
+		LinkedHashMap<String, Boolean> resultMap = new LinkedHashMap<String, Boolean>();
 		for (String modelName : modelList) {
-			LinkedHashMap<BioSimPlot, BioSimDataSet> output = overallOutput.get(modelName);
-			Assert.assertTrue("There is only one dataset in the output", output.size() == 1);
-			BioSimDataSet obsDataset = output.values().iterator().next();
-			List<Observation> observations = obsDataset.getObservations();
-			String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + modelName + "ref.ser";;
-
-
-			//					UNCOMMENT THESE TWO LINES TO UPDATE THE TEST RESULTS
-			//					FileOutputStream fos = new FileOutputStream(filename);
-			//					ObjectOutputStream oos = new ObjectOutputStream(fos);
-			//					oos.writeObject(observations);
-			//					oos.close();
-
-			FileInputStream fis = new FileInputStream(validationFilename);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			List<Observation> references = (List) ois.readObject();
-			ois.close();	
-			Assert.assertEquals("Testing dataset have equal size", 
-					observations.size(), 
-					references.size());
-
-			int nbSuccessful = 0;
-			int nbUnsuccessful = 0;
-			for (int i = 0; i < references.size(); i++) {
-				List<Object> refValues = references.get(i).values;
-				List<Object> obsValues = observations.get(i).values;
-				Assert.assertEquals("Testing observations have equal number of fields", 
-						refValues.size(), 
-						obsValues.size());
-				for (int j = 0; j < refValues.size(); j++) {
-					Object refValue = refValues.get(j);
-					Object obsValue = obsValues.get(j);
-					if (refValue instanceof Number && obsValue instanceof Number) {
-						if (Math.abs(((Number) refValue).doubleValue() - ((Number) obsValue).doubleValue()) < 1E-8) {
-							nbSuccessful++;
-						} else {
-							nbUnsuccessful++;
-						}
-					} else {
-						if (refValue.equals(obsValue)) {
-							nbSuccessful++;
-						} else {
-							nbUnsuccessful++;
-						}
-					}
-				}
-			}
-			nbSuccesses++;
-			int total = nbUnsuccessful + nbSuccessful;
-			if (nbUnsuccessful > 0) {
-				System.out.println(modelName + " tested - Number of unsuccessful check = " + nbUnsuccessful + " / " + total);
-			} else {
-				System.out.println(modelName + " successfully tested");
-			}
+			Object output = overallOutput.get(modelName);
+			if (output instanceof LinkedHashMap) 
+				resultMap.put(modelName, true);
+			else if (output instanceof BioSimClientException) 
+				resultMap.put(modelName, false);
+			else 
+				throw new Exception("The value of the map should be either a LinkedHashMap or a BioSimClient Exception!");
 		}
-		System.out.println("Nb of failures = " + nbFailures + "; Nb of successes = " + nbSuccesses);
-		Assert.assertTrue("No exception thrown", nbFailures == 0);
+		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
+		String observedString = this.getJSONObject(resultMap, validationFilename);
+		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
+		Assert.assertEquals("Comparing strings", referenceString, observedString);
 	}
 
+	private String getJSONObject(LinkedHashMap<String, Boolean> oMap, String validationFilename) throws IOException {
+		ObjectMapper om = new ObjectMapper();
+		String outputString = om.writeValueAsString(oMap);
+		if (!BioSimClientTestSettings.Validation) {
+			FileWriter out = new FileWriter(validationFilename);
+			out.write(outputString);
+			out.close();
+		}
+		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
+		return outputString;
+	}
 }
 
 

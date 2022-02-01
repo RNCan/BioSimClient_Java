@@ -29,6 +29,8 @@ import java.util.List;
 @SuppressWarnings("rawtypes")
 public final class Observation implements Comparable, Serializable {
 
+	private static final long serialVersionUID = 8610155815176755314L;
+
 	static List<Integer> comparableFields = new ArrayList<Integer>();
 	
 	List<Object> values;

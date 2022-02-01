@@ -58,15 +58,6 @@ public class BioSimClientTestSettings {
 
 	static String getJSONObject(BioSimDataSet dataSet, String validationFilename) throws IOException {
 		ObjectMapper om = new ObjectMapper();
-//		LinkedHashMap<String, Object> mainObj = new LinkedHashMap<String, Object>();
-//		for (int i = 0; i < dataSet.getObservations().size(); i++) {
-//			Observation o = dataSet.getObservations().get(i);
-//			LinkedHashMap<String, Object> subObj = new LinkedHashMap<String, Object>();
-//			mainObj.put(""+i, subObj);
-//			for (int j = 0; j < o.values.size(); j++) {
-//				subObj.put(dataSet.getFieldNames().get(j), o.values.get(j));
-//			}
-//		}
 		LinkedHashMap<String, Object> mainObj = convertBioSimDataSetToMap(dataSet);
 		String outputString = om.writeValueAsString(mainObj);
 		if (!BioSimClientTestSettings.Validation) {

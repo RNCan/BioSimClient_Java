@@ -115,21 +115,25 @@ public final class BioSimDataSet implements Serializable {
 
 	private void parseDifferentFields(Object[] lineRead) {
 		for (int i = 0; i < fieldNames.size(); i++) {
-			if (!(lineRead[i] instanceof Double) && !(lineRead[i] instanceof Integer)) {
-				String valueStr = lineRead[i].toString();
-				if (valueStr.contains(".")) { // might be a double or a string
-					try {
-						lineRead[i] = Double.parseDouble(valueStr);
-					} catch (NumberFormatException e2) {
-						lineRead[i] = valueStr;
-					}
-				} else {	// might be an integer or a string
-					try {
-						lineRead[i] = Integer.parseInt(valueStr);
-					} catch (NumberFormatException e2) {
-						lineRead[i] = valueStr;
+			try{
+				if (!(lineRead[i] instanceof Double) && !(lineRead[i] instanceof Integer)) {
+					String valueStr = lineRead[i].toString();
+					if (valueStr.contains(".")) { // might be a double or a string
+						try {
+							lineRead[i] = Double.parseDouble(valueStr);
+						} catch (NumberFormatException e2) {
+							lineRead[i] = valueStr;
+						}
+					} else {	// might be an integer or a string
+						try {
+							lineRead[i] = Integer.parseInt(valueStr);
+						} catch (NumberFormatException e2) {
+							lineRead[i] = valueStr;
+						}
 					}
 				}
+			} catch (ArrayIndexOutOfBoundsException e) {
+				int u = 0;
 			}
 		}
 	}

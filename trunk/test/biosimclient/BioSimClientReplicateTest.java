@@ -71,7 +71,7 @@ public class BioSimClientReplicateTest {
 		
 		int expectedObservationsPerPlot = ((finalDateYr - initialDateYr) + 1) * nbReplicates;
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.generateWeather(initialDateYr, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
 				finalDateYr, 
 				locations, 
 				RCP.RCP85, 
@@ -92,7 +92,7 @@ public class BioSimClientReplicateTest {
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.generateWeather(2015, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(2015, 
 				2025, 
 				locations, 
 				RCP.RCP85, 
@@ -131,7 +131,7 @@ public class BioSimClientReplicateTest {
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.generateWeather(2012, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(2012, 
 				2016, 
 				locations, 
 				RCP.RCP85, 
@@ -150,7 +150,7 @@ public class BioSimClientReplicateTest {
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
 		BioSimClient.setForceClimateGenerationEnabled(true);
 		String modelName = "ClimaticQc_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = BioSimClient.generateWeather(1981, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(1981, 
 				2010, 
 				locations, 
 				null, 
@@ -168,7 +168,7 @@ public class BioSimClientReplicateTest {
 	public void test1981to2010_2repOnTheModelEnd() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.generateWeather(1981, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = (LinkedHashMap) BioSimClient.generateWeather(1981, 
 				2010, 
 				locations, 
 				null, 
@@ -187,7 +187,7 @@ public class BioSimClientReplicateTest {
 	public void test1981to2010_2repOnWGPlus2repTheModelEnd() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = BioSimClient.generateWeather(1981, 
+		LinkedHashMap<BioSimPlot, BioSimDataSet> climateOutput = (LinkedHashMap) BioSimClient.generateWeather(1981, 
 				2010, 
 				locations, 
 				null, 
