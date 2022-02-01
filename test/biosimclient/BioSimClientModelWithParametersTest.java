@@ -58,16 +58,6 @@ public class BioSimClientModelWithParametersTest {
 		
 		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
 		Assert.assertEquals("Comparing the two LinkedHashMap instances", referenceString, observedString);
-
-//		String validationFilename = BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.zml";
-//		if (!BioSimClientTestSettings.Validation) {
-//			XmlSerializer serializer = new XmlSerializer(validationFilename);
-//			serializer.writeObject(paramStr);
-//		}
-//		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
-//		XmlDeserializer deser = new XmlDeserializer(validationFilename);
-//		String refString = (String) deser.readObject();
-//		Assert.assertEquals(refString, paramStr);
 	}
 
 	
