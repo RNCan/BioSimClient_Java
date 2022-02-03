@@ -93,7 +93,6 @@ public class BioSimClientModelWithParametersTest {
 	/*
 	 * Tests if the weather generation over past and future time intervals.
 	 */
-	@Ignore		// TODO MF2022-01-31 reenable this test when the model is enabled on the server side
 	@Test
 	public void testingWithDegreeDaysAndGrowingSeason() throws Exception {
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
