@@ -75,12 +75,7 @@ sourceSets {
 // make sure to set the compliance to Java 1.8 in the project properties if the Java version is later than 1.8
 // make sure to set Java Compiler > Errors Warnings > Deprecated and Restricted API > Forbidden reference to WARNING instead of ERROR
 dependencies {
-//    if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-// 		implementation 'com.sun.xml.bind:jaxb-ri:2.3.5'   
-//	}
-//	compile group: 'org', name: 'repicea', version: '1+'   
-	// https://mvnrepository.com/artifact/com.cedarsoftware/json-io
-	testImplementation "com.fasterxml.jackson.core:jackson-databind:2.13.1"
+	implementation "com.fasterxml.jackson.core:jackson-databind:2.13.1"
     testImplementation "junit:junit:4.12"    
 }
 
@@ -97,6 +92,12 @@ test {
     maxHeapSize = "2048m"
     
     exclude '**/ProductionEnvironmentTest.class'
+}
+
+task updateRevision(type: WriteProperties) {
+	outputFile = file("$buildDir/classes/java/main/biosimclient/revision")	
+	property "Revision", biosimClientRevision
+	property "Version", biosimclientVersion
 }
 
 task integrationTest(type: Test) {
@@ -119,13 +120,14 @@ task integrationTest(type: Test) {
 check.dependsOn integrationTest
 
 jar {
-	 manifest {
-        attributes("Built-By": "Mathieu Fortin",
+	dependsOn updateRevision
+	manifest {
+    	attributes("Built-By": "Mathieu Fortin",
         		   "Specification-Title": "Client for BioSIM Web API",
 	       		   "Specification-Version": archiveVersion,                   
                    "Specification-Vendor": "Canadian Wood Fibre Centre",
                    "Implementation-Title": "biosimclient",
-//                   "Implementation-Version": project.ext.build,		// the revision is now written to file in repicea.app package
+                   "Implementation-Version": biosimClientRevision,		
                    "Implementation-Vendor": "Canadian Wood Fibre Centre",
                    )
     }
