@@ -35,9 +35,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.net.ssl.SSLHandshakeException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Month;
@@ -55,6 +58,8 @@ public final class BioSimClient {
 	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = -1; // not set yet
 	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = -1; // not set yet
 	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000; // not set yet
+	private static Boolean IS_CLIENT_SUPPORTED = null;
+	private static String CLIENT_MESSAGE;
 	
 	static final String FieldSeparator = ",";
 	
@@ -67,7 +72,8 @@ public final class BioSimClient {
 
 	private static final String NORMAL_API = "BioSimNormals";
 	private static final String MODEL_LIST_API = "BioSimModelList";
-	private static final String BIOSIMMAXCOORDINATES = "BioSimMaxCoordinatesPerRequest";
+//	private static final String BIOSIMMAXCOORDINATES = "BioSimMaxCoordinatesPerRequest";
+	private static final String BIOSIMSTATUS = "BioSimStatus";
 	private static final String BIOSIMMODELHELP = "BioSimModelHelp";
 	private static final String BIOSIMMODELDEFAULTPARAMETERS = "BioSimModelDefaultParameters";
 	private static final String BIOSIMWEATHER = "BioSimWeather";
@@ -220,6 +226,7 @@ public final class BioSimClient {
 			RCP rcp,
 			ClimateModel climModel,
 			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
+		isClientSupported();
 		if (locations.size() > BioSimClient.MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST) {
 			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
 		}
@@ -317,12 +324,14 @@ public final class BioSimClient {
 	 * @return a List of String instances
 	 */
 	public static List<String> getModelList() throws BioSimClientException, BioSimServerException {
+		isClientSupported();
 		List<String> copy = new ArrayList<String>();
 		copy.addAll(getReferenceModelList());
 		return copy;
 	}
 	
 	public static String getModelHelp(String modelName) throws BioSimClientException, BioSimServerException {
+		isClientSupported();
 		if (modelName == null) {
 			throw new InvalidParameterException("THe modelName parameter cannot be set to null!");
 		}
@@ -332,6 +341,7 @@ public final class BioSimClient {
 
 	
 	public static BioSimParameterMap getModelDefaultParameters(String modelName) throws BioSimClientException, BioSimServerException {
+		isClientSupported();
 		if (modelName == null) {
 			throw new InvalidParameterException("THe modelName parameter cannot be set to null!");
 		}
@@ -582,6 +592,7 @@ public final class BioSimClient {
 			int rep,
 			int repModel,
 			List<BioSimParameterMap> additionalParms) throws BioSimClientException, BioSimServerException {
+		isClientSupported();
 		if (rep < 1 || repModel < 1) {
 			throw new InvalidParameterException("The rep and repModel parameters should be equal to or greater than 1!");
 		} 
@@ -631,15 +642,81 @@ public final class BioSimClient {
 
 	private static void setMaxCapacities() throws BioSimClientException, BioSimServerException {
 		if (MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION == -1 || MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS == -1) {
-			String serverReply = getStringFromConnection(BIOSIMMAXCOORDINATES, null).toString();
+			String query = "crev=" + BioSimClientAppVersion.getInstance().getBuild();
+			String serverReply = getStringFromConnection(BIOSIMSTATUS, query).toString();	// is returned in JSON format
+			ObjectMapper mp = new ObjectMapper();
+			Map statusMap = null;
 			try {
-				String[] maxCapacities = serverReply.split(FieldSeparator);
-				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[0]);
-				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[1]);
+				statusMap = mp.readValue(serverReply, Map.class);
+			} catch (Exception e) {
+				throw new BioSimClientException("Something wrong happened while retrieving the server status: " + e.getMessage());
+			}
+			
+			if (!(Boolean)statusMap.get("IsInitCompleted")) {
+				throw new BioSimClientException("The server initialization is not completed!");
+			}
+			if (!statusMap.containsKey("settings")) {
+				throw new BioSimClientException("The status map does not contain the entry settings!");
+			}
+			
+			
+			try {
+				Map settingsMap = (Map) statusMap.get("settings");
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = (Integer) settingsMap.get("NbMaxCoordinatesNormals");
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = (Integer) settingsMap.get("NbMaxCoordinatesWG");
+//				IS_CLIENT_SUPPORTED = settingsMap.containsKey("IsClientSupported") ? (Boolean) settingsMap.get("IsClientSupported") : false;
+//				CLIENT_MESSAGE = settingsMap.containsKey("ClientMessage") ? (String) settingsMap.get("ClientMessage") : "This client is not supported";
+//				String[] maxCapacities = serverReply.split(FieldSeparator);
+//				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[0]);
+//				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[1]);
 			} catch (NumberFormatException e) {
 				throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
 			}
 		}
+	}
+	
+	/**
+	 * Check if the status of the server has been retrieved and set the IS_CLIENT_SUPPORTED and CLIENT_MESSAGE static
+	 * members. Then check if the client is supported. 
+	 * @throws BioSimClientException
+	 */
+	private static synchronized void isClientSupported() throws BioSimClientException, BioSimServerException {
+		if (IS_CLIENT_SUPPORTED == null) {
+			String query = "crev=" + BioSimClientAppVersion.getInstance().getBuild();
+			String serverReply = getStringFromConnection(BIOSIMSTATUS, query).toString();	// is returned in JSON format
+			ObjectMapper mp = new ObjectMapper();
+			Map statusMap = null;
+			try {
+				statusMap = mp.readValue(serverReply, Map.class);
+			} catch (Exception e) {
+				throw new BioSimClientException("Something wrong happened while retrieving the server status: " + e.getMessage());
+			}
+			
+			if (!(Boolean)statusMap.get("IsInitCompleted")) {
+				throw new BioSimClientException("The server initialization is not completed!");
+			}
+			if (!statusMap.containsKey("settings")) {
+				throw new BioSimClientException("The status map does not contain the entry settings!");
+			}
+			
+			try {
+				Map settingsMap = (Map) statusMap.get("settings");
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = (Integer) settingsMap.get("NbMaxCoordinatesNormals");
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = (Integer) settingsMap.get("NbMaxCoordinatesWG");
+				IS_CLIENT_SUPPORTED = settingsMap.containsKey("IsClientSupported") ? (Boolean) settingsMap.get("IsClientSupported") : true;
+				CLIENT_MESSAGE = settingsMap.containsKey("ClientMessage") ? (String) settingsMap.get("ClientMessage") : "";
+//				String[] maxCapacities = serverReply.split(FieldSeparator);
+//				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[0]);
+//				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[1]);
+			} catch (NumberFormatException e) {
+				throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
+			}
+			if (IS_CLIENT_SUPPORTED && !CLIENT_MESSAGE.isEmpty()) {
+				System.out.println("WARNING: " + CLIENT_MESSAGE);
+			}
+		}
+		if (!IS_CLIENT_SUPPORTED) 
+			throw new BioSimClientException(CLIENT_MESSAGE);
 	}
 	
 	private static int getMaximumNbLocationsPerBatchNormals() throws BioSimClientException, BioSimServerException {
