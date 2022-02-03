@@ -59,7 +59,7 @@ public final class BioSimClient {
 	static final String FieldSeparator = ",";
 	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
-	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 88);	// BioSIM_B
+	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 88);	
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
@@ -382,7 +382,7 @@ public final class BioSimClient {
 			} else if (BioSimClient.getModelList().contains(line.trim())) {
 				resultMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 				modName = line.trim();
-				outputMap.put(line.trim(), resultMap);
+				outputMap.put(modName, resultMap);
 				locationId = 0;
 				isDataSetProperlyInitialized = false;		// reset to false until we get the header
 			} else if (line.toLowerCase().startsWith(fieldLineStarter)) { // means it is a new location
