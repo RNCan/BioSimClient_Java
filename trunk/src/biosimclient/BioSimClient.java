@@ -59,7 +59,7 @@ public final class BioSimClient {
 	static final String FieldSeparator = ",";
 	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
-	private static final InetSocketAddress LocalAddress = new InetSocketAddress("localhost", 5000);	// BioSIM_B
+	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 88);	// BioSIM_B
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
