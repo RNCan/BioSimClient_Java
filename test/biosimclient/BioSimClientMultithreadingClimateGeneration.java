@@ -137,7 +137,7 @@ public class BioSimClientMultithreadingClimateGeneration {
 		int initialDateYr = Integer.parseInt(args[2]);
 		int finalDateYr = Integer.parseInt(args[3]);
 		boolean isCheckEnabled = Boolean.parseBoolean(args[4]);
-		BioSimClient.isLocal = isLocal;
+		BioSimClient.setTestModeEnabled(true);
 		BioSimClientMultithreadingClimateGeneration bioSim = new BioSimClientMultithreadingClimateGeneration(id, isCheckEnabled);
 		for (int i = 0; i < 20; i++) {
 			bioSim.testingWithDegreeDaysAbove5C(initialDateYr, finalDateYr);
@@ -145,6 +145,7 @@ public class BioSimClientMultithreadingClimateGeneration {
 		if (isCheckEnabled) {
 			System.out.println("All the runs are consistent!");
 		}
+		BioSimClient.setTestModeEnabled(false);
 	}
 	
 	

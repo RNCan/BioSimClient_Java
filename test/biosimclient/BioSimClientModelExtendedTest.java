@@ -21,7 +21,6 @@
  */
 package biosimclient;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -38,12 +37,14 @@ public class BioSimClientModelExtendedTest {
 
 	@BeforeClass
 	public static void initializeTest() {
-		BioSimClient.isLocal = true;
+		BioSimClient.setLocalConnectionEnabled(true);
+		BioSimClient.setTestModeEnabled(true);
 	}
 	
 	@AfterClass
 	public static void finalizeTest() {
-		BioSimClient.isLocal = false;
+		BioSimClient.setLocalConnectionEnabled(false);
+		BioSimClient.setTestModeEnabled(false);
 	}
 	
 	/*

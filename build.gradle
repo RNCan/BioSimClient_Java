@@ -140,6 +140,26 @@ jar {
 	from sourceSets.main.allJava		
 }
 
+task fatJar(type: Jar) {
+	group = 'build'
+	description = 'Creates a fat jar for distribution'
+	dependsOn updateRevision
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE		// to avoid duplicate files
+    manifest {
+    	attributes("Built-By": "Mathieu Fortin",
+        		   "Specification-Title": "Client for BioSIM Web API",
+	       		   "Specification-Version": archiveVersion,                   
+                   "Specification-Vendor": "Canadian Wood Fibre Centre",
+                   "Implementation-Title": "biosimclient",
+                   "Implementation-Version": biosimClientRevision,		
+                   "Implementation-Vendor": "Canadian Wood Fibre Centre",
+                   )
+    }
+    archiveBaseName = 'biosimclient'
+	destinationDirectory =  file("${installDirFatJar}")  
+    from { sourceSets.main.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }		
+}
+
 task deleteInstallFolder(type: Delete) {
   delete "${installDir}"  
 }

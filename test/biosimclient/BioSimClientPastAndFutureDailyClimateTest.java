@@ -42,12 +42,14 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	
 	@BeforeClass
 	public static void initializeTest() {
-		BioSimClient.isLocal = true;
+		BioSimClient.setLocalConnectionEnabled(true);
+		BioSimClient.setTestModeEnabled(true);
 	}
 	
 	@AfterClass
 	public static void finalizeTest() {
-		BioSimClient.isLocal = false;
+		BioSimClient.setLocalConnectionEnabled(false);
+		BioSimClient.setTestModeEnabled(false);
 	}
 
 	/*
