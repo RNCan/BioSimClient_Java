@@ -55,6 +55,8 @@ import biosimclient.BioSimEnums.Variable;
  */
 public final class BioSimClient {
 
+	private static final int REVISION = 1;
+	
 	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = -1; // not set yet
 	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = -1; // not set yet
 	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000; // not set yet
@@ -659,7 +661,7 @@ public final class BioSimClient {
 	 */
 	public static synchronized String isClientSupported() throws BioSimClientException, BioSimServerException {
 		if (IS_CLIENT_SUPPORTED == null) {
-			String query = "crev=" + BioSimClientAppVersion.getInstance().getBuild();
+			String query = "crev=" + REVISION;
 			String serverReply = getStringFromConnection(BIOSIMSTATUS, query).toString();	// is returned in JSON format
 			ObjectMapper mp = new ObjectMapper();
 			Map statusMap = null;
