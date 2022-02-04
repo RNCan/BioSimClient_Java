@@ -125,13 +125,14 @@ public class BioSimClientMultithreadingNormals {
 
 	public static void main(String[] args) throws Exception {
 		int id = Integer.parseInt(args[0]);
-		boolean isLocal = Boolean.parseBoolean(args[1]);
-		BioSimClient.isLocal = isLocal;
+//		boolean isLocal = Boolean.parseBoolean(args[1]);
+		BioSimClient.setTestModeEnabled(true);
 		BioSimClientMultithreadingNormals bioSim = new BioSimClientMultithreadingNormals(id);
 		for (int i = 0; i < 20; i++) {
 			bioSim.testingWithNormals();
 		}
 		System.out.println("All the runs are consistent!");
+		BioSimClient.setTestModeEnabled(false);
 	}
 	
 	

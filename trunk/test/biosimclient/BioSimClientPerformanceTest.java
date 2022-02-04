@@ -56,7 +56,7 @@ public class BioSimClientPerformanceTest {
 		this.testRunFilename = path + File.separator + "performanceTestRun" + ".txt";
 		this.testResultsFilename = path + File.separator + "performanceTestResults" + ".txt";
 
-		BioSimClient.isLocal = true;
+//		BioSimClient.isLocal = true;
 	}
 
 	void generateTestRun(int numberOfTests, int initialDateYr, int finalDateYr, int maxNumberOfLocations, BioSimPlot locationMin, BioSimPlot locationMax) {
@@ -220,6 +220,7 @@ public class BioSimClientPerformanceTest {
 			generateTestRun = Boolean.parseBoolean(args[0]);
 		}
 
+		BioSimClient.setTestModeEnabled(true);
 		BioSimClientPerformanceTest bioSim = new BioSimClientPerformanceTest();
 
 		if (generateTestRun) {
@@ -229,5 +230,6 @@ public class BioSimClientPerformanceTest {
 		{
 			bioSim.executeTestRun(0, 10);
 		}
+		BioSimClient.setTestModeEnabled(false);
 	}
 }
