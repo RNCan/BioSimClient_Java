@@ -84,16 +84,13 @@ public final class BioSimClient {
 
 	private static double totalServerRequestDuration = 0.0;
 
-	private static boolean isLocal = false;		// set to true to connect on 88 locally 
-	private static boolean isTesting = false;
+	static boolean IsLocal = false;		// set to true to connect on 88 locally 
+	static boolean IsTesting = false;
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
 	
 	static Integer NbNearestNeighbours = null;
 
-	public static void setLocalConnectionEnabled(boolean b) {isLocal = b;}
-	
-	public static void setTestModeEnabled(boolean b) {isTesting = b;}
 	
 	private static String addQueryIfAny(String urlString, String query) {
 		boolean isThereQuery = false;
@@ -104,7 +101,7 @@ public final class BioSimClient {
 		} else 
 			finalUrlString = urlString;
 		
-		if (BioSimClient.isTesting) 
+		if (BioSimClient.IsTesting) 
 			finalUrlString = isThereQuery ? finalUrlString + "&cid=testJava" : finalUrlString + "?cid=testJava";
 
 		return finalUrlString;
@@ -113,7 +110,7 @@ public final class BioSimClient {
 	
 	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 //		long initTime = System.currentTimeMillis();
-		InetSocketAddress address = isLocal ? BioSimClient.LocalAddress : BioSimClient.REpiceaAddress;
+		InetSocketAddress address = IsLocal ? BioSimClient.LocalAddress : BioSimClient.REpiceaAddress;
 		String urlString = "http://" + address.getHostName() + ":" + address.getPort() + "/" + api;
 		urlString = addQueryIfAny(urlString, query);
 		try {
@@ -706,7 +703,10 @@ public final class BioSimClient {
 	public static void resetClientConfiguration() {
 		NbNearestNeighbours = null;
 		ForceClimateGenerationEnabled = false;
+		IsLocal = false;
+		IsTesting = false;
 	}
+	
 	
 	
 	/**
@@ -752,6 +752,16 @@ public final class BioSimClient {
 			return NbNearestNeighbours;
 		}
 	}
+	
+
+	public static boolean getLocalConnectionEnabled() {return IsLocal;}
+	
+	public static void setLocalConnectionEnabled(boolean b) {IsLocal = b;}
+	
+	public static boolean getTestModeEnabled() {return IsTesting;}
+
+	public static void setTestModeEnabled(boolean b) {IsTesting = b;}
+
 
 	public static double getLastServerRequestDuration() {
 		return totalServerRequestDuration;
