@@ -754,11 +754,11 @@ public final class BioSimClient {
 	}
 	
 
-	public static boolean getLocalConnectionEnabled() {return IsLocal;}
+	public static boolean isLocalConnectionEnabled() {return IsLocal;}
 	
 	public static void setLocalConnectionEnabled(boolean b) {IsLocal = b;}
 	
-	public static boolean getTestModeEnabled() {return IsTesting;}
+	public static boolean isTestModeEnabled() {return IsTesting;}
 
 	public static void setTestModeEnabled(boolean b) {IsTesting = b;}
 
