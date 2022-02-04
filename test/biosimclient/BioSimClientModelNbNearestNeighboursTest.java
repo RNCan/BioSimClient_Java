@@ -36,22 +36,26 @@ public class BioSimClientModelNbNearestNeighboursTest {
 
 	@BeforeClass
 	public static void initializeTest() {
-		BioSimClient.setLocalConnectionEnabled(true);
-		BioSimClient.setTestModeEnabled(true);
+		BioSimClientTestSettings.setForTest(true);
 	}
 	
 	@AfterClass
 	public static void finalizeTest() {
-		BioSimClient.setLocalConnectionEnabled(false);
-		BioSimClient.setTestModeEnabled(false);
+		BioSimClientTestSettings.setForTest(false);
 	}
 
+	
+
+	
+	
+	
 	/*
 	 * Testing ClimaticQc_Annual model and ensuring that the default nb of nearest neighbour is 4.
 	 */
 	@Test
 	public void testingWithDefaultFourClimateStations() throws Exception {
 		BioSimClient.resetClientConfiguration();
+		BioSimClientTestSettings.setForTest(true);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		BioSimPlot plot = BioSimClientNormalsTest.getPlots().get(0);
 		locations.add(plot);
@@ -81,11 +85,13 @@ public class BioSimClientModelNbNearestNeighboursTest {
 
 		Assert.assertEquals("Comparing the two LinkedHasMap instances", referenceString, observedString);
 		BioSimClient.resetClientConfiguration();
+		BioSimClientTestSettings.setForTest(true);
 	}
 
 	@Test
 	public void testingWithTwentyClimateStations() throws Exception {
 		BioSimClient.resetClientConfiguration();
+		BioSimClientTestSettings.setForTest(true);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		BioSimPlot plot = BioSimClientNormalsTest.getPlots().get(0);
 		locations.add(plot);
@@ -115,6 +121,8 @@ public class BioSimClientModelNbNearestNeighboursTest {
 
 		Assert.assertTrue("Comparing the two LinkedHasMap instances. Expecting them to be different", !referenceString.equals(observedString));
 		BioSimClient.resetClientConfiguration();
+		BioSimClientTestSettings.setForTest(true);
+
 	}
 
 

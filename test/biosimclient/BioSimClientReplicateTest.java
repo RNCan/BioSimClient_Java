@@ -125,6 +125,7 @@ public class BioSimClientReplicateTest {
 		}
 		System.out.println("Ascending order tested in replicated generated climate!");
 		BioSimClient.resetClientConfiguration();
+		BioSimClientTestSettings.setForTest(true);
 	}
 
 	@Test
@@ -143,6 +144,7 @@ public class BioSimClientReplicateTest {
 		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
 		Assert.assertEquals("Testing the number of observations", 5, dataset.getNumberOfObservations());
 		BioSimClient.resetClientConfiguration();
+		BioSimClientTestSettings.setForTest(true);
 	}
 
 
@@ -163,6 +165,7 @@ public class BioSimClientReplicateTest {
 		BioSimDataSet dataset = oRCP85_RCM4def.get(locations.get(0)); 
 		Assert.assertEquals("Testing the number of observations", 30 * 2, dataset.getNumberOfObservations());
 		BioSimClient.resetClientConfiguration();
+		BioSimClientTestSettings.setForTest(true);
 	}
 
 

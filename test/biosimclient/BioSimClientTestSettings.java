@@ -52,6 +52,11 @@ public class BioSimClientTestSettings {
 		}
 	}
 	
+	static void setForTest(boolean b) {
+		BioSimClient.setLocalConnectionEnabled(b);
+		BioSimClient.setTestModeEnabled(b);
+	}
+	
 	static String getValidationFilename(String methodName) {
 		return BioSimClientTestSettings.ProjectRootPath + File.separator + "testData" + File.separator + methodName + "Ref.json";
 	}
