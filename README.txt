@@ -1,5 +1,5 @@
-Author Mathieu Fortin - Canadian Forest Service
-Copyright (C) 2020 Her Majesty the Queen in right of Canada
+Authors Mathieu Fortin, Jean-Francois Lavoie - Canadian Forest Service
+Copyright (C) 2020-2022 Her Majesty the Queen in right of Canada
 
 Email: mathieu.fortin.re@gmail.com
 
@@ -20,4 +20,6 @@ Please see the license at http://www.gnu.org/copyleft/lesser.html.
 This library uses some icons from the GTK library which are protected 
 by a GNU Lesser General Public License. 
 
-
+The biosimclient library depends on the json-io library available at
+(https://mvnrepository.com/artifact/com.cedarsoftware/json-io/). The
+json-io library is licensed under Apache 2.0. 
