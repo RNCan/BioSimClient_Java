@@ -95,12 +95,6 @@ test {
     exclude '**/ProductionEnvironmentTest.class'
 }
 
-task updateRevision(type: WriteProperties) {
-	outputFile = file("$buildDir/classes/java/main/biosimclient/revision")	
-	property "Revision", biosimClientRevision
-	property "Version", biosimclientVersion
-}
-
 task integrationTest(type: Test) {
 	description = 'Runs the integration tests (unit tests run using the produced JAR file)'
     group = 'verification'
@@ -121,7 +115,6 @@ task integrationTest(type: Test) {
 check.dependsOn integrationTest
 
 jar {
-	dependsOn updateRevision
 	manifest {
     	attributes("Built-By": "Mathieu Fortin",
         		   "Specification-Title": "Client for BioSIM Web API",
@@ -144,7 +137,6 @@ jar {
 task fatJar(type: Jar) {
 	group = 'build'
 	description = 'Creates a fat jar for distribution'
-	dependsOn updateRevision
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE		// to avoid duplicate files
     manifest {
     	attributes("Built-By": "Mathieu Fortin",
