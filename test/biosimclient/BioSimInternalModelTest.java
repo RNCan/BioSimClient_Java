@@ -32,22 +32,21 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cedarsoftware.util.io.JsonWriter;
 
 
 public class BioSimInternalModelTest {
 
 	@BeforeClass
 	public static void initializeTest() {
-		BioSimClient.setLocalConnectionEnabled(true);
-		BioSimClient.setTestModeEnabled(true);
+		BioSimClientTestSettings.setForTest(true);
 	}
 	
 	@AfterClass
 	public static void finalizeTest() {
-		BioSimClient.setLocalConnectionEnabled(false);
-		BioSimClient.setTestModeEnabled(false);
+		BioSimClientTestSettings.setForTest(false);
 	}
+
 
 
 	@Test
@@ -83,8 +82,7 @@ public class BioSimInternalModelTest {
 	}
 
 	private String getJSONObject(LinkedHashMap<String, Boolean> oMap, String validationFilename) throws IOException {
-		ObjectMapper om = new ObjectMapper();
-		String outputString = om.writeValueAsString(oMap);
+		String outputString = JsonWriter.objectToJson(oMap);
 		if (!BioSimClientTestSettings.Validation) {
 			FileWriter out = new FileWriter(validationFilename);
 			out.write(outputString);

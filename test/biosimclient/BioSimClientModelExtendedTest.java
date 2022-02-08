@@ -37,15 +37,14 @@ public class BioSimClientModelExtendedTest {
 
 	@BeforeClass
 	public static void initializeTest() {
-		BioSimClient.setLocalConnectionEnabled(true);
-		BioSimClient.setTestModeEnabled(true);
+		BioSimClientTestSettings.setForTest(true);
 	}
 	
 	@AfterClass
 	public static void finalizeTest() {
-		BioSimClient.setLocalConnectionEnabled(false);
-		BioSimClient.setTestModeEnabled(false);
+		BioSimClientTestSettings.setForTest(false);
 	}
+
 	
 	/*
 	 * Testing ClimaticQc_Annual model

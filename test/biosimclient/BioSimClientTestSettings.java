@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.junit.Assert;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cedarsoftware.util.io.JsonWriter;
 
 public class BioSimClientTestSettings {
 
@@ -53,7 +53,7 @@ public class BioSimClientTestSettings {
 	}
 	
 	static void setForTest(boolean b) {
-		BioSimClient.setLocalConnectionEnabled(b);
+//		BioSimClient.setLocalConnectionEnabled(b);
 		BioSimClient.setTestModeEnabled(b);
 	}
 	
@@ -62,9 +62,8 @@ public class BioSimClientTestSettings {
 	}
 
 	static String getJSONObject(BioSimDataSet dataSet, String validationFilename) throws IOException {
-		ObjectMapper om = new ObjectMapper();
 		LinkedHashMap<String, Object> mainObj = convertBioSimDataSetToMap(dataSet);
-		String outputString = om.writeValueAsString(mainObj);
+		String outputString = JsonWriter.objectToJson(mainObj);
 		if (!BioSimClientTestSettings.Validation) {
 			FileWriter out = new FileWriter(validationFilename);
 			out.write(outputString);
@@ -88,12 +87,11 @@ public class BioSimClientTestSettings {
 	}
 	
 	static String getJSONObject(LinkedHashMap<String,BioSimDataSet> dataSets, String validationFilename) throws IOException {
-		ObjectMapper om = new ObjectMapper();
 		LinkedHashMap<String, Object> mainObj = new LinkedHashMap<String, Object>();
 		for (String modelName : dataSets.keySet()) {
 			mainObj.put(modelName, convertBioSimDataSetToMap(dataSets.get(modelName)));
 		}
-		String outputString = om.writeValueAsString(mainObj);
+		String outputString = JsonWriter.objectToJson(mainObj);
 		if (!BioSimClientTestSettings.Validation) {
 			FileWriter out = new FileWriter(validationFilename);
 			out.write(outputString);
@@ -105,8 +103,7 @@ public class BioSimClientTestSettings {
 
 	
 	static String getJSONObject(BioSimParameterMap parmMap, String validationFilename) throws IOException {
-		ObjectMapper om = new ObjectMapper();
-		String outputString = om.writeValueAsString(parmMap.innerMap);
+		String outputString = JsonWriter.objectToJson(parmMap.innerMap);
 		if (!BioSimClientTestSettings.Validation) {
 			FileWriter out = new FileWriter(validationFilename);
 			out.write(outputString);

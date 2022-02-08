@@ -21,11 +21,6 @@
  */
 package biosimclient;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,8 +29,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Period;
@@ -59,14 +52,12 @@ public class BioSimClientNormalsTest {
 	
 	@BeforeClass
 	public static void initializeTest() {
-		BioSimClient.setLocalConnectionEnabled(true);
-		BioSimClient.setTestModeEnabled(true);
+		BioSimClientTestSettings.setForTest(true);
 	}
 	
 	@AfterClass
 	public static void finalizeTest() {
-		BioSimClient.setLocalConnectionEnabled(false);
-		BioSimClient.setTestModeEnabled(false);
+		BioSimClientTestSettings.setForTest(false);
 	}
 
 	
