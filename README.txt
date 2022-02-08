@@ -20,6 +20,12 @@ Please see the license at http://www.gnu.org/copyleft/lesser.html.
 This library uses some icons from the GTK library which are protected 
 by a GNU Lesser General Public License. 
 
+
+The biosimclient library is hosted on SourceForge:
+
+	https://sourceforge.net/p/mrnfforesttools/biosimclient/wiki/MainPage/
+
+
 The biosimclient library depends on the json-io library available at
 (https://mvnrepository.com/artifact/com.cedarsoftware/json-io/). The
 json-io library is licensed under Apache 2.0. 
