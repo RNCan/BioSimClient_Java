@@ -75,7 +75,6 @@ sourceSets {
 // make sure to set the compliance to Java 1.8 in the project properties if the Java version is later than 1.8
 // make sure to set Java Compiler > Errors Warnings > Deprecated and Restricted API > Forbidden reference to WARNING instead of ERROR
 dependencies {
-//	implementation "com.fasterxml.jackson.core:jackson-databind:2.13.1"
 	implementation 'com.cedarsoftware:json-io:4.13.0'
     testImplementation "junit:junit:4.12"    
 }
@@ -121,7 +120,6 @@ jar {
 	       		   "Specification-Version": archiveVersion,                   
                    "Specification-Vendor": "Canadian Wood Fibre Centre",
                    "Implementation-Title": "biosimclient",
-                   "Implementation-Version": biosimClientRevision,		
                    "Implementation-Vendor": "Canadian Wood Fibre Centre",
                    )
     }
@@ -144,7 +142,6 @@ task fatJar(type: Jar) {
 	       		   "Specification-Version": archiveVersion,                   
                    "Specification-Vendor": "Canadian Wood Fibre Centre",
                    "Implementation-Title": "biosimclient",
-                   "Implementation-Version": biosimClientRevision,		
                    "Implementation-Vendor": "Canadian Wood Fibre Centre",
                    )
     }
