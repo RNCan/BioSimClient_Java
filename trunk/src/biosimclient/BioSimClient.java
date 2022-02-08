@@ -40,7 +40,7 @@ import java.util.Set;
 
 import javax.net.ssl.SSLHandshakeException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cedarsoftware.util.io.JsonReader;
 
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Month;
@@ -660,10 +660,10 @@ public final class BioSimClient {
 		if (IS_CLIENT_SUPPORTED == null) {
 			String query = "crev=" + REVISION;
 			String serverReply = getStringFromConnection(BIOSIMSTATUS, query).toString();	// is returned in JSON format
-			ObjectMapper mp = new ObjectMapper();
+//			ObjectMapper mp = new ObjectMapper();
 			Map statusMap = null;
 			try {
-				statusMap = mp.readValue(serverReply, Map.class);
+				statusMap = JsonReader.jsonToMaps(serverReply);
 			} catch (Exception e) {
 				throw new BioSimClientException("Something wrong happened while retrieving the server status: " + e.getMessage());
 			}
@@ -677,8 +677,8 @@ public final class BioSimClient {
 			
 			try {
 				Map settingsMap = (Map) statusMap.get("settings");
-				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = (Integer) settingsMap.get("NbMaxCoordinatesNormals");
-				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = (Integer) settingsMap.get("NbMaxCoordinatesWG");
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = ((Number) settingsMap.get("NbMaxCoordinatesNormals")).intValue();
+				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = ((Number) settingsMap.get("NbMaxCoordinatesWG")).intValue();
 				IS_CLIENT_SUPPORTED = settingsMap.containsKey("IsClientSupported") ? (Boolean) settingsMap.get("IsClientSupported") : true;
 				CLIENT_MESSAGE = settingsMap.containsKey("ClientMessage") ? (String) settingsMap.get("ClientMessage") : "";
 			} catch (Exception e) {
