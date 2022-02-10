@@ -368,7 +368,7 @@ public final class BioSimClient {
 			if (keyValue.length > 1) {
 				parmMap.addParameter(keyValue[0], keyValue[1]);
 			} else {
-				parmMap.addParameter(keyValue[0], null); // TODO MF2022-01-27 Possibility of bug here. Check that.
+				parmMap.addParameter(keyValue[0], ""); 
 			}
 		}
 		return parmMap;
