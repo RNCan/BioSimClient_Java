@@ -111,7 +111,7 @@ public final class BioSimClient {
 	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 //		long initTime = System.currentTimeMillis();
 		InetSocketAddress address = IsLocal ? BioSimClient.LocalAddress : BioSimClient.REpiceaAddress;
-		String urlString = "http://" + address.getHostName() + ":" + address.getPort() + "/" + api;
+		String urlString = "http://" + address.getHostName() + ":" + address.getPort() + "/BioSIM/" + api;
 		urlString = addQueryIfAny(urlString, query);
 		try {
 			URL bioSimURL = new URL(urlString);
@@ -228,7 +228,8 @@ public final class BioSimClient {
 	 *                               calculated. If empty or null the method returns
 	 *                               the monthly averages.
 	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
+	 * @throws BioSimClientException if the client fails 
+	 * @throws BioSimServerException if the server fails 
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getNormals(
 			Period period,
@@ -266,7 +267,8 @@ public final class BioSimClient {
 	 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
 	 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
 	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
+	 * @throws BioSimClientException if the client fails 
+	 * @throws BioSimServerException if the server fails 
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getMonthlyNormals(
 			Period period, 
@@ -284,7 +286,8 @@ public final class BioSimClient {
 	 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
 	 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
 	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-	 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
+	 * @throws BioSimClientException if the client fails 
+	 * @throws BioSimServerException if the server fails 
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getAnnualNormals(
 			Period period, 
@@ -332,6 +335,8 @@ public final class BioSimClient {
 	 * true list to avoid any intended changes in the model list.
 	 * 
 	 * @return a List of String instances
+  	 * @throws BioSimClientException if the client fails 
+	 * @throws BioSimServerException if the server fails 
 	 */
 	public static List<String> getModelList() throws BioSimClientException, BioSimServerException {
 		isClientSupported();
@@ -520,7 +525,8 @@ public final class BioSimClient {
 	 * @param rep the number of replicates in climate generation if needed. Should be equal to or greater than 1. 
 	 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
+	 * @throws BioSimClientException if the client fails 
+	 * @throws BioSimServerException if the server fails 
 	 */
 	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
@@ -551,7 +557,8 @@ public final class BioSimClient {
 	 * @param climMod a ClimateModel enum variable (by default RCM 4)
 	 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
+	 * @throws BioSimClientException if the client fails 
+	 * @throws BioSimServerException if the server fails 
 	 */
 	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
@@ -591,7 +598,8 @@ public final class BioSimClient {
 	 * @param repModel the number of replicates in the model if needed. Should be equal to or greater than 1. 
 	 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
 	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-	 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
+	 * @throws BioSimClientException if the client fails 
+	 * @throws BioSimServerException if the server fails 
 	 */
 	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
@@ -654,7 +662,8 @@ public final class BioSimClient {
 	 * Check if the status of the server has been retrieved and set the IS_CLIENT_SUPPORTED and CLIENT_MESSAGE static
 	 * members. Then check if the client is supported. 
 	 * @return the warning message
-	 * @throws BioSimClientException
+	 * @throws BioSimClientException if the client fails 
+	 * @throws BioSimServerException if the server fails 
 	 */
 	public static synchronized String isClientSupported() throws BioSimClientException, BioSimServerException {
 		if (IS_CLIENT_SUPPORTED == null) {
