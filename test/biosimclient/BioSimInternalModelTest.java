@@ -30,6 +30,7 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cedarsoftware.util.io.JsonWriter;
@@ -46,8 +47,6 @@ public class BioSimInternalModelTest {
 	public static void finalizeTest() {
 		BioSimClientTestSettings.setForTest(false);
 	}
-
-
 
 	@Test
 	public void testingEachModel() throws Exception {
@@ -90,6 +89,16 @@ public class BioSimInternalModelTest {
 		}
 		Assert.assertTrue("Should be in validation mode.", BioSimClientTestSettings.Validation);
 		return outputString;
+	}
+	
+	@Test
+	public void testingModelDefaultParameters() throws BioSimException {
+		List<String> modelList = BioSimClient.getModelList();
+		for (String model : modelList) {
+			System.out.println("Trying to get default parameters for model: " + model);
+			BioSimParameterMap parmsMap = BioSimClient.getModelDefaultParameters(model);
+			Assert.assertTrue(parmsMap != null);
+		}
 	}
 }
 
