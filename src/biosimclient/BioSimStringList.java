@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 final class BioSimStringList extends ArrayList<String> {
 
+	@Override
 	public String toString() {
 		if (size() == 0) {
 			return "";
@@ -37,8 +38,9 @@ final class BioSimStringList extends ArrayList<String> {
 				if (i == 0) {
 					completeString.append(s);
 				} else {
-					completeString.append("\n" + s);
+					completeString.append(System.lineSeparator() + s);
 				}
+				i++;
 			}
 			return completeString.toString();
 		}
