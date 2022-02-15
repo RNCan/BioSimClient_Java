@@ -21,6 +21,7 @@
  */
 package biosimclient;
 
+@SuppressWarnings("serial")
 class BioSimFakeLocation implements BioSimPlot {
 
 	private final double elevationM;
