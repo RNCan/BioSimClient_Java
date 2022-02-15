@@ -76,6 +76,7 @@ sourceSets {
 // make sure to set Java Compiler > Errors Warnings > Deprecated and Restricted API > Forbidden reference to WARNING instead of ERROR
 dependencies {
 	implementation 'com.cedarsoftware:json-io:4.13.0'
+	testImplementation "com.fasterxml.jackson.core:jackson-databind:2.13.1"
     testImplementation "junit:junit:4.12"    
 }
 

@@ -2,7 +2,7 @@
  * This file is part of the biosimclient library
  *
  * Author Mathieu Fortin - Canadian Forest Service
- * Copyright (C) 2020 Her Majesty the Queen in right of Canada
+ * Copyright (C) 2020-22 Her Majesty the Queen in right of Canada
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,10 +30,11 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.cedarsoftware.util.io.JsonWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+//import com.cedarsoftware.util.io.JsonWriter;
 
 
 public class BioSimInternalModelTest {
@@ -81,7 +82,9 @@ public class BioSimInternalModelTest {
 	}
 
 	private String getJSONObject(LinkedHashMap<String, Boolean> oMap, String validationFilename) throws IOException {
-		String outputString = JsonWriter.objectToJson(oMap);
+		ObjectMapper om = new ObjectMapper();
+		String outputString = om.writeValueAsString(oMap);
+//		String outputString = JsonWriter.objectToJson(oMap);
 		if (!BioSimClientTestSettings.Validation) {
 			FileWriter out = new FileWriter(validationFilename);
 			out.write(outputString);
