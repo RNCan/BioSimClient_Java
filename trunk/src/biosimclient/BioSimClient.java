@@ -49,7 +49,7 @@ import biosimclient.BioSimEnums.RCP;
 import biosimclient.BioSimEnums.Variable;
 
 /**
- * This class enables a client for the Biosim server at repicea.dyndns.org.
+ * A client for the BioSIM Web API.
  * 
  * @author Mathieu Fortin - October 2019
  */
@@ -74,7 +74,6 @@ public final class BioSimClient {
 
 	private static final String NORMAL_API = "BioSimNormals";
 	private static final String MODEL_LIST_API = "BioSimModelList";
-//	private static final String BIOSIMMAXCOORDINATES = "BioSimMaxCoordinatesPerRequest";
 	private static final String BIOSIMSTATUS = "BioSimStatus";
 	private static final String BIOSIMMODELHELP = "BioSimModelHelp";
 	private static final String BIOSIMMODELDEFAULTPARAMETERS = "BioSimModelDefaultParameters";
@@ -84,7 +83,7 @@ public final class BioSimClient {
 
 	private static double totalServerRequestDuration = 0.0;
 
-	static boolean IsLocal = false;		// set to true to connect on 88 locally 
+	static boolean IsLocal = false;		
 	static boolean IsTesting = false;
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
@@ -219,17 +218,17 @@ public final class BioSimClient {
 
 	
 	/**
-	 * Retrieves the normals and compiles the mean or sum over some months.
-	 * @param period a Period enum variable
-	 * @param locations a List of BioSimPlot instances
-	 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
-	 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
-	 * @param averageOverTheseMonths the months over which the mean or sum is to be
+	 * Retrieve the normals and compile the mean or sum over some months.
+	 * @param period A Period enum variable
+	 * @param locations A List of BioSimPlot instances
+	 * @param rcp An RCP enum variable (if null the server takes the RCP 4.5 by default) 
+	 * @param climModel A ClimateModel enum variable (if null the server takes the RCM4 climate model)
+	 * @param averageOverTheseMonths A List of Month enums over which the mean or sum is to be
 	 *                               calculated. If empty or null the method returns
 	 *                               the monthly averages.
-	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-	 * @throws BioSimClientException if the client fails 
-	 * @throws BioSimServerException if the server fails 
+	 * @return A Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
+	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getNormals(
 			Period period,
@@ -261,11 +260,11 @@ public final class BioSimClient {
 	
 	
 	/**
-	 * Retrieves the monthly normals.
-	 * @param period a Period enum variable
-	 * @param locations a List of BioSimPlot instances
-	 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
-	 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
+	 * Retrieve the monthly normals.
+	 * @param period A Period enum variable
+	 * @param locations A List of BioSimPlot instances
+	 * @param rcp An RCP enum variable (if null the server takes the RCP 4.5 by default) 
+	 * @param climModel A ClimateModel enum variable (if null the server takes the RCM4 climate model)
 	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
 	 * @throws BioSimClientException if the client fails 
 	 * @throws BioSimServerException if the server fails 
