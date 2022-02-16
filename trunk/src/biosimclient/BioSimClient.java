@@ -265,9 +265,9 @@ public final class BioSimClient {
 	 * @param locations A List of BioSimPlot instances
 	 * @param rcp An RCP enum variable (if null the server takes the RCP 4.5 by default) 
 	 * @param climModel A ClimateModel enum variable (if null the server takes the RCM4 climate model)
-	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-	 * @throws BioSimClientException if the client fails 
-	 * @throws BioSimServerException if the server fails 
+	 * @return A Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
+	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getMonthlyNormals(
 			Period period, 
@@ -279,14 +279,14 @@ public final class BioSimClient {
 
 	
 	/**
-	 * Retrieves the yearly normals.
-	 * @param period a Period enum variable
-	 * @param locations a List of BioSimPlot instances
-	 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
-	 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
-	 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-	 * @throws BioSimClientException if the client fails 
-	 * @throws BioSimServerException if the server fails 
+	 * Retrieve the yearly normals.
+	 * @param period A Period enum variable
+	 * @param locations A List of BioSimPlot instances
+	 * @param rcp An RCP enum variable (if null the server takes the RCP 4.5 by default) 
+	 * @param climModel A ClimateModel enum variable (if null the server takes the RCM4 climate model)
+	 * @return A Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
+	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
 	 */
 	public static LinkedHashMap<BioSimPlot, BioSimDataSet> getAnnualNormals(
 			Period period, 
@@ -330,12 +330,13 @@ public final class BioSimClient {
 	
 
 	/**
-	 * Returns the names of the available models. This is a clone of the
-	 * true list to avoid any intended changes in the model list.
+	 * Provide the list of the available models. <br>
+	 * <br>
+	 * The method returns a clone of the true list to avoid any unintended changes.
 	 * 
-	 * @return a List of String instances
-  	 * @throws BioSimClientException if the client fails 
-	 * @throws BioSimServerException if the server fails 
+	 * @return A List of String instances
+  	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
 	 */
 	public static List<String> getModelList() throws BioSimClientException, BioSimServerException {
 		isClientSupported();
@@ -344,6 +345,13 @@ public final class BioSimClient {
 		return copy;
 	}
 	
+	/**
+	 * Provide a description of a particular model.
+	 * @param modelName The name of the model
+	 * @return A String instance
+  	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
+	 */
 	public static String getModelHelp(String modelName) throws BioSimClientException, BioSimServerException {
 		isClientSupported();
 		if (modelName == null) {
@@ -353,7 +361,13 @@ public final class BioSimClient {
 		return serverReply;
 	}
 
-	
+	/**
+	 * Provide the default parameters of a particular model.
+	 * @param modelName The name of the model
+	 * @return A BioSimParameterMap instance that contains the parameters.
+  	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
+	 */
 	public static BioSimParameterMap getModelDefaultParameters(String modelName) throws BioSimClientException, BioSimServerException {
 		isClientSupported();
 		if (modelName == null) {
@@ -507,25 +521,23 @@ public final class BioSimClient {
 	}
 
 	/**
-	 * Returns a model output for a particular time interval. 
+	 * Generate meteorological time series and apply one or many models on them.
+	 * <br> <br>
+	 * The "modelnames" argument sets the models to be applied on the generated meteorological 
+	 * time series, which should be contained in the list returned by the 
+	 * getModelList method. Here, the number of replicates in the models is set to 1.
 	 * 
-	 * The "modelnames" argument sets the models to be applied on
-	 * the generated meteorological time series. It should be among the strings returned by the 
-	 * getModelList static method. Generating the climate is time consuming. The 
-	 * generated climate is stored on the server and it can be re used with some 
-	 * other models. 
-	 * 
-	 * @param fromYr starting date (yr) of the period (inclusive)
-	 * @param toYr ending date (yr) of the period (inclusive)
-	 * @param locations the locations of the plots (BioSimPlot instances)
-	 * @param modelNames a list of strings representing the model names
-	 * @param rcp an RCP enum variable (by default RCP 4.5)
-	 * @param climMod a ClimateModel enum variable (by default RCM 4)
-	 * @param rep the number of replicates in climate generation if needed. Should be equal to or greater than 1. 
-	 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
-	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-	 * @throws BioSimClientException if the client fails 
-	 * @throws BioSimServerException if the server fails 
+	 * @param fromYr The start date (yr) of the period (inclusive)
+	 * @param toYr The end date (yr) of the period (inclusive)
+	 * @param locations The locations of the plots (BioSimPlot instances)
+	 * @param rcp An RCP enum variable (by default RCP 4.5)
+	 * @param climMod A ClimateModel enum variable (by default RCM 4)
+	 * @param modelNames A list of strings representing the model names
+	 * @param rep The number of replicates in climate generation if needed. Should be equal to or greater than 1. 
+	 * @param additionalParms A list of BioSimParameterMap instances that contain the eventual additional parameters for the models
+	 * @return A LinkedHashMap with the model names as keys
+	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
 	 */
 	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
@@ -540,24 +552,23 @@ public final class BioSimClient {
 
 	
 	/**
-	 * Returns a model output for a particular time interval. 
+	 * Generate meteorological time series and apply one or many models on them.
+	 * <br> <br>
+	 * The "modelnames" argument sets the models to be applied on the generated meteorological 
+	 * time series, which should be contained in the list returned by the 
+	 * getModelList method. Here, the replicates in the weather generation and the models are
+	 * set to 1.
 	 * 
-	 * The "modelnames" parameter sets the models to be applied on
-	 * the generated climate. It should be one of the strings returned by the 
-	 * getModelList static method. Generating the climate is time consuming. The 
-	 * generated climate is stored on the server and it can be re used with some 
-	 * other models. The number of replicate is set to 1.
-	 * 
-	 * @param fromYr starting date (yr) of the period (inclusive)
-	 * @param toYr ending date (yr) of the period (inclusive)
-	 * @param locations the locations of the plots (BioSimPlot instances)
-	 * @param modelNames a list of strings representing the model names
-	 * @param rcp an RCP enum variable (by default RCP 4.5)
-	 * @param climMod a ClimateModel enum variable (by default RCM 4)
-	 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
-	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-	 * @throws BioSimClientException if the client fails 
-	 * @throws BioSimServerException if the server fails 
+	 * @param fromYr The start date (yr) of the period (inclusive)
+	 * @param toYr The end date (yr) of the period (inclusive)
+	 * @param locations The locations of the plots (BioSimPlot instances)
+	 * @param rcp An RCP enum variable (by default RCP 4.5)
+	 * @param climMod A ClimateModel enum variable (by default RCM 4)
+	 * @param modelNames A list of strings representing the model names
+	 * @param additionalParms A list of BioSimParameterMap instances that contain the eventual additional parameters for the models
+	 * @return A LinkedHashMap with the model names as keys
+	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
 	 */
 	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
@@ -574,31 +585,24 @@ public final class BioSimClient {
 	
 
 	/**
-	 * Returns a model output for a particular period. In this method, the ephemeral 
-	 * mode can be disabled by setting the argument isEphemeral to false. In such 
-	 * a case, the generated climate is cached in memory. This involves
-	 * two request to the server. The first aims at generating the climate, whereas
-	 * the second applies a model on the generated climate in order to obtain the 
-	 * desired variables. The ephemeral model should be preferred when a single model
-	 * is to be applied to some locations. If several models are to be applied to the
-	 * some locations, then the ephemeral mode should be disabled. The climate is then
-	 * generated only once for all the models. This implies several calls to this method
-	 * with exactly the same signature except for the argument "modelName". This "modelName"
-	 * argument sets the model to be applied on the generated climate. It should be one 
-	 * of the strings returned by the getModelList static method. 
+	 * Generate meteorological time series and apply one or many models on them.
+	 * <br> <br>
+	 * The "modelnames" argument sets the models to be applied on the generated meteorological 
+	 * time series, which should be contained in the list returned by the 
+	 * getModelList method. 
 	 * 
-	 * @param fromYr starting date (yr) of the period (inclusive)
-	 * @param toYr ending date (yr) of the period (inclusive)
-	 * @param locations the locations of the plots (BioSimPlot instances)
-	 * @param rcp an RCP enum variable (by default RCP 4.5)
-	 * @param climMod a ClimateModel enum variable (by default RCM 4)
-	 * @param modelNames a list of strings representing the model names
-	 * @param rep the number of replicates in climate generation if needed. Should be equal to or greater than 1. 
-	 * @param repModel the number of replicates in the model if needed. Should be equal to or greater than 1. 
-	 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
-	 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-	 * @throws BioSimClientException if the client fails 
-	 * @throws BioSimServerException if the server fails 
+	 * @param fromYr The start date (yr) of the period (inclusive)
+	 * @param toYr The end date (yr) of the period (inclusive)
+	 * @param locations The locations of the plots (BioSimPlot instances)
+	 * @param rcp An RCP enum variable (by default RCP 4.5)
+	 * @param climMod A ClimateModel enum variable (by default RCM 4)
+	 * @param modelNames A list of strings representing the model names
+	 * @param rep The number of replicates in climate generation if needed. Should be equal to or greater than 1. 
+	 * @param repModel The number of replicates in the models. Should be equal to or greater than 1. 
+	 * @param additionalParms A list of BioSimParameterMap instances that contain the eventual additional parameters for the models
+	 * @return A LinkedHashMap with the model names as keys
+	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
 	 */
 	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
@@ -660,9 +664,9 @@ public final class BioSimClient {
 	/**
 	 * Check if the status of the server has been retrieved and set the IS_CLIENT_SUPPORTED and CLIENT_MESSAGE static
 	 * members. Then check if the client is supported. 
-	 * @return the warning message
-	 * @throws BioSimClientException if the client fails 
-	 * @throws BioSimServerException if the server fails 
+	 * @return The warning message
+	 * @throws BioSimClientException If the client fails 
+	 * @throws BioSimServerException If the server fails 
 	 */
 	public static synchronized String isClientSupported() throws BioSimClientException, BioSimServerException {
 		if (IS_CLIENT_SUPPORTED == null) {
@@ -718,29 +722,32 @@ public final class BioSimClient {
 	
 	
 	/**
+	 * Force the climate generation through the disaggregation of 30-year normals 
+	 * for past date. 
+	 * <br>
+	 * <br>
 	 * By default the climate generation retrieves the observations for the
 	 * dates prior to the current date. If this option is set to true, then 
 	 * the climate is generated from the normals even for dates prior to
 	 * the current date.
 	 * 
-	 * @param bool a boolean
+	 * @param bool A boolean true to enable or false to disable
 	 */
 	public static void setForceClimateGenerationEnabled(boolean bool) {
 		ForceClimateGenerationEnabled = bool;
 	}
 
 	/**
-	 * This option forces the client to generate weather for past dates instead
-	 * of using the observations. By default, it is disabled
-	 * @return a boolean
+	 * Check if the climate generation is forced.
+	 * @return a boolean 
 	 */
 	public static boolean isForceClimateGenerationEnabled() {
 		return BioSimClient.ForceClimateGenerationEnabled;
 	}
 
 	/**
-	 * This option set the number of stations in the imputation of the climate variables
-	 * @param nbNearestNeighbours an integer between 1 and 35. The default is 4 stations.
+	 * Set the number of stations in the imputation of the climate variables
+	 * @param nbNearestNeighbours An integer between 1 and 35. The default is 4 stations.
 	 */
 	public static void setNbNearestNeighbours(int nbNearestNeighbours) {
 		if (nbNearestNeighbours < 1 || nbNearestNeighbours > 35) {
@@ -750,8 +757,8 @@ public final class BioSimClient {
 	}
 
 	/**
-	 * Returns the number of climate station used in the imputation of the climate variables.
-	 * @return an integer
+	 * Return the number of climate station used in the imputation of the climate variables.
+	 * @return An integer
 	 */
 	public static int getNbNearestNeighbours() {
 		if (NbNearestNeighbours == null) {
@@ -761,16 +768,33 @@ public final class BioSimClient {
 		}
 	}
 	
-
+	/**
+	 * For test purpose only.
+	 * @return
+	 */
 	public static boolean isLocalConnectionEnabled() {return IsLocal;}
 	
+	/**
+	 * For test purpose only.
+	 */
 	public static void setLocalConnectionEnabled(boolean b) {IsLocal = b;}
 	
+	/**
+	 * For test purpose only.
+	 * @return
+	 */
 	public static boolean isTestModeEnabled() {return IsTesting;}
 
+	/**
+	 * For test purpose only.
+	 */
 	public static void setTestModeEnabled(boolean b) {IsTesting = b;}
 
 
+	/**
+	 * For test purpose only.
+	 * @return
+	 */
 	public static double getLastServerRequestDuration() {
 		return totalServerRequestDuration;
 	}
