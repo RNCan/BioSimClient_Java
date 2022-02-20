@@ -76,7 +76,7 @@ public class BioSimInternalModelTest {
 		}
 		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
 		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
-		String observedString = this.getJSONObject(resultMap, validationFilename);
+		String observedString = getJSONObject(resultMap, validationFilename);
 		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
 		Assert.assertEquals("Comparing strings", referenceString, observedString);
 	}
