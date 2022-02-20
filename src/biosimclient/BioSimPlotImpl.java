@@ -32,6 +32,12 @@ public class BioSimPlotImpl implements BioSimPlot {
 	private final double latitude;
 	private final double longitude;
 
+	/**
+	 * Constructor.
+	 * @param latitudeDeg The latitude in degrees
+	 * @param longitudeDeg The longitude in degrees
+	 * @param elevationM The elevation in m
+	 */
 	public BioSimPlotImpl(double latitudeDeg, double longitudeDeg, double elevationM) {
 		this.latitude = latitudeDeg;
 		this.longitude = longitudeDeg;
