@@ -21,9 +21,7 @@ This library uses some icons from the GTK library which are protected
 by a GNU Lesser General Public License. 
 
 
-The source code is hosted on GitHub at:
-
-	https://github.com/RNCan/BioSimClient_Java
+The source code is hosted on GitHub at https://github.com/RNCan/BioSimClient_Java.
 
 The project should be cloned as follows:
 
