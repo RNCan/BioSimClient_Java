@@ -23,7 +23,7 @@ by a GNU Lesser General Public License.
 
 The source code is hosted on GitHub at https://github.com/RNCan/BioSimClient_Java.
 
-The project should be cloned as follows:
+This Java project uses Gradle. It should be cloned as follows:
 
 	git clone https://github.com/RNCan/BioSimClient_Java biosimclient
 	
