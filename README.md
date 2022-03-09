@@ -21,10 +21,14 @@ This library uses some icons from the GTK library which are protected
 by a GNU Lesser General Public License. 
 
 
-The biosimclient library is hosted on SourceForge:
+The source code is hosted on GitHub at:
 
-	https://sourceforge.net/p/mrnfforesttools/biosimclient/wiki/MainPage/
+	https://github.com/RNCan/BioSimClient_Java
 
+The project should be cloned as follows:
+
+	git clone https://github.com/RNCan/BioSimClient_Java biosimclient
+	
 
 The biosimclient library depends on the json-io library available at
 (https://mvnrepository.com/artifact/com.cedarsoftware/json-io/). The
