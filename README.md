@@ -15,7 +15,7 @@ warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU Lesser General Public
 License for more details.
 
-Please see the license at http://www.gnu.org/copyleft/lesser.html.
+Please see the license LGPL-3.0 at http://www.gnu.org/copyleft/lesser.html.
 
 This library uses some icons from the GTK library which are protected 
 by a GNU Lesser General Public License. 
