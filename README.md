@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![Java CI](https://github.com/RNCan/BioSimClient_Java/actions/workflows/gradle.yml/badge.svg)](https://github.com/RNCan/BioSimClient_Java/actions/workflows/gradle.yml)
+<!-- badges: end -->
+
 Authors Mathieu Fortin, Jean-Francois Lavoie - Canadian Forest Service
 Copyright (C) 2020-2022 Her Majesty the Queen in right of Canada
 
