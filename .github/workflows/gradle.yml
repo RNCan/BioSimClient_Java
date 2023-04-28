@@ -31,5 +31,5 @@ jobs:
       uses: gradle/gradle-build-action@v2
 
     - name: Execute Gradle 'integrationTest' task 
-      run: ./gradlew integrationTest  
+      run: ./gradlew integrationTest --stacktrace 
        

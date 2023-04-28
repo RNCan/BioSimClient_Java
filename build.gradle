@@ -26,7 +26,6 @@ repositories {
     mavenLocal()
 }
 
-
 println "Using java version " + JavaVersion.current()
 println "Project directory " + project.projectDir
 println "Build directory " + project.buildDir
