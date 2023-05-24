@@ -770,30 +770,32 @@ public final class BioSimClient {
 	
 	/**
 	 * For test purpose only.
-	 * @return
+	 * @return a boolean
 	 */
 	public static boolean isLocalConnectionEnabled() {return IsLocal;}
 	
 	/**
 	 * For test purpose only.
+	 * @param b a boolean
 	 */
 	public static void setLocalConnectionEnabled(boolean b) {IsLocal = b;}
 	
 	/**
 	 * For test purpose only.
-	 * @return
+	 * @return a boolean
 	 */
 	public static boolean isTestModeEnabled() {return IsTesting;}
 
 	/**
 	 * For test purpose only.
+	 * @param b a boolean
 	 */
 	public static void setTestModeEnabled(boolean b) {IsTesting = b;}
 
 
 	/**
 	 * For test purpose only.
-	 * @return
+	 * @return a double
 	 */
 	public static double getLastServerRequestDuration() {
 		return totalServerRequestDuration;

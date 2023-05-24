@@ -5,30 +5,54 @@
 
 plugins {
     id 'com.palantir.git-version' version '3.0.0'
+    id 'maven-publish'
+    id 'signing'
 }
+
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'maven-publish'
 
-group = 'org'
-
+task sourcesJar(type: Jar) {
+	 archiveClassifier = 'sources'
+	 manifest {
+        attributes("Built-By": "Mathieu Fortin and Jean-Francois Lavoie",
+        		   "Specification-Title": "Client for BioSIM Web API sources",
+	       		   "Specification-Version": project.version,                   
+                   "Specification-Vendor": "CWFC-CCFB",
+                   "Implementation-Title": "biosimclient",
+                   "Implementation-Version": project.version,
+                   "Implementation-Vendor": "CWFC-CCFB",
+                   )
+    }
+   	duplicatesStrategy = DuplicatesStrategy.EXCLUDE		// to avoid duplicate files
+    
+	into ('/') {
+		from files(['./README.md', './LICENSE.md'])			
+	}
+	
+	// include all java files from main sourceset into the jar file (resources are already included)
+	from sourceSets.main.java
+	from sourceSets.main.resources		
+}
 
 java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(8))
+  toolchain { 
+        languageVersion = JavaLanguageVersion.of(8)
   }
+  withSourcesJar()
+  withJavadocJar()
 }
 
 repositories {
+	maven {		// sonatype repository
+		url "https://repo1.maven.org/maven2/"
+	}
     mavenCentral()
-    mavenLocal()
 }
 
 println "Using java version " + JavaVersion.current()
-println "Project directory " + project.projectDir
-println "Build directory " + project.buildDir
 
 sourceSets {
     main {    	
@@ -58,6 +82,14 @@ sourceSets {
     }               
 }
 
+configurations {
+	biosimclientImplementation {
+		extendsFrom implementation
+		description = 'Main implementation'
+		canBeResolved = true
+	}
+}
+
 // make sure to set the compliance to Java 1.8 in the project properties if the Java version is later than 1.8
 // make sure to set Java Compiler > Errors Warnings > Deprecated and Restricted API > Forbidden reference to WARNING instead of ERROR
 dependencies {
@@ -69,6 +101,7 @@ dependencies {
 compileJava {
 	project.version= gitVersion() 
 	println "Building " + rootProject.name + " " + project.version
+	println "Installation directory " + "../externallibraries/" + rootProject.name
 }
 
 test {
@@ -79,6 +112,25 @@ test {
     maxHeapSize = "2048m"
     
     exclude '**/ProductionEnvironmentTest.class'
+}
+
+jar {
+	manifest {
+    	attributes("Built-By": "Mathieu Fortin and Jean-Francois Lavoie",
+        		   "Specification-Title": "Client for BioSIM Web API",
+	       		   "Specification-Version": archiveVersion,                   
+                   "Specification-Vendor": "CWFC-CCFB",
+                   "Implementation-Title": "biosimclient",
+                   "Implementation-Vendor": "CWFC-CCFB",
+                   )
+    }
+    
+	into ('/') {
+		from files(['./README.md', './LICENSE.md'])			
+	}
+	
+	// include all java files from main sourceset into the jar file (resources are already included)
+	from sourceSets.main.allJava		
 }
 
 task integrationTest(type: Test) {
@@ -100,55 +152,92 @@ task integrationTest(type: Test) {
 
 check.dependsOn integrationTest
 
-jar {
-	manifest {
-    	attributes("Built-By": "Mathieu Fortin",
-        		   "Specification-Title": "Client for BioSIM Web API",
-	       		   "Specification-Version": archiveVersion,                   
-                   "Specification-Vendor": "Canadian Wood Fibre Centre",
-                   "Implementation-Title": "biosimclient",
-                   "Implementation-Vendor": "Canadian Wood Fibre Centre",
-                   )
-    }
-    
-	into ('/') {
-		from files(['./README.txt', './COPYING.LESSER.txt'])			
-	}
-	
-	// include all java files from main sourceset into the jar file (resources are already included)
-	from sourceSets.main.allJava		
-}
 
 task fatJar(type: Jar) {
 	group = 'build'
 	description = 'Creates a fat jar for distribution'
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE		// to avoid duplicate files
     manifest {
-    	attributes("Built-By": "Mathieu Fortin",
+    	attributes("Built-By": "Mathieu Fortin and Jean-Francois Lavoie",
         		   "Specification-Title": "Client for BioSIM Web API",
 	       		   "Specification-Version": archiveVersion,                   
-                   "Specification-Vendor": "Canadian Wood Fibre Centre",
+                   "Specification-Vendor": "CWFC-CCFB",
                    "Implementation-Title": "biosimclient",
-                   "Implementation-Vendor": "Canadian Wood Fibre Centre",
+                   "Implementation-Vendor": "CWFC-CCFB",
                    )
     }
     archiveBaseName = 'biosimclient'
-	destinationDirectory =  file("${installDirFatJar}")  
+	destinationDirectory =  file("../externallibraries/" + rootProject.name)  
     from { sourceSets.main.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }		
 }
 
 task deleteInstallFolder(type: Delete) {
-  delete "${installDir}"  
+  delete "../externallibraries/" + rootProject.name
 }
 
 task install(type: Copy) {
 	description = 'Copies the output jar to installation folder.'
 	group = 'build'
-	dependsOn jar,deleteInstallFolder,integrationTest
-	from configurations.default
+	dependsOn deleteInstallFolder,integrationTest
+	from configurations.biosimclientImplementation
 	from jar
-	into "${installDir}"
+	into "../externallibraries/" + rootProject.name
 }
 
+publishing {
+    publications {
+        biosimclient(MavenPublication) {
+          	from components.java
+        	pom {
+        		name = 'BioSIM Client'
+				group = 'io.github.cwfc-ccfb'
+        		description = 'A client for BioSIM Web API'
+        		url = 'https://github.com/RNCan/BioSimClient_Java'
+        		properties = [
+        			packaging: "jar"
+	       		]
+        		licenses {
+        			license {
+        				name = 'GNU Lesser General Public License 2.1'
+        				url  = 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html'
+        			}
+        		}
+        		developers {
+        			developer {
+        				id = 'matfortin'
+        				name = 'Mathieu Fortin'
+        				email = 'mathieu.fortin.re@gmail.com'
+        			}        
+        		}
+        		
+                scm {
+          			connection = 'scm:git:https://github.com/RNCan/BioSimClient_Java'
+          			developerConnection = 'scm:git:https://github.com/RNCan/BioSimClient_Java'
+          			url = 'https://github.com/RNCan/BioSimClient_Java'
+        		}
+		     }	
+        }
+    }
+    repositories {
+        maven {
+            name = 'LocalFile'
+            url = "file://${buildDir}/repo"
+        }
+
+		maven {
+		 	name = 'Sonatype'
+		 	credentials(PasswordCredentials)
+		 	url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+		}
+    }
+}
+
+signing {
+    sign publishing.publications.biosimclient
+}
+
+publishBiosimclientPublicationToLocalFileRepository {
+	dependsOn jar
+}
 
  
