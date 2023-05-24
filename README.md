@@ -2,6 +2,7 @@ The biosimclient library
 ============================
 
 Authors: Mathieu Fortin, Jean-Francois Lavoie - Canadian Forest Service
+
 Copyright (C) 2020-2022 Her Majesty the Queen in right of Canada
 
 Email: mathieu.fortin.re@gmail.com
