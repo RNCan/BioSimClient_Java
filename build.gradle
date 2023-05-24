@@ -207,7 +207,12 @@ publishing {
         				id = 'matfortin'
         				name = 'Mathieu Fortin'
         				email = 'mathieu.fortin.re@gmail.com'
-        			}        
+        			} 
+        			developer {
+        				id = 'jflavoie'
+        				name = 'Jean-Francois Lavoie'
+        				email = 'atmailjfl@gmail.com'
+        			}
         		}
         		
                 scm {
