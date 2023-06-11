@@ -79,6 +79,24 @@ public class BioSimClientNormalsTest {
 	}
 
 	@Test
+	public void getNormalsFor1991_2020() throws Exception {
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = BioSimClient.getAnnualNormals(Period.FromNormals1991_2020, 
+				getPlots(), 
+				null, 
+				null);
+		
+		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
+		BioSimDataSet dataSet = BioSimDataSet.convertLinkedHashMapToBioSimDataSet(teleIO);
+		String observedString = BioSimClientTestSettings.getJSONObject(dataSet, validationFilename);
+		
+		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
+		Assert.assertEquals("Comparing the two LinkedHashMap instances", referenceString, observedString);
+	}
+
+	
+	
+	@Test
 	public void getNormalsFor2051_2080_Hadley_RCP45() throws Exception {
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = BioSimClient.getAnnualNormals(Period.FromNormals2051_2080, 
 				getPlots(), 

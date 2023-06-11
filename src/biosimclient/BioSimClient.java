@@ -672,7 +672,6 @@ public final class BioSimClient {
 		if (IS_CLIENT_SUPPORTED == null) {
 			String query = "crev=" + REVISION;
 			String serverReply = getStringFromConnection(BIOSIMSTATUS, query).toString();	// is returned in JSON format
-//			ObjectMapper mp = new ObjectMapper();
 			Map statusMap = null;
 			try {
 				statusMap = JsonReader.jsonToMaps(serverReply);
