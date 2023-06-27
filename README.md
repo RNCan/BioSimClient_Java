@@ -20,7 +20,6 @@ License for more details.
 
 Please see the license LGPL-2.1 at http://www.gnu.org/copyleft/lesser.html.
 
-
 The source code is hosted on GitHub at https://github.com/RNCan/BioSimClient_Java.
 
 This Java project uses Gradle. It should be cloned as follows:
@@ -32,3 +31,5 @@ git clone https://github.com/RNCan/BioSimClient_Java biosimclient
 The biosimclient library depends on the json-io library available at
 (https://mvnrepository.com/artifact/com.cedarsoftware/json-io/). The
 json-io library is licensed under Apache 2.0. 
+
+More information on BioSIM Web API and its clients can be found at https://github.com/RNCan/BioSimClient_CSharp/wiki.
