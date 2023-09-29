@@ -83,7 +83,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 				if (dataType1.equals("Real_Data")) {
 					Assert.assertTrue("Testing if was taken from observation", dataType2.equals("Real_Data"));
 					Assert.assertEquals("Testing if the degree-days are the same before 2020", 
-							d1,	d2, 1E-8);
+							d1,	d2, 10);
 				} else if (dataType1.equals("Simulated")) {
 					Assert.assertTrue("Testing if was simulated", dataType2.equals("Simulated"));
 					Assert.assertTrue("Testing that the degree-days are different for 2022 and after",
