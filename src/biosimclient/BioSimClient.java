@@ -65,8 +65,8 @@ public final class BioSimClient {
 	
 	static final String FieldSeparator = ",";
 	
-	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
-	private static final InetSocketAddress LocalAddress = new InetSocketAddress("192.168.0.194", 88);	
+	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("https://repicea.dynu.net", 443);
+	private static final InetSocketAddress LocalAddress = new InetSocketAddress("http://192.168.0.194", 80);
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
@@ -110,7 +110,7 @@ public final class BioSimClient {
 	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 //		long initTime = System.currentTimeMillis();
 		InetSocketAddress address = IsLocal ? BioSimClient.LocalAddress : BioSimClient.REpiceaAddress;
-		String urlString = "http://" + address.getHostName() + ":" + address.getPort() + "/BioSIM/" + api;
+		String urlString = address.getHostName() + ":" + address.getPort() + "/BioSIM/" + api;
 		urlString = addQueryIfAny(urlString, query);
 		try {
 			URL bioSimURL = new URL(urlString);
