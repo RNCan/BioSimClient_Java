@@ -35,8 +35,6 @@ import org.junit.Assert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-//import com.cedarsoftware.util.io.JsonWriter;
-
 public class BioSimClientTestSettings {
 
 	static boolean Validation = true;

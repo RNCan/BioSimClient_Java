@@ -160,7 +160,7 @@ public class BioSimClientModelWithParametersTest {
 		parms.addParameter("LowerThreshold", 5);
 		String modelName = "DegreeDay_Annual";
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIO = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 
-				2020, 
+				2013, 
 				BioSimClientNormalsTest.getPlots(), 
 				null, 
 				null, 

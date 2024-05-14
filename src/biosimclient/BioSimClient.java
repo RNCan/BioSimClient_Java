@@ -37,6 +37,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -47,6 +49,7 @@ import biosimclient.BioSimEnums.Month;
 import biosimclient.BioSimEnums.Period;
 import biosimclient.BioSimEnums.RCP;
 import biosimclient.BioSimEnums.Variable;
+import repicea.util.JarUtility;
 
 /**
  * A client for the BioSIM Web API.
@@ -55,11 +58,11 @@ import biosimclient.BioSimEnums.Variable;
  */
 public final class BioSimClient {
 
-	private static final int REVISION = 1;
+//	private static final int REVIddSION = 1;
 	
 	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = -1; // not set yet
 	private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = -1; // not set yet
-	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000; // not set yet
+//	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000; // not set yet
 	private static Boolean IS_CLIENT_SUPPORTED = null;
 	private static String CLIENT_MESSAGE;
 	
@@ -237,9 +240,9 @@ public final class BioSimClient {
 			ClimateModel climModel,
 			List<Month> averageOverTheseMonths) throws BioSimClientException, BioSimServerException {
 		isClientSupported();
-		if (locations.size() > BioSimClient.MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST) {
-			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
-		}
+//		if (locations.size() > BioSimClient.MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST) {
+//			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
+//		}
 		if (locations.size() > BioSimClient.getMaximumNbLocationsPerBatchNormals()) {
 			LinkedHashMap<BioSimPlot, BioSimDataSet> resultingMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			List<BioSimPlot> copyList = new ArrayList<BioSimPlot>();
@@ -402,6 +405,7 @@ public final class BioSimClient {
 	}
  	
 		
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void readLines(BioSimStringList serverReply,
 			String fieldLineStarter,
 			List<BioSimPlot> refListForLocations,
@@ -501,7 +505,7 @@ public final class BioSimClient {
 		}
 		if (additionalParms != null) {
 			StringBuilder sbParms = new StringBuilder();
-			int i = 0;
+//			int i = 0;
 			for (BioSimParameterMap oMap : additionalParms) {
 				String strForThisMap = oMap == null || oMap.isEmpty() ? "null" : oMap.toString();
 				if (sbParms.length() == 0)
@@ -604,6 +608,7 @@ public final class BioSimClient {
 	 * @throws BioSimClientException If the client fails 
 	 * @throws BioSimServerException If the server fails 
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static LinkedHashMap<String, Object> generateWeather(int fromYr, 
 			int toYr,
 			List<BioSimPlot> locations, 
@@ -617,9 +622,9 @@ public final class BioSimClient {
 		if (rep < 1 || repModel < 1) {
 			throw new InvalidParameterException("The rep and repModel parameters should be equal to or greater than 1!");
 		} 
-		if (locations.size() > MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST) {
-			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
-		}
+//		if (locations.size() > MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST) {
+//			throw new BioSimClientException("The maximum number of locations for a single request is " + MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST);
+//		}
 
 		totalServerRequestDuration = 0.0;
 
@@ -660,6 +665,20 @@ public final class BioSimClient {
 		return MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION;
 	}
 
+	private static String getRevision() {
+		String filePath = JarUtility.getJarFileImInIfAny(BioSimClient.class);
+		if (filePath != null) {
+			try {
+				Manifest m = JarUtility.getManifestFromThisJarFile(filePath);
+				return m.getMainAttributes().get(Attributes.Name.SPECIFICATION_VERSION).toString();				
+			} catch (IOException e) {
+				throw new InvalidParameterException("Cannot retrieve manifest from jar file: " + filePath);
+			}
+		} else {
+			return "NotWrappedIntoJar";			
+		}
+	}
+	
 	
 	/**
 	 * Check if the status of the server has been retrieved and set the IS_CLIENT_SUPPORTED and CLIENT_MESSAGE static
@@ -668,9 +687,11 @@ public final class BioSimClient {
 	 * @throws BioSimClientException If the client fails 
 	 * @throws BioSimServerException If the server fails 
 	 */
+	@SuppressWarnings("rawtypes")
 	public static synchronized String isClientSupported() throws BioSimClientException, BioSimServerException {
 		if (IS_CLIENT_SUPPORTED == null) {
-			String query = "crev=" + REVISION;
+			String revision = getRevision();
+			String query = "crev=" + revision;
 			String serverReply = getStringFromConnection(BIOSIMSTATUS, query).toString();	// is returned in JSON format
 			Map statusMap = null;
 			try {
