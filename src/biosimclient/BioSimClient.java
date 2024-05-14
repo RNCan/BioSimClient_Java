@@ -136,7 +136,7 @@ public final class BioSimClient {
 		} catch (UnknownHostException e) {
 			throw new BioSimClientException("Unknown host: " + e.getMessage());
 		} catch (SSLHandshakeException e) {
-			throw new BioSimClientException("Unable to confirm certificate for secure connection!");
+			throw new BioSimClientException("Unable to confirm certificate for secure connection!" + System.lineSeparator() + e.getMessage());
 		} catch (IOException e) {
 			throw new BioSimClientException("Unable to connect to the server!");
 		} 
