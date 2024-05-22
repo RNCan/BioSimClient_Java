@@ -68,7 +68,8 @@ public final class BioSimClient {
 	
 	static final String FieldSeparator = ",";
 	
-	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("https://repicea.dynu.net", 443);
+//	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("https://repicea.dynu.net", 443);
+	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("http://repicea.dynu.net", 80);
 	private static final InetSocketAddress LocalAddress = new InetSocketAddress("http://192.168.0.194", 80);
 	
 	private static final String SPACE_IN_REQUEST = "%20";
