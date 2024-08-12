@@ -113,15 +113,21 @@ public final class BioSimDataSet implements Serializable {
 		observations.add(new Observation(observationFrame));
 	}
 
-	private void parseDifferentFields(Object[] lineRead) {
+	protected void parseDifferentFields(Object[] lineRead) {
 		for (int i = 0; i < fieldNames.size(); i++) {
 			if (!(lineRead[i] instanceof Double) && !(lineRead[i] instanceof Integer)) {
 				String valueStr = lineRead[i].toString();
-				if (valueStr.contains(".")) { // might be a double or a string
+				if (valueStr.contains(".") || valueStr.contains("e") || valueStr.contains("E")) { // might be a double or a string
+					String originalString = valueStr;
 					try {
+						if (valueStr.contains("e+")) {
+							valueStr = valueStr.replace("e+", "E+");
+						} else if (valueStr.contains("e-")) {
+							valueStr = valueStr.replace("e-", "E+");
+						}
 						lineRead[i] = Double.parseDouble(valueStr);
 					} catch (NumberFormatException e2) {
-						lineRead[i] = valueStr;
+						lineRead[i] = originalString;
 					}
 				} else {	// might be an integer or a string
 					try {
