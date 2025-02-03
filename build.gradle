@@ -93,9 +93,8 @@ configurations {
 // make sure to set the compliance to Java 1.8 in the project properties if the Java version is later than 1.8
 // make sure to set Java Compiler > Errors Warnings > Deprecated and Restricted API > Forbidden reference to WARNING instead of ERROR
 dependencies {
-    implementation group: 'io.github.cwfc-ccfb', name: 'repicea', version: '[1.10.4,)'    
-	implementation 'com.cedarsoftware:json-io:4.13.0'
-	testImplementation "com.fasterxml.jackson.core:jackson-databind:2.13.1"
+    implementation group: 'io.github.cwfc-ccfb', name: 'repicea', version: '[1.15.0,)'    
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '[2.13.1,)'
     testImplementation "junit:junit:4.12"    
 }
 
