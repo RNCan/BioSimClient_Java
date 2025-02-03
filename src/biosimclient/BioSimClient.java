@@ -42,7 +42,7 @@ import java.util.jar.Manifest;
 
 import javax.net.ssl.SSLHandshakeException;
 
-import com.cedarsoftware.util.io.JsonReader;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.Month;
@@ -696,7 +696,9 @@ public final class BioSimClient {
 			String serverReply = getStringFromConnection(BIOSIMSTATUS, query).toString();	// is returned in JSON format
 			Map statusMap = null;
 			try {
-				statusMap = JsonReader.jsonToMaps(serverReply);
+//				statusMap = JsonReader.jsonToMaps(serverReply);
+				ObjectMapper om = new ObjectMapper();
+				statusMap = om.readValue(serverReply, Map.class);
 			} catch (Exception e) {
 				throw new BioSimClientException("Something wrong happened while retrieving the server status: " + e.getMessage());
 			}
