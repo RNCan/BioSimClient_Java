@@ -41,7 +41,6 @@ java {
   toolchain { 
         languageVersion = JavaLanguageVersion.of(8)
   }
-  withSourcesJar()
   withJavadocJar()
 }
 
@@ -50,6 +49,7 @@ repositories {
 		url "https://repo1.maven.org/maven2/"
 	}
     mavenCentral()
+    mavenLocal()
 }
 
 println "Using java version " + JavaVersion.current()
