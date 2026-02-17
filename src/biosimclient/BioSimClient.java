@@ -65,6 +65,7 @@ public final class BioSimClient {
 //	private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000; // not set yet
 	private static Boolean IS_CLIENT_SUPPORTED = null;
 	private static String CLIENT_MESSAGE;
+	private static int LAST_DAILY_DATE;
 	
 	static final String FieldSeparator = ",";
 	
@@ -716,6 +717,7 @@ public final class BioSimClient {
 				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = ((Number) settingsMap.get("NbMaxCoordinatesWG")).intValue();
 				IS_CLIENT_SUPPORTED = settingsMap.containsKey("IsClientSupported") ? (Boolean) settingsMap.get("IsClientSupported") : true;
 				CLIENT_MESSAGE = settingsMap.containsKey("ClientMessage") ? (String) settingsMap.get("ClientMessage") : "";
+				LAST_DAILY_DATE = ((Number) settingsMap.get("LastDailyDate")).intValue(); 
 			} catch (Exception e) {
 				throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
 			}
@@ -824,4 +826,14 @@ public final class BioSimClient {
 		return totalServerRequestDuration;
 	}
 	
+	/**
+	 * Provide the latest year date of the daily.
+	 * @return an integer
+	 * @throws BioSimClientException
+	 * @throws BioSimServerException
+	 */
+	public static int getLastDailyDateYr() throws BioSimClientException, BioSimServerException {
+		isClientSupported();
+		return LAST_DAILY_DATE;
+	}
 }
