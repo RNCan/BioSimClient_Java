@@ -109,32 +109,35 @@ public final class BioSimDataSet implements Serializable {
 	}
 	
 	public void addObservation(Object[] observationFrame) {
-		parseDifferentFields(observationFrame);
+		for (int i = 0; i < fieldNames.size(); i++) {
+			observationFrame[i] = parseValue(observationFrame[i]);
+		}
 		observations.add(new Observation(observationFrame));
 	}
 
-	protected void parseDifferentFields(Object[] lineRead) {
-		for (int i = 0; i < fieldNames.size(); i++) {
-			if (!(lineRead[i] instanceof Double) && !(lineRead[i] instanceof Integer)) {
-				String valueStr = lineRead[i].toString();
-				if (valueStr.contains(".") || valueStr.contains("e") || valueStr.contains("E")) { // might be a double or a string
-					String originalString = valueStr;
-					try {
-						if (valueStr.contains("e+")) {
-							valueStr = valueStr.replace("e+", "E+");
-						} else if (valueStr.contains("e-")) {
-							valueStr = valueStr.replace("e-", "E+");
-						}
-						lineRead[i] = Double.parseDouble(valueStr);
-					} catch (NumberFormatException e2) {
-						lineRead[i] = originalString;
+	
+	private Object parseValue(Object o) {
+		if (o instanceof Double || o instanceof Integer) {
+			return o;
+		} else {
+			String valueStr = o.toString();
+			if (valueStr.contains(".") || valueStr.contains("e") || valueStr.contains("E")) { // might be a double or a string
+				String originalString = valueStr;
+				try {
+					if (valueStr.contains("e+")) {
+						valueStr = valueStr.replace("e+", "E+");
+					} else if (valueStr.contains("e-")) {
+						valueStr = valueStr.replace("e-", "E+");
 					}
-				} else {	// might be an integer or a string
-					try {
-						lineRead[i] = Integer.parseInt(valueStr);
-					} catch (NumberFormatException e2) {
-						lineRead[i] = valueStr;
-					}
+					return Double.parseDouble(valueStr);
+				} catch (NumberFormatException e2) {
+					return originalString;
+				}
+			} else {	// might be an integer or a string
+				try {
+					return Integer.parseInt(valueStr);
+				} catch (NumberFormatException e2) {
+					return valueStr;
 				}
 			}
 		}
@@ -212,6 +215,7 @@ public final class BioSimDataSet implements Serializable {
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	private void setFieldType(int fieldIndex, Class clazz) {
 		if (fieldIndex < fieldTypes.size()) {
 			fieldTypes.set(fieldIndex, clazz);	
@@ -241,6 +245,7 @@ public final class BioSimDataSet implements Serializable {
 	 * Otherwise the method returns an Exception.
 	 * @return a LinkedHashMap with embedded LinkedHashMap if there are more than two fields.
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public LinkedHashMap getMap() {
 		LinkedHashMap outputMap = new LinkedHashMap();
 		Object[] rec;
@@ -324,4 +329,52 @@ public final class BioSimDataSet implements Serializable {
 		}
 		return false;
 	}
+	
+	
+	/**
+	 * Add a field and its value to the DataSet instance.<p>
+	 * The field argument must have the same size than the number of observations. 
+	 * @param name the name of the new field.
+	 * @param field an array of Object instances 
+	 */
+	public void addField(String name, Object[] field) {
+		if (observations.size() > 0 && field.length != observations.size()) {	// will only trigger if there are some observations already
+			throw new InvalidParameterException("The number of observations in the new field does not match the number of observations in the dataset!");
+		}
+		addFieldName(name);
+		
+		for (int i = 0; i < field.length; i++) {
+			Object parsedValue = this.parseValue(field[i]);
+			if (i < observations.size()) { // means the observation exists already 
+				observations.get(i).values.add(parsedValue);
+			} else {
+				observations.add(new Observation(new Object[] {parsedValue}));
+			}
+		}
+		
+		setClassOfThisField(fieldNames.size() - 1);
+	}
+
+	@Override
+	public BioSimDataSet clone() {
+		BioSimDataSet clone = new BioSimDataSet(getFieldNames());
+		for (Observation o : getObservations()) {
+			clone.addObservation(o.toArray());
+		}
+		clone.indexFieldType();
+		return clone;
+	}
+	
+	/**
+	 * Add all the observations from another BioSimDataSet instance.
+	 * @param toBeMerged a BioSimDataSet instance whose observations are
+	 * to be added to this instance.
+	 */
+	public void addAllObservations(BioSimDataSet toBeMerged) {
+		for (Observation o : toBeMerged.getObservations()) {
+			addObservation(o.toArray());
+		}
+		indexFieldType();
+	}
+
 }
