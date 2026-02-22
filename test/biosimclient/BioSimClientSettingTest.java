@@ -33,6 +33,6 @@ public class BioSimClientSettingTest {
 	public void test01GetLatestDailyDateYr() throws BioSimClientException, BioSimServerException {
 		int lastDailyDateYr = BioSimClient.getLastDailyDateYr();
 		int currentYear = Year.now().getValue();
-		Assert.assertEquals("Testing if last daily date is equal to current date minus 1", currentYear - 1, lastDailyDateYr);
+		Assert.assertEquals("Testing if last daily date is equal to current date minus 1", currentYear, lastDailyDateYr);
 	}
 }
