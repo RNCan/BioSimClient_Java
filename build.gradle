@@ -26,15 +26,6 @@ task sourcesJar(type: Jar) {
                    "Implementation-Vendor": "CWFC-CCFB",
                    )
     }
-   	duplicatesStrategy = DuplicatesStrategy.EXCLUDE		// to avoid duplicate files
-    
-	into ('/') {
-		from files(['./README.md', './LICENSE.md'])			
-	}
-	
-	// include all java files from main sourceset into the jar file (resources are already included)
-	from sourceSets.main.java
-	from sourceSets.main.resources		
 }
 
 java {
@@ -42,6 +33,7 @@ java {
         languageVersion = JavaLanguageVersion.of(8)
   }
   withJavadocJar()
+  withSourcesJar()
 }
 
 repositories {
