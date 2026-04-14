@@ -57,6 +57,7 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2000;
 		String modelName = "DegreeDay_Annual";
+//		Object o = BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
