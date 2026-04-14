@@ -52,13 +52,14 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	/*
 	 * Tests if the weather generation over past and future time intervals.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testingWithDailyOverlappingPastAndFuture() throws BioSimClientException, BioSimServerException {
+	public void test01WithDailyOverlappingPastAndFuture() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2000;
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);
@@ -99,15 +100,16 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	/*
 	 * Tests future climate with default climate model and RCP.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testingFutureDegreeDaysWithDefaultValuesOfRCPsandClimateModels() throws BioSimClientException, BioSimServerException {
+	public void test02FutureDegreeDaysWithDefaultValuesOfRCPsandClimateModels() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP45, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, null, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4def = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45_RCM4def = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP45, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP45def_RCM4 = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, null, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : oRCP45def_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP45def_RCM4def.get(plot);
@@ -147,14 +149,15 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	/*
 	 * Tests future climate with RCP 8.5 and default climate model.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testingFutureDegreeDaysWithRCP85andClimateModels() throws BioSimClientException, BioSimServerException {
+	public void test03FutureDegreeDaysWithRCP85andClimateModels() throws BioSimClientException, BioSimServerException {
 		List<BioSimPlot> locations = BioSimClientNormalsTest.getPlots();
 		int initialDateYr = 2090;
 		int finalDateYr = 2091;
 		String modelName = "DegreeDay_Annual";
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP85, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP85, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4def = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP85, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> oRCP85_RCM4 = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, finalDateYr, locations, RCP.RCP85, ClimateModel.RCM4, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : oRCP85_RCM4def.keySet()) {
 			BioSimDataSet firstDataSet = oRCP85_RCM4def.get(plot);
@@ -185,8 +188,9 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 	/*
 	 * Tests if the weather generation over past and future time intervals.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testingWithForceClimateGenerationEnabled() throws BioSimClientException, BioSimServerException {
+	public void test04WithForceClimateGenerationEnabled() throws BioSimClientException, BioSimServerException {
 		BioSimClient.setForceClimateGenerationEnabled(true);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(BioSimClientNormalsTest.getPlots().get(0));
@@ -194,8 +198,8 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		int initialDateYr = 2000;
 		
 		String modelName = "DegreeDay_Annual"; 
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
-		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
+		LinkedHashMap<BioSimPlot, BioSimDataSet> teleIORefs2 = (LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(initialDateYr, 2040, locations, null, null, Arrays.asList(new String[]{modelName}), null).get(modelName);
 		
 		for (BioSimPlot plot : teleIORefs.keySet()) {
 			BioSimDataSet firstDataSet = teleIORefs.get(plot);
@@ -223,6 +227,55 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		BioSimClient.setForceClimateGenerationEnabled(false);		// set it back to default value 
 		
 	}
+	
+	/*
+	 * Tests if the weather generation over past and future time intervals.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test05WithFutureConstantClimate() throws BioSimClientException, BioSimServerException {
+		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
+		BioSimPlot refPlot = BioSimClientNormalsTest.getPlots().get(0); 
+		locations.add(refPlot);
+
+		String modelName = "DegreeDay_Annual"; 
+		BioSimDataSet pastClimate = ((LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(2000, 2010, locations, RCP.CONSTANT_CLIMATE, null, Arrays.asList(new String[]{modelName}), null)
+				.get(modelName)).get(refPlot);
+		BioSimDataSet futureClimateUnderConstantClimate = ((LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(2080, 2090, locations, RCP.CONSTANT_CLIMATE, null, Arrays.asList(new String[]{modelName}), null)
+				.get(modelName)).get(refPlot);
+		BioSimDataSet futureClimateRCP4_5 = ((LinkedHashMap<BioSimPlot, BioSimDataSet>) BioSimClient.generateWeather(2080, 2090, locations, RCP.RCP45, null, Arrays.asList(new String[]{modelName}), null)
+				.get(modelName)).get(refPlot);
+		
+		int indexDD = pastClimate.getFieldNames().indexOf("DD");
+		if (indexDD == -1) {
+			throw new UnsupportedOperationException("The field DD cannot be found in the BioSimDataSet instance!");
+		}
+		
+		double pastMean = 0d;
+		double futureMeanConstantClimate = 0d;
+		double futureMeanRCP4_5 = 0d;
+		
+		Assert.assertTrue("Checking all dataset instances have the same number of observations",
+				pastClimate.getNumberOfObservations() == futureClimateUnderConstantClimate.getNumberOfObservations());
+		Assert.assertTrue("Checking all dataset instances have the same number of observations",
+				pastClimate.getNumberOfObservations() == futureClimateRCP4_5.getNumberOfObservations());
+
+		for (int i = 0; i < pastClimate.getNumberOfObservations(); i++) {
+			pastMean += (Double) pastClimate.getObservations().get(i).values.get(indexDD);
+			futureMeanConstantClimate += (Double) futureClimateUnderConstantClimate.getObservations().get(i).values.get(indexDD);
+			futureMeanRCP4_5 += (Double) futureClimateRCP4_5.getObservations().get(i).values.get(indexDD);
+		}
+		
+		pastMean /= pastClimate.getNumberOfObservations();
+		futureMeanConstantClimate /= futureClimateUnderConstantClimate.getNumberOfObservations();
+		futureMeanRCP4_5 /= futureClimateRCP4_5.getNumberOfObservations();
+
+		Assert.assertEquals("Comparing past and future average degree-days", pastMean, futureMeanConstantClimate, 80);
+		Assert.assertTrue("Testing that future average degrees days under RCP 4.5 are much higher",
+				futureMeanRCP4_5 - futureMeanConstantClimate > 500);
+		
+	}
+	
 	
 	
 }

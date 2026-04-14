@@ -34,7 +34,11 @@ public final class BioSimEnums {
 		/**
 		 * RCP 8.5
 		 */
-		RCP85("8_5");
+		RCP85("8_5"),
+		/**
+		 * Constant climate based on 1991-2020 normals
+		 */
+		CONSTANT_CLIMATE("ConstantClimate");
 		
 		private final String urlString;
 		RCP(String urlString) {
