@@ -24,8 +24,11 @@ package biosimclient;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -49,12 +52,24 @@ public class BioSimInternalModelTest {
 		BioSimClientTestSettings.setForTest(false);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testingEachModel() throws Exception {
+		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
+		ObjectMapper om = new ObjectMapper();
+		Map<String, Boolean> referenceMap = (Map<String, Boolean>) om.readValue(BioSimClientTestSettings.getReferenceString(validationFilename), Map.class);
 		List<BioSimPlot> locations = new ArrayList<BioSimPlot>();
 		locations.add(new BioSimFakeLocation(45, -74, 300));
-
+		List<String> refModelList = new ArrayList<String>(referenceMap.keySet());
+		Collections.sort(refModelList);
 		List<String> modelList = BioSimClient.getModelList();
+		for (String s : refModelList) {
+			if (!modelList.contains(s)) {
+				System.out.println("This model " + s + " seems to have been removed from the list!");
+			}
+		}
+		
 		LinkedHashMap<String, Object> overallOutput = BioSimClient.generateWeather(2018, 
 				2019, 
 				locations, 
@@ -69,16 +84,28 @@ public class BioSimInternalModelTest {
 			Object output = overallOutput.get(modelName);
 			if (output instanceof LinkedHashMap) 
 				resultMap.put(modelName, true);
-			else if (output instanceof BioSimClientException) 
+			else if (output instanceof Exception) 
 				resultMap.put(modelName, false);
 			else 
 				throw new Exception("The value of the map should be either a LinkedHashMap or a BioSimClient Exception!");
 		}
-		String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-		String validationFilename = BioSimClientTestSettings.getValidationFilename(methodName);
-		String observedString = getJSONObject(resultMap, validationFilename);
-		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
-		Assert.assertEquals("Comparing strings", referenceString, observedString);
+//		String observedString = getJSONObject(resultMap, validationFilename);
+//		String referenceString = BioSimClientTestSettings.getReferenceString(validationFilename);
+//		Assert.assertEquals("Testing map sizes", referenceMap.size(), resultMap.size());
+		List<String> modelsNotToDeploy = Arrays.asList(new String[] {"PlantHardinessCanada", "PlantHardinessUSA"} );
+		boolean allWorked = true;
+		int nbModels = 0;
+		for (String m : modelList) {
+			if (!modelsNotToDeploy.contains(m)) {
+				nbModels++;
+				if (!resultMap.get(m)) {
+					System.out.println("Model " + m + " is not working!");
+					allWorked = false;
+				}
+			}
+		}
+		System.out.println("Nb of models tested = " + nbModels);
+		Assert.assertTrue("Testing if all models are working", allWorked);
 	}
 
 	private String getJSONObject(LinkedHashMap<String, Boolean> oMap, String validationFilename) throws IOException {

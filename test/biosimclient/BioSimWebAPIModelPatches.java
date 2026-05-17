@@ -35,16 +35,16 @@ import biosimclient.BioSimEnums.RCP;
 public class BioSimWebAPIModelPatches {
 
 	private static List<String> MODELS_WITH_MISSING_INITIAL_YEAR = Arrays.asList(new String[] { "BudBurst", 
-	    "Climate_Mosture_Index_Annual",     // a typo in BioSIM 11
+	    "Climate_Moisture_Index_Annual",     // a typo in BioSIM 11
 	    "Gypsy_Moth_Seasonality",
-	    "HemlockWoollyAdelgid_Annual",
+//	    "HemlockWoollyAdelgid_Annual",
 	    "MPB_Cold_Tolerance_Annual",
 	    "MPB_SLR",
 	    "Spruce_Budworm_Biology_Annual",
 	    "SpruceBeetle" });
 
 	private static List<String> MODELS_REQUIRING_MORE_THAN_ONE_YEAR = Arrays.asList(new String[] { "EmeraldAshBorerColdHardiness_Annual",
-	    "HemlockWoollyAdelgid_Daily",
+//	    "HemlockWoollyAdelgid_Daily",
 	    "MPB_Cold_Tolerance_Daily",
 	    "Standardised_Precipitation_Evapotranspiration_Index" });
 

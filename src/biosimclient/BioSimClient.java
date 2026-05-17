@@ -69,9 +69,10 @@ public final class BioSimClient {
 	
 	static final String FieldSeparator = ",";
 	
-//	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("https://repicea.dynu.net", 443);
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("http://repicea.dynu.net", 80);
-	private static final InetSocketAddress LocalAddress = new InetSocketAddress("http://192.168.0.194", 80);
+	private static final String RoutingString = "/BioSIM/";
+//	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("http://localhost", 5166);
+//	private static final String RoutingString = "/";
 	
 	private static final String SPACE_IN_REQUEST = "%20";
 
@@ -88,7 +89,7 @@ public final class BioSimClient {
 
 	private static double totalServerRequestDuration = 0.0;
 
-	static boolean IsLocal = false;		
+//	static boolean IsLocal = false;		
 	static boolean IsTesting = false;
 
 	static boolean ForceClimateGenerationEnabled = false;  // default value
@@ -114,8 +115,8 @@ public final class BioSimClient {
 	
 	private static synchronized BioSimStringList getStringFromConnection(String api, String query) throws BioSimClientException, BioSimServerException {
 //		long initTime = System.currentTimeMillis();
-		InetSocketAddress address = IsLocal ? BioSimClient.LocalAddress : BioSimClient.REpiceaAddress;
-		String urlString = address.getHostName() + ":" + address.getPort() + "/BioSIM/" + api;
+		InetSocketAddress address = BioSimClient.REpiceaAddress;
+		String urlString = address.getHostName() + ":" + address.getPort() + RoutingString + api;
 		urlString = addQueryIfAny(urlString, query);
 		try {
 			URL bioSimURL = new URL(urlString);
@@ -740,7 +741,7 @@ public final class BioSimClient {
 	public static void resetClientConfiguration() {
 		NbNearestNeighbours = null;
 		ForceClimateGenerationEnabled = false;
-		IsLocal = false;
+//		IsLocal = false;
 		IsTesting = false;
 	}
 	
@@ -793,17 +794,17 @@ public final class BioSimClient {
 		}
 	}
 	
-	/**
-	 * For test purpose only.
-	 * @return a boolean
-	 */
-	public static boolean isLocalConnectionEnabled() {return IsLocal;}
-	
-	/**
-	 * For test purpose only.
-	 * @param b a boolean
-	 */
-	public static void setLocalConnectionEnabled(boolean b) {IsLocal = b;}
+//	/**
+//	 * For test purpose only.
+//	 * @return a boolean
+//	 */
+//	public static boolean isLocalConnectionEnabled() {return IsLocal;}
+//	
+//	/**
+//	 * For test purpose only.
+//	 * @param b a boolean
+//	 */
+//	public static void setLocalConnectionEnabled(boolean b) {IsLocal = b;}
 	
 	/**
 	 * For test purpose only.
