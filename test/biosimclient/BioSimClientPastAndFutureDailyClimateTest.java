@@ -276,6 +276,20 @@ public class BioSimClientPastAndFutureDailyClimateTest {
 		
 	}
 	
-	
+	@Test
+	public void test06Wit10ReplicatesOver30Years() throws Exception {
+		List<BioSimPlot> plots = new ArrayList<BioSimPlot>();
+		plots.add(new BioSimPlotImpl(46.87,-71.25, 114));
+		plots.add(new BioSimPlotImpl(46.03,-73.12, 15));
+		BioSimClient.setForceClimateGenerationEnabled(true);
+		LinkedHashMap result = BioSimClient.generateWeather(1981, 2010, plots, RCP.RCP45, ClimateModel.RCM4, Arrays.asList("ClimaticQc_Annual"), 10, null);
+		Assert.assertTrue("Make sure the return type is a linkedhashmap", result.get("ClimaticQc_Annual") instanceof LinkedHashMap);
+		LinkedHashMap innerResultMap = (LinkedHashMap) result.get("ClimaticQc_Annual");
+		Object aValue  = innerResultMap.values().iterator().next();
+		Assert.assertTrue("Make sure the value is BioSimDataset", aValue instanceof BioSimDataSet);
+		BioSimDataSet dataset = (BioSimDataSet) aValue;
+		Assert.assertEquals("Testing the number of observations", 300, dataset.getNumberOfObservations());
+	}
+
 	
 }
