@@ -122,16 +122,17 @@ public final class BioSimDataSet implements Serializable {
 		} else {
 			String valueStr = o.toString();
 			if (valueStr.contains(".") || valueStr.contains("e") || valueStr.contains("E")) { // might be a double or a string
-				String originalString = valueStr;
+//				String originalString = valueStr;
 				try {
-					if (valueStr.contains("e+")) {
-						valueStr = valueStr.replace("e+", "E+");
-					} else if (valueStr.contains("e-")) {
-						valueStr = valueStr.replace("e-", "E+");
-					}
+//					if (valueStr.contains("e+")) {
+//						valueStr = valueStr.replace("e+", "E+");
+//					} else if (valueStr.contains("e-")) {
+//						valueStr = valueStr.replace("e-", "E-");
+//					}
 					return Double.parseDouble(valueStr);
 				} catch (NumberFormatException e2) {
-					return originalString;
+//					return originalString;
+					return valueStr;
 				}
 			} else {	// might be an integer or a string
 				try {

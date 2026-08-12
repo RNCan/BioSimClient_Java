@@ -31,6 +31,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import biosimclient.BioSimEnums.ClimateModel;
+import biosimclient.BioSimEnums.RCP;
+
 
 
 public class BioSimClientModelExtendedTest {
@@ -126,6 +129,16 @@ public class BioSimClientModelExtendedTest {
 		Assert.assertEquals("Comparing the two LinkedHashMap instances", referenceString, observedString);
 	}
 	
-	
+	@Test
+	public void testFWI_Daily_Parsing() throws Exception {
+		List<BioSimPlot> plots = new ArrayList<BioSimPlot>();
+		plots.add(new BioSimPlotImpl(56.34408, -129.1691, 1284.474));
+		LinkedHashMap<String, Object> oMap = BioSimClient.generateWeather(1991, 1991, plots, RCP.CONSTANT_CLIMATE, ClimateModel.GCM4, Arrays.asList("FWI_Daily"), null);
+		BioSimDataSet ds = (BioSimDataSet) ((LinkedHashMap) oMap.get("FWI_Daily")).get(plots.get(0));
+		Observation o = ds.getObservations().get(191);
+		double ISIValueOnJuly11 = (Double) o.values.get(ds.getFieldNames().indexOf("ISI"));
+		Assert.assertEquals("Checking ISI value", 6.49936E-5, ISIValueOnJuly11, 1E-12);
+	}
+
 	
 }

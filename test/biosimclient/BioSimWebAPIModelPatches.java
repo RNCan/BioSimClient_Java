@@ -35,7 +35,7 @@ import biosimclient.BioSimEnums.RCP;
 public class BioSimWebAPIModelPatches {
 
 	private static List<String> MODELS_WITH_MISSING_INITIAL_YEAR = Arrays.asList(new String[] { "BudBurst", 
-	    "Climate_Moisture_Index_Annual",     // a typo in BioSIM 11
+	    "Climate_Mosture_Index_Annual",     // a typo in BioSIM 11
 	    "Gypsy_Moth_Seasonality",
 //	    "HemlockWoollyAdelgid_Annual",
 	    "MPB_Cold_Tolerance_Annual",

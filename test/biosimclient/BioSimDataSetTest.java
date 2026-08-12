@@ -35,5 +35,7 @@ public class BioSimDataSetTest {
 		dataSet.addObservation(new Object[] {"Value", "1E+7"});
 		dataSet.indexFieldType();
 		Assert.assertTrue("Checking field type is Double", dataSet.fieldTypes.get(1).getName().equals("java.lang.Double"));
+		Assert.assertEquals("Checking first value", -1E-7, (Double) dataSet.getObservations().get(0).values.get(1), 1E-15);
+		Assert.assertEquals("Checking second value", 1E7, (Double) dataSet.getObservations().get(1).values.get(1), 1E-8);
 	}
 }
