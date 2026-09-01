@@ -26,6 +26,7 @@ package biosimclient;
  * An implementation of the GeographicalCoordinatesProvider interface.
  * @author Mathieu Fortin - December 2019
  */
+@SuppressWarnings("serial")
 public class BioSimPlotImpl implements BioSimPlot {
 
 	private final double elevationM;
@@ -61,10 +62,15 @@ public class BioSimPlotImpl implements BioSimPlot {
 
 	
 	boolean areEqual(BioSimPlotImpl otherPlot) {
-		if (Math.abs(latitude - otherPlot.latitude) < 1E-8) 
-			if (Math.abs(longitude - otherPlot.longitude) < 1E-8)
-				if (Math.abs(elevationM - otherPlot.elevationM) < 1E-8)
+		if (Math.abs(latitude - otherPlot.latitude) < 1E-8) {
+			if (Math.abs(longitude - otherPlot.longitude) < 1E-8) {
+				if (Double.isNaN(elevationM) && Double.isNaN(otherPlot.elevationM)) {
 					return true;
+				} else if (Math.abs(elevationM - otherPlot.elevationM) < 1E-8) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 }
