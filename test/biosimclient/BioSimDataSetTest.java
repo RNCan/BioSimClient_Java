@@ -21,15 +21,21 @@
  */
 package biosimclient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import biosimclient.BioSimEnums.ClimateModel;
+import biosimclient.BioSimEnums.RCP;
+
 public class BioSimDataSetTest {
 
 	@Test
-	public void checkParsingWithScientificNotation() {
+	public void test01CheckParsingWithScientificNotation() {
 		BioSimDataSet dataSet = new BioSimDataSet(Arrays.asList(new String[] {"Field1", "Field2"}));
 		dataSet.addObservation(new Object[] {"Value", "-1e-7"});
 		dataSet.addObservation(new Object[] {"Value", "1E+7"});
@@ -38,4 +44,23 @@ public class BioSimDataSetTest {
 		Assert.assertEquals("Checking first value", -1E-7, (Double) dataSet.getObservations().get(0).values.get(1), 1E-15);
 		Assert.assertEquals("Checking second value", 1E7, (Double) dataSet.getObservations().get(1).values.get(1), 1E-8);
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void test02CheckParsingNaN() throws BioSimClientException, BioSimServerException {
+		List<BioSimPlot> plots = new ArrayList<BioSimPlot>();
+		plots.add(new BioSimPlotImpl(59.48759, -134.3845, Double.NaN));
+		String model = "Standardised_Precipitation_Evapotranspiration_Index";
+		LinkedHashMap<String, Object> results = BioSimClient.generateWeather(2017,
+				2021, 
+				plots, 
+				RCP.RCP45, 
+				ClimateModel.GCM4, 
+				Arrays.asList(model), 
+				null);
+		BioSimDataSet ds = (BioSimDataSet) ((LinkedHashMap) results.get(model)).get(plots.get(0)); 
+		Class<?> expectedType = ds.fieldTypes.get(ds.getFieldNames().indexOf("SPEI"));
+		Assert.assertEquals("Checking SPEI type", expectedType, Double.class);
+	}
+	
 }

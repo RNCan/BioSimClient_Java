@@ -24,8 +24,10 @@ package biosimclient;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import biosimclient.BioSimEnums.Month;
 
@@ -115,21 +117,42 @@ public final class BioSimDataSet implements Serializable {
 		observations.add(new Observation(observationFrame));
 	}
 
+
+	private boolean mightBeSimpleDouble(final String str) {
+		return str.contains(".") || str.contains("e") || str.contains("E");
+	}
+
+	private boolean mightBeComplexDouble(final String str) {
+		String lowerCaseStr = str.toLowerCase().trim(); 
+		return lowerCaseStr.equals("nan") || lowerCaseStr.contains("inf");  // might be a double or a string
+	}
+
+	private final static Map<String, String> DoubleLookupMap = new HashMap<String, String>();
+	static {
+		DoubleLookupMap.put("inf", "Infinity");
+		DoubleLookupMap.put("infinity", "Infinity");
+		DoubleLookupMap.put("-inf", "-Infinity");
+		DoubleLookupMap.put("-infinity", "-Infinity");
+		DoubleLookupMap.put("nan", "NaN");
+	}
+	
 	
 	private Object parseValue(Object o) {
 		if (o instanceof Double || o instanceof Integer) {
 			return o;
 		} else {
 			String valueStr = o.toString();
-			if (valueStr.contains(".") || valueStr.contains("e") || valueStr.contains("E")) { // might be a double or a string
-//				String originalString = valueStr;
+			if (mightBeSimpleDouble(valueStr)) { // might be a double or a string
 				try {
-//					if (valueStr.contains("e+")) {
-//						valueStr = valueStr.replace("e+", "E+");
-//					} else if (valueStr.contains("e-")) {
-//						valueStr = valueStr.replace("e-", "E-");
-//					}
 					return Double.parseDouble(valueStr);
+				} catch (NumberFormatException e2) {
+//					return originalString;
+					return valueStr;
+				}
+			} else if (mightBeComplexDouble(valueStr)) { // might be a double or a string
+				try {
+					String formattedValue = DoubleLookupMap.get(valueStr.trim().toLowerCase());
+					return Double.parseDouble(formattedValue);
 				} catch (NumberFormatException e2) {
 //					return originalString;
 					return valueStr;
